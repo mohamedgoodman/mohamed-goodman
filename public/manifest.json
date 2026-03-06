@@ -1,0 +1,17 @@
+{
+  "name": "GOODMAN M. AI Virtual Stylist",
+  "short_name": "GOODMAN M.",
+  "description": "AI Virtual Stylist by Mohamed Goodman",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#eab308",
+  "icons": [
+    {
+      "src": "https://static.wikia.nocookie.net/breakingbad/images/1/16/Saul_Goodman.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
