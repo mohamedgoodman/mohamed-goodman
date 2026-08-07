@@ -1,4 +1,5 @@
 import { Instagram, MapPin, MessageCircle } from 'lucide-react';
+import avatarImg from './assets/avatar-source.jpg';
 
 const INSTAGRAM_URL = 'https://www.instagram.com/mohameed.dardari?igsh=MTE2ZDV0bTNuMjlpNA==';
 const WHATSAPP_URL = 'https://wa.me/212641141355';
@@ -34,7 +35,7 @@ export default function App() {
             <div className="mx-auto mb-6 h-28 w-28 rounded-full p-[2px]" style={{ background: 'linear-gradient(135deg, #ffffff, #666666, #ff2d2d)' }}>
               <div className="h-full w-full overflow-hidden rounded-full border-4 border-black bg-black">
                 <img
-                  src="/assets/avatar-source.jpg"
+                  src={avatarImg}
                   alt="Mohamed Dardari"
                   className="h-full w-full object-cover"
                 />
