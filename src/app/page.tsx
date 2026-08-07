@@ -1,5 +1,6 @@
 import { Hero } from "@/components/sections/hero";
 import { About } from "@/components/sections/about";
+import { ComingSoon } from "@/components/sections/coming-soon";
 import { Contact } from "@/components/sections/contact";
 
 // Projects and Experience sections were removed — add them back with real
@@ -18,6 +19,7 @@ export default function Home() {
     <>
       <Hero />
       <About />
+      <ComingSoon />
       <Contact />
     </>
   );
