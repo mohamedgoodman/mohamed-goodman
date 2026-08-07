@@ -1,0 +1,129 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+  ── ACCENT COLOR ──────────────────────────────────────────────
+  Single source of truth for the site's accent color. Change the
+  two variables below (light + dark) to re-theme the entire site
+  in one place. Value is indigo (oklch) by default.
+*/
+:root {
+  --accent-brand: oklch(0.585 0.233 264.1);
+  --accent-brand-foreground: oklch(0.98 0.005 264.1);
+}
+
+.dark {
+  --accent-brand: oklch(0.685 0.19 264.1);
+  --accent-brand-foreground: oklch(0.145 0.01 264.1);
+}
+/* ──────────────────────────────────────────────────────────── */
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0.01 264);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0.01 264);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0.01 264);
+  --primary: var(--accent-brand);
+  --primary-foreground: var(--accent-brand-foreground);
+  --secondary: oklch(0.96 0.005 264);
+  --secondary-foreground: oklch(0.205 0.01 264);
+  --muted: oklch(0.96 0.005 264);
+  --muted-foreground: oklch(0.48 0.015 264);
+  --accent: oklch(0.96 0.005 264);
+  --accent-foreground: oklch(0.205 0.01 264);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.9 0.005 264);
+  --input: oklch(0.9 0.005 264);
+  --ring: var(--accent-brand);
+}
+
+.dark {
+  --background: oklch(0.13 0.01 264);
+  --foreground: oklch(0.96 0.005 264);
+  --card: oklch(0.17 0.012 264);
+  --card-foreground: oklch(0.96 0.005 264);
+  --popover: oklch(0.17 0.012 264);
+  --popover-foreground: oklch(0.96 0.005 264);
+  --primary: var(--accent-brand);
+  --primary-foreground: var(--accent-brand-foreground);
+  --secondary: oklch(0.23 0.012 264);
+  --secondary-foreground: oklch(0.96 0.005 264);
+  --muted: oklch(0.23 0.012 264);
+  --muted-foreground: oklch(0.65 0.015 264);
+  --accent: oklch(0.25 0.012 264);
+  --accent-foreground: oklch(0.96 0.005 264);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: var(--accent-brand);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+  }
+  ::selection {
+    @apply bg-primary/20;
+  }
+}
+
+@layer utilities {
+  .container-page {
+    @apply mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-10;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
