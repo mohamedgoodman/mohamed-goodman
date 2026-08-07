@@ -1,20 +1,33 @@
 import Link from "next/link";
 import { FaGithub, FaInstagram, FaLinkedin, FaWhatsapp } from "react-icons/fa6";
 
+import { SocialIconLink } from "@/components/social-icon-link";
 import { siteConfig } from "@/data/site";
 
 const socialLinks = [
-  { href: siteConfig.social.github, label: "GitHub", icon: FaGithub },
-  { href: siteConfig.social.linkedin, label: "LinkedIn", icon: FaLinkedin },
+  {
+    href: siteConfig.social.github,
+    label: "GitHub",
+    icon: FaGithub,
+    brand: "neutral" as const,
+  },
+  {
+    href: siteConfig.social.linkedin,
+    label: "LinkedIn",
+    icon: FaLinkedin,
+    brand: "neutral" as const,
+  },
   {
     href: siteConfig.social.instagram,
     label: "Instagram",
     icon: FaInstagram,
+    brand: "instagram" as const,
   },
   {
     href: siteConfig.social.whatsapp,
     label: "WhatsApp",
     icon: FaWhatsapp,
+    brand: "whatsapp" as const,
   },
 ];
 
@@ -26,18 +39,15 @@ export function Footer() {
           © {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
         </p>
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1.5">
           {socialLinks.map((link) => (
-            <Link
+            <SocialIconLink
               key={link.label}
               href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={link.label}
-              className="text-muted-foreground hover:text-foreground hover:bg-accent focus-visible:ring-ring inline-flex size-9 items-center justify-center rounded-md outline-none focus-visible:ring-2"
-            >
-              <link.icon className="size-4" aria-hidden="true" />
-            </Link>
+              label={link.label}
+              icon={link.icon}
+              brand={link.brand}
+            />
           ))}
         </div>
 

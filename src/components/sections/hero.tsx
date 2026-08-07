@@ -1,18 +1,27 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRightIcon, MailIcon } from "lucide-react";
 import { FaInstagram, FaWhatsapp } from "react-icons/fa6";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { SocialIconLink } from "@/components/social-icon-link";
 import { siteConfig } from "@/data/site";
 
 const quickLinks = [
-  { href: siteConfig.social.instagram, label: "Instagram", icon: FaInstagram },
-  { href: siteConfig.social.whatsapp, label: "WhatsApp", icon: FaWhatsapp },
+  {
+    href: siteConfig.social.instagram,
+    label: "Instagram",
+    icon: FaInstagram,
+    brand: "instagram" as const,
+  },
+  {
+    href: siteConfig.social.whatsapp,
+    label: "WhatsApp",
+    icon: FaWhatsapp,
+    brand: "whatsapp" as const,
+  },
 ];
 
 export function Hero() {
@@ -53,9 +62,6 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <Badge variant="secondary" className="mb-4">
-            {siteConfig.alias}
-          </Badge>
           <p className="text-primary mb-3 text-sm font-medium tracking-wide">
             &ldquo;{siteConfig.tagline}&rdquo;
           </p>
@@ -74,8 +80,8 @@ export function Hero() {
           className="flex flex-col gap-3 sm:flex-row"
         >
           <Button size="lg" asChild>
-            <a href="#projects">
-              View work
+            <a href="#about">
+              About me
               <ArrowRightIcon className="size-4" aria-hidden="true" />
             </a>
           </Button>
@@ -94,16 +100,14 @@ export function Hero() {
           className="flex items-center gap-2"
         >
           {quickLinks.map((link) => (
-            <Link
+            <SocialIconLink
               key={link.label}
               href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={link.label}
-              className="text-muted-foreground hover:text-foreground hover:bg-accent focus-visible:ring-ring inline-flex size-10 items-center justify-center rounded-full border outline-none focus-visible:ring-2"
-            >
-              <link.icon className="size-4" aria-hidden="true" />
-            </Link>
+              label={link.label}
+              icon={link.icon}
+              brand={link.brand}
+              size="lg"
+            />
           ))}
         </motion.div>
       </div>
