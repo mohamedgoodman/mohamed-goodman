@@ -1,9 +1,8 @@
 # Mohamed Dardari — Portfolio
 
 A modern, production-ready personal portfolio site: single-page scroll (Hero,
-About, Projects, Experience, Contact) plus dedicated project case-study
-pages. Built with Next.js App Router, TypeScript, Tailwind CSS v4, shadcn/ui
-primitives, and Framer Motion.
+About, Contact). Built with Next.js App Router, TypeScript, Tailwind CSS v4,
+shadcn/ui primitives, and Framer Motion.
 
 ## Stack
 
@@ -45,13 +44,11 @@ npm run format:check    # Prettier — check only
 All real content lives under `src/data/` as plain TypeScript objects —
 **you never need to touch a component to change text**:
 
-| File                     | Controls                                                       |
-| ------------------------ | -------------------------------------------------------------- |
-| `src/data/site.ts`       | Name, tagline, hero description, social links, CV/avatar paths |
-| `src/data/about.ts`      | About section bio paragraphs                                   |
-| `src/data/skills.ts`     | Skills grid, grouped by category                               |
-| `src/data/experience.ts` | Experience timeline entries                                    |
-| `src/data/projects.ts`   | Project cards + full case-study content                        |
+| File                 | Controls                                                       |
+| -------------------- | -------------------------------------------------------------- |
+| `src/data/site.ts`   | Name, tagline, hero description, social links, CV/avatar paths |
+| `src/data/about.ts`  | About section bio paragraphs                                   |
+| `src/data/skills.ts` | Skills grid, grouped by category                               |
 
 Every placeholder value is marked `// TODO: replace` — search the codebase
 for `TODO: replace` to find everything that needs your real information
@@ -62,18 +59,21 @@ Also replace:
 
 - `public/assets/avatar.jpg` — your photo (used in the hero and metadata)
 - `public/cv.pdf` — your real CV (the placeholder is a 1-page stub)
-- `public/projects/*.jpg` — real project screenshots (any image works;
-  update the `image` path in `src/data/projects.ts` to match)
 
-### Adding a new project
+### Adding back Projects / Experience
 
-1. Add a new object to the `projects` array in `src/data/projects.ts`
-   (copy an existing entry as a template — `slug`, `title`, `summary`,
-   `image`, `stack`, `liveUrl`/`githubUrl`, and a `caseStudy` with
-   `problem` / `approach` / `result`).
-2. Drop an image for it in `public/projects/`.
-3. That's it — it automatically appears in the Projects grid, gets its own
-   `/projects/<slug>` case-study page, and is included in `sitemap.xml`.
+Those sections were removed (no real content to show yet). To add them
+back:
+
+1. Recreate `src/data/projects.ts` / `src/data/experience.ts` and
+   `src/components/sections/projects.tsx` / `experience.tsx` (a previous
+   version of this repo had a working implementation — grid of cards
+   linking to `/projects/[slug]` case-study pages, and a timeline
+   component, respectively).
+2. Render them in `src/app/page.tsx`.
+3. Add `{ href: "#projects", label: "Projects" }` /
+   `{ href: "#experience", label: "Experience" }` back to `navLinks` in
+   `src/data/site.ts`.
 
 ### Changing the accent color
 
@@ -96,12 +96,10 @@ re-themes automatically.
 
 ### Testimonials
 
-The spec allows skipping testimonials if there's no real content — that
-section was omitted for that reason. To add it back: create
-`src/data/testimonials.ts` and `src/components/sections/testimonials.tsx`
-(a grid or carousel following the same pattern as `experience.tsx`), then
-render `<Testimonials />` in `src/app/page.tsx` between Experience and
-Contact.
+Omitted for the same reason as Projects/Experience — no real content to
+show yet. To add it back: create `src/data/testimonials.ts` and
+`src/components/sections/testimonials.tsx` (a grid or carousel), then
+render `<Testimonials />` in `src/app/page.tsx` before Contact.
 
 ## Contact form / email
 
@@ -166,7 +164,6 @@ vercel --prod # production deploy
 src/
   app/                    routes (App Router)
     api/contact/route.ts  contact form endpoint
-    projects/[slug]/      project case-study pages
     layout.tsx            root layout, fonts, metadata, JSON-LD
     page.tsx              home page (assembles the sections)
     sitemap.ts / robots.ts / icon.tsx / opengraph-image.tsx
@@ -174,8 +171,9 @@ src/
   components/
     ui/                   shadcn/ui primitives
     layout/                navbar, footer
-    sections/               hero, about, projects, experience, contact
+    sections/               hero, about, contact
     motion/reveal.tsx      scroll-triggered fade/slide-in wrapper
+    social-icon-link.tsx  brand-colored Instagram/WhatsApp icon links
   data/                    all editable content (see above)
   lib/                     cn() helper, zod schemas
 ```

@@ -80,8 +80,8 @@ export function Hero() {
           className="flex flex-col gap-3 sm:flex-row"
         >
           <Button size="lg" asChild>
-            <a href="#projects">
-              View work
+            <a href="#about">
+              About me
               <ArrowRightIcon className="size-4" aria-hidden="true" />
             </a>
           </Button>
