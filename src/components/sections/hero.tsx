@@ -62,7 +62,7 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <p className="text-primary mb-3 text-sm font-medium tracking-wide">
+          <p className="text-primary mb-4 text-2xl font-bold tracking-tight italic sm:text-3xl">
             &ldquo;{siteConfig.tagline}&rdquo;
           </p>
           <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl md:text-6xl">
