@@ -18,9 +18,9 @@ export default function Home() {
   return (
     <>
       <Hero />
-      <About />
       <ComingSoon />
       <Contact />
+      <About />
     </>
   );
 }
