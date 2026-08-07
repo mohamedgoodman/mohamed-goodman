@@ -1,6 +1,6 @@
-// TODO: replace — your real bio, 2-3 short paragraphs
+// TODO: replace/expand — add more detail as you like, this is real but brief
 export const aboutBio = [
-  "I'm a full-stack developer focused on building fast, accessible, and thoughtfully designed web products. I care as much about how something feels to use as how clean the code behind it is.",
-  "Over the past few years I've worked across the stack — from React interfaces to the APIs and databases behind them — shipping products for startups and small teams who need to move quickly without cutting corners.",
-  "Outside of client work, I like exploring new tools early, contributing to open source, and writing about what I learn along the way.",
+  "I'm a professional in Claude Code (AI-assisted coding) and design — I use AI-assisted development to move from idea to shipped product fast, without sacrificing craft.",
+  "That approach has generated more than $10K so far, working across coding and design for real projects, not just prototypes.",
+  "No risk, no story — I'd rather ship something real and learn from it than sit on a perfect plan.",
 ];

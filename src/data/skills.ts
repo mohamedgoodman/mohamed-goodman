@@ -1,19 +1,11 @@
-// TODO: replace — group your real skills by category
+// TODO: expand — add more specific tools/frameworks as you like
 export const skillGroups = [
   {
-    category: "Languages",
-    skills: ["TypeScript", "JavaScript", "Python", "SQL"],
+    category: "AI-Assisted Development",
+    skills: ["Claude Code", "AI-Assisted Coding", "Prompt Engineering"],
   },
   {
-    category: "Frontend",
-    skills: ["React", "Next.js", "Tailwind CSS", "Framer Motion"],
-  },
-  {
-    category: "Backend",
-    skills: ["Node.js", "PostgreSQL", "REST APIs", "GraphQL"],
-  },
-  {
-    category: "Tools & Platforms",
-    skills: ["Git", "Docker", "Vercel", "AWS"],
+    category: "Design",
+    skills: ["UI/UX Design", "Visual Design"],
   },
 ] as const;

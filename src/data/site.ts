@@ -1,11 +1,10 @@
 export const siteConfig = {
   name: "Mohamed Dardari",
-  // TODO: replace — one-line value proposition shown in the hero
-  title: "Full-Stack Developer",
-  tagline: "1% Chance · 99% Faith",
-  // TODO: replace — short value proposition sentence for hero + meta description
+  alias: "Bengrire",
+  title: "AI-Assisted Developer & Designer",
+  tagline: "No risk, no story",
   description:
-    "I design and build fast, accessible web products — from idea to production.",
+    "I build with Claude Code and design with intent — turning AI-assisted development into shipped work that's generated $10K+.",
   location: "Morocco",
   url: "https://mohameddardari.dev", // TODO: replace with real deployed domain
   ogImage: "/opengraph-image",

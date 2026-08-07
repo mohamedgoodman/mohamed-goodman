@@ -1,11 +1,19 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRightIcon, MailIcon } from "lucide-react";
+import { FaInstagram, FaWhatsapp } from "react-icons/fa6";
 
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { siteConfig } from "@/data/site";
+
+const quickLinks = [
+  { href: siteConfig.social.instagram, label: "Instagram", icon: FaInstagram },
+  { href: siteConfig.social.whatsapp, label: "WhatsApp", icon: FaWhatsapp },
+];
 
 export function Hero() {
   return (
@@ -45,8 +53,11 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         >
+          <Badge variant="secondary" className="mb-4">
+            {siteConfig.alias}
+          </Badge>
           <p className="text-primary mb-3 text-sm font-medium tracking-wide">
-            {siteConfig.tagline}
+            &ldquo;{siteConfig.tagline}&rdquo;
           </p>
           <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl md:text-6xl">
             Hi, I&apos;m {siteConfig.name.split(" ")[0]} — {siteConfig.title}
@@ -74,6 +85,26 @@ export function Hero() {
               Contact me
             </a>
           </Button>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="flex items-center gap-2"
+        >
+          {quickLinks.map((link) => (
+            <Link
+              key={link.label}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={link.label}
+              className="text-muted-foreground hover:text-foreground hover:bg-accent focus-visible:ring-ring inline-flex size-10 items-center justify-center rounded-full border outline-none focus-visible:ring-2"
+            >
+              <link.icon className="size-4" aria-hidden="true" />
+            </Link>
+          ))}
         </motion.div>
       </div>
     </section>
