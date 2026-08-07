@@ -1,6 +1,5 @@
 export const siteConfig = {
   name: "Mohamed Dardari",
-  alias: "Bengrire",
   title: "AI-Assisted Developer & Designer",
   tagline: "No risk, no story",
   description:

@@ -7,7 +7,6 @@ import { ArrowRightIcon, MailIcon } from "lucide-react";
 import { FaInstagram, FaWhatsapp } from "react-icons/fa6";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { siteConfig } from "@/data/site";
 
 const quickLinks = [
@@ -53,9 +52,6 @@ export function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
         >
-          <Badge variant="secondary" className="mb-4">
-            {siteConfig.alias}
-          </Badge>
           <p className="text-primary mb-3 text-sm font-medium tracking-wide">
             &ldquo;{siteConfig.tagline}&rdquo;
           </p>
