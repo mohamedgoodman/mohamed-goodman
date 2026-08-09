@@ -28,6 +28,22 @@ export function formatMAD(
   return `${digits}${NBSP_THIN}${unit}`;
 }
 
+/**
+ * Same formatting, split so the UI can isolate the numeral.
+ *
+ * Inside Arabic (RTL) text a bare number adjacent to punctuation or a second
+ * number can be reordered by the bidi algorithm — "1 890" can come out as
+ * "890 1". Rendering the digits inside their own LTR-isolated element is the
+ * fix; see the `<Price>` component.
+ */
+export function formatMADParts(
+  amount: Price,
+  { locale = "fr" }: { locale?: string } = {},
+): { digits: string; unit: string } {
+  const [digits, unit] = formatMAD(amount, { locale }).split(NBSP_THIN);
+  return { digits, unit };
+}
+
 /** Percentage off, rounded down — only shown when a compareAtPrice exists. */
 export function discountPercent(
   price: Price,

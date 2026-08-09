@@ -45,7 +45,7 @@
     "dismiss": "Dismiss announcements",
     "messages": [
       "Delivered across Morocco — cash on delivery",
-      "Free delivery over 800 DH",
+      "Delivery {fee} — free over {threshold}",
       "48h to Casablanca, Rabat and Marrakech"
     ]
   },
@@ -176,17 +176,86 @@
       "house": "The house"
     },
     "newsletter": {
-      "title": "Stay in touch",
-      "body": "One letter a month: what's new, nothing else.",
-      "placeholder": "Your email",
-      "submit": "Sign up",
-      "submitShort": "OK",
-      "success": "Thank you — you're on the list.",
-      "error": "That email doesn't look right."
+      "title": "Stay in the loop",
+      "body": "Leave your number — we'll message you on WhatsApp when something new lands.",
+      "phoneLabel": "WhatsApp number",
+      "phonePlaceholder": "06 12 34 56 78",
+      "emailLabel": "Email (optional)",
+      "emailPlaceholder": "you@example.ma",
+      "submit": "Sign me up",
+      "success": "You're on the list — talk soon.",
+      "errorPhone": "Enter a valid Moroccan number (06 or 07).",
+      "errorEmail": "That email doesn't look right."
     },
     "followUs": "Follow us",
     "payments": "Accepted payment methods",
     "cod": "Cash on delivery",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "store": {
+      "title": "The store",
+      "hours": "Every day, {hours}",
+      "directions": "See it on the map"
+    },
+    "callUs": "Call us"
+  },
+  "home": {
+    "hero": {
+      "headline": "A wardrobe that lasts",
+      "tagline": "Simple pieces, cut to stay with you for years.",
+      "cta": "See what's new",
+      "imageAlt": "A man in a linen shirt and tailored trousers against a whitewashed wall."
+    }
+  },
+  "trust": {
+    "cod": {
+      "title": "Cash on delivery",
+      "body": "You pay when the parcel arrives"
+    },
+    "delivery": {
+      "title": "48h delivery",
+      "body": "Casablanca, Rabat, Marrakech · 72h elsewhere"
+    },
+    "returns": {
+      "title": "Free returns",
+      "body": "7 days to change your mind"
+    },
+    "phone": {
+      "title": "A question?",
+      "body": "Call us"
+    },
+    "shippingNote": "Delivery {fee} · free over {threshold}",
+    "freeShipping": "Free delivery"
+  },
+  "whatsapp": {
+    "order": "Order on WhatsApp",
+    "orderShort": "WhatsApp",
+    "contact": "Message us on WhatsApp"
+  },
+  "sizeGuide": {
+    "title": "Size guide",
+    "intro": "Two ways to find your size: the chart, or — more reliable — measure a shirt you already wear.",
+    "tabChart": "Size chart",
+    "tabMeasure": "Measure a shirt",
+    "chartIntro": "Garment measurements, laid flat, in centimetres.",
+    "colSize": "Size",
+    "colEu": "EU",
+    "colChest": "Chest, flat",
+    "colLength": "Length",
+    "colSleeve": "Sleeve",
+    "measureIntro": "Lay a shirt that fits you flat and measure it. No tape measure needed — a ruler or an A4 sheet (21 cm) will do.",
+    "measureChest": "Chest, flat",
+    "measureChestHelp": "Armpit seam to armpit seam, buttoned and laid flat.",
+    "measureLength": "Length",
+    "measureLengthHelp": "From the top of the shoulder to the hem.",
+    "measureSleeve": "Sleeve",
+    "measureSleeveHelp": "From the shoulder seam to the cuff.",
+    "cm": "cm",
+    "result": "Your size",
+    "resultBody": "Based on your measurements, size {size} should fit like your own shirt.",
+    "resultBetween": "You're between sizes. Take {size} for a closer cut, {larger} for more room.",
+    "resultNone": "Enter at least the chest measurement to see a recommendation.",
+    "outOfRange": "That's outside our size run — message us on WhatsApp and we'll help.",
+    "reset": "Start again",
+    "saved": "Size saved for your next visits."
   }
 }

@@ -154,16 +154,6 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Arabic locale swaps in faces with Arabic coverage. Nothing else about the
-   type system changes — sizes, tracking and rhythm are shared. */
-[dir="rtl"] {
-  --font-serif: var(--font-arabic-serif), ui-serif, serif;
-  --font-sans: var(--font-arabic-sans), ui-sans-serif, system-ui, sans-serif;
-  --tracking-display: 0; /* Arabic must never be letter-spaced */
-  --tracking-tight: 0;
-  --tracking-eyebrow: 0;
-}
-
 :root {
   /* UI / body scale */
   --text-2xs: 0.6875rem; /* 11px — legal, payment labels */
@@ -199,6 +189,56 @@
 }
 
 /* ---------------------------------------------------------------------------
+   ARABIC TYPE
+   Arabic is not "the Latin system with different glyphs". Three things change:
+
+   1. Tracking is zero, always. Letter-spacing in Arabic pulls apart the
+      cursive joins between letters and breaks word shaping — this is the
+      single most common way an Arabic page is ruined. The blanket reset that
+      enforces it lives in globals.css, outside any cascade layer, so it beats
+      every utility class; these variables are belt-and-braces.
+   2. Leading is looser. Arabic ascenders/descenders and vowel marks need more
+      vertical room than Latin at the same size.
+   3. Size goes up roughly one step. Arabic has a smaller x-height equivalent
+      and reads visually lighter than Latin at an identical font-size, so
+      matching the French page's optical weight means matching, not sharing,
+      the numbers.
+   ------------------------------------------------------------------------ */
+[lang="ar"],
+[dir="rtl"] {
+  --font-serif: var(--font-arabic-serif), ui-serif, serif;
+  --font-sans: var(--font-arabic-sans), ui-sans-serif, system-ui, sans-serif;
+
+  --tracking-display: 0;
+  --tracking-tight: 0;
+  --tracking-normal: 0;
+  --tracking-wide: 0;
+  --tracking-eyebrow: 0;
+
+  --leading-tight: 1.25;
+  --leading-snug: 1.4;
+  --leading-normal: 1.7;
+  --leading-relaxed: 1.9;
+
+  /* One step up across body + UI. */
+  --text-2xs: 0.75rem;
+  --text-xs: 0.8125rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.1875rem;
+
+  /* Display sizes come down slightly: Naskh sets larger on the body than the
+     Latin serif does at the same value, and needs the extra leading above. */
+  --text-h5: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  --text-h4: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-h3: clamp(1.5rem, 1.3rem + 0.9vw, 2.125rem);
+  --text-h2: clamp(1.875rem, 1.55rem + 1.5vw, 2.875rem);
+  --text-h1: clamp(2.5rem, 2rem + 2.2vw, 3.75rem);
+  --text-display: clamp(3rem, 2.35rem + 2.9vw, 5rem);
+}
+
+/* ---------------------------------------------------------------------------
    5. SPACE & LAYOUT — 4px base grid.
    ------------------------------------------------------------------------ */
 :root {
@@ -217,9 +257,11 @@
   --space-24: 6rem;
   --space-32: 8rem;
 
-  /* Vertical rhythm between homepage sections — the main "air" dial. */
-  --space-section: clamp(3.5rem, 2rem + 6vw, 7rem);
-  --space-section-sm: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  /* Vertical rhythm between homepage sections — the main "air" dial.
+     Phones get roughly half the desktop value: on a 390px screen the editorial
+     air that reads as luxury on a 27" display just reads as scrolling. */
+  --space-section: clamp(2.75rem, 1.1rem + 5.2vw, 7rem);
+  --space-section-sm: clamp(1.75rem, 0.9rem + 3vw, 4rem);
 
   --gutter: clamp(1rem, 0.5rem + 2.2vw, 2.5rem); /* page side padding */
   --container: 1440px; /* full editorial width  */

@@ -52,7 +52,11 @@ export function MobileNav() {
         )}
       >
         <div className="border-border flex h-(--header-h) items-center justify-between border-b px-(--gutter)">
-          <SheetTitle className="font-serif text-base tracking-[0.2em] uppercase">
+          {/* Latin logotype: same opt-out as the header wordmark. */}
+          <SheetTitle
+            lang="en"
+            className="font-serif text-base tracking-[0.2em] uppercase [--font-serif:var(--font-instrument-serif),ui-serif,serif] [--tracking-latin-inline:0.2em]"
+          >
             {brand.wordmark}
           </SheetTitle>
           <SheetDescription className="sr-only">

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ShoppingBagIcon, UserIcon } from "lucide-react";
+import { PhoneIcon, ShoppingBagIcon, UserIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Link, usePathname } from "@/i18n/navigation";
@@ -10,6 +10,8 @@ import { MegaMenu } from "@/components/layout/mega-menu";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { SearchOverlay } from "@/components/layout/search-overlay";
 import { Wordmark } from "@/components/layout/wordmark";
+import { WhatsAppContactLink } from "@/components/shop/whatsapp-button";
+import { brand } from "@/data/brand";
 import { useCartCount } from "@/lib/cart/use-cart-count";
 import { cn } from "@/lib/utils";
 
@@ -69,20 +71,42 @@ export function Header() {
           : "bg-background/95 border-border border-b backdrop-blur-sm",
       )}
     >
-      <div className="container-editorial relative grid h-(--header-h) grid-cols-[1fr_auto_1fr] items-center lg:h-(--header-h-lg)">
+      <div className="container-editorial relative flex h-(--header-h) items-center justify-between lg:h-(--header-h-lg) xl:grid xl:grid-cols-[1fr_auto_1fr]">
         {/* start: menu (mobile) / primary nav (desktop) */}
         <div className="flex h-full items-center justify-start">
           <MobileNav />
           <MegaMenu className="hidden xl:block" />
         </div>
 
-        {/* centre: wordmark */}
-        <div className="flex justify-center">
-          <Wordmark />
+        {/* Centre: two layouts, because the two constraints differ.
+            Below xl there is no nav, but the icon counts on each side are
+            unequal — a three-column grid would push the logo visibly off
+            centre, so it is absolutely centred instead.
+            From xl the mega-menu is present and the real risk is the nav
+            running under the logo, so the grid comes back and reserves the
+            space. (Centring is symmetric, so the physical translate below xl
+            is correct in RTL too.) */}
+        <div className="pointer-events-none absolute inset-y-0 left-1/2 flex -translate-x-1/2 items-center xl:pointer-events-auto xl:static xl:translate-x-0 xl:justify-center">
+          <Wordmark className="pointer-events-auto" />
         </div>
 
         {/* end: utilities */}
         <div className="flex h-full items-center justify-end gap-0.5 sm:gap-1">
+          {/* A visible phone number on desktop does more for trust here than
+              any badge — plenty of customers will call before they buy. */}
+          <a
+            href={`tel:${brand.phone}`}
+            dir="ltr"
+            className="me-3 hidden items-center gap-1.5 text-sm tabular-nums transition-opacity hover:opacity-70 xl:flex"
+          >
+            <PhoneIcon className="size-4" aria-hidden="true" />
+            {brand.phoneDisplay}
+          </a>
+
+          {/* On phones, WhatsApp replaces it: nobody types a number they can
+              tap through to a chat. */}
+          <WhatsAppContactLink className="grid size-9 place-items-center xl:hidden" />
+
           <LocaleSwitcher className="me-1 hidden xl:flex" />
           <SearchOverlay />
 

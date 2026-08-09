@@ -60,7 +60,7 @@ export function MegaMenu({ className }: { className?: string }) {
         }
       }}
     >
-      <ul className="flex h-full items-center gap-4 pe-6">
+      <ul className="flex h-full items-center gap-3 pe-4 2xl:gap-4 2xl:pe-6">
         {mainNav.map((item) => (
           <li key={item.key} className="h-full">
             <button

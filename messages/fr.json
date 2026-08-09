@@ -45,7 +45,7 @@
     "dismiss": "Masquer les annonces",
     "messages": [
       "Livraison partout au Maroc — paiement à la livraison",
-      "Livraison offerte dès 800 DH",
+      "Livraison {fee} — offerte à partir de {threshold}",
       "48h à Casablanca, Rabat et Marrakech"
     ]
   },
@@ -176,17 +176,86 @@
       "house": "La maison"
     },
     "newsletter": {
-      "title": "Rester informé",
-      "body": "Une lettre par mois : les nouveautés, rien d'autre.",
-      "placeholder": "Votre e-mail",
-      "submit": "S'inscrire",
-      "submitShort": "OK",
-      "success": "Merci — c'est noté.",
-      "error": "Cet e-mail ne semble pas valide."
+      "title": "Restez au courant",
+      "body": "Laissez votre numéro : on vous écrit sur WhatsApp quand une nouvelle pièce arrive.",
+      "phoneLabel": "Numéro WhatsApp",
+      "phonePlaceholder": "06 12 34 56 78",
+      "emailLabel": "E-mail (facultatif)",
+      "emailPlaceholder": "vous@exemple.ma",
+      "submit": "Je m'inscris",
+      "success": "C'est noté — à bientôt.",
+      "errorPhone": "Entrez un numéro marocain valide (06 ou 07).",
+      "errorEmail": "Cet e-mail ne semble pas valide."
     },
     "followUs": "Nous suivre",
     "payments": "Moyens de paiement acceptés",
     "cod": "Paiement à la livraison",
-    "rights": "Tous droits réservés."
+    "rights": "Tous droits réservés.",
+    "store": {
+      "title": "La boutique",
+      "hours": "Tous les jours, {hours}",
+      "directions": "Voir sur la carte"
+    },
+    "callUs": "Appelez-nous"
+  },
+  "home": {
+    "hero": {
+      "headline": "Le vestiaire qui dure",
+      "tagline": "Des pièces simples, coupées pour rester des années.",
+      "cta": "Voir les nouveautés",
+      "imageAlt": "Un homme en chemise de lin et pantalon de tailleur, adossé à un mur chaulé."
+    }
+  },
+  "trust": {
+    "cod": {
+      "title": "Paiement à la livraison",
+      "body": "Vous payez quand le colis arrive"
+    },
+    "delivery": {
+      "title": "Livraison 48h",
+      "body": "Casablanca, Rabat, Marrakech · 72h ailleurs"
+    },
+    "returns": {
+      "title": "Retours gratuits",
+      "body": "7 jours pour changer d'avis"
+    },
+    "phone": {
+      "title": "Une question ?",
+      "body": "Appelez-nous"
+    },
+    "shippingNote": "Livraison {fee} · offerte dès {threshold}",
+    "freeShipping": "Livraison offerte"
+  },
+  "whatsapp": {
+    "order": "Commander par WhatsApp",
+    "orderShort": "WhatsApp",
+    "contact": "Nous écrire sur WhatsApp"
+  },
+  "sizeGuide": {
+    "title": "Guide des tailles",
+    "intro": "Deux façons de trouver votre taille : le tableau, ou — plus sûr — mesurer une chemise que vous portez déjà.",
+    "tabChart": "Tableau des tailles",
+    "tabMeasure": "Mesurer une chemise",
+    "chartIntro": "Mesures du vêtement à plat, en centimètres.",
+    "colSize": "Taille",
+    "colEu": "EU",
+    "colChest": "Poitrine à plat",
+    "colLength": "Longueur",
+    "colSleeve": "Manche",
+    "measureIntro": "Posez à plat une chemise qui vous va bien, et mesurez-la. Pas besoin de mètre ruban : une règle ou une feuille A4 (21 cm) suffit.",
+    "measureChest": "Poitrine à plat",
+    "measureChestHelp": "D'une couture d'aisselle à l'autre, chemise fermée et posée à plat.",
+    "measureLength": "Longueur",
+    "measureLengthHelp": "Du haut de l'épaule jusqu'au bas de la chemise.",
+    "measureSleeve": "Manche",
+    "measureSleeveHelp": "De la couture d'épaule jusqu'au bout du poignet.",
+    "cm": "cm",
+    "result": "Votre taille",
+    "resultBody": "D'après vos mesures, la taille {size} devrait tomber comme votre chemise.",
+    "resultBetween": "Vous êtes entre deux tailles. Prenez {size} pour une coupe près du corps, {larger} pour plus d'aise.",
+    "resultNone": "Entrez au moins la mesure de poitrine pour voir une recommandation.",
+    "outOfRange": "Cette mesure sort de nos tailles — écrivez-nous sur WhatsApp, on vous aidera.",
+    "reset": "Recommencer",
+    "saved": "Taille enregistrée pour vos prochaines visites."
   }
 }

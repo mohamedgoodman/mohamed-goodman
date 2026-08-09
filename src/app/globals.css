@@ -146,6 +146,16 @@
     }
   }
 
+  /* Flip an inline icon that carries direction (arrow, chevron, back) in RTL.
+     Never apply to direction-neutral icons — a mirrored cart or magnifier just
+     looks broken. */
+  .rtl-flip {
+    display: inline-block;
+  }
+  [dir="rtl"] .rtl-flip {
+    transform: scaleX(-1);
+  }
+
   .clamp-3 {
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -185,6 +195,29 @@
   to {
     background-position: -200% 0;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   ARABIC: KILL ALL LETTER-SPACING
+   Deliberately unlayered so it outranks every Tailwind utility (layered CSS
+   always loses to unlayered CSS), and deliberately a blanket `*` rather than a
+   list of components — a `tracking-*` class added months from now would
+   otherwise silently break Arabic word shaping again.
+
+   The wordmark is the one exception: EDEN HOUSE is a Latin logotype and keeps
+   its wide tracking. It opts out by declaring `lang="en"` on itself, which is
+   also the correct thing to tell a screen reader.
+   ------------------------------------------------------------------------ */
+[lang="ar"],
+[lang="ar"] *,
+[dir="rtl"],
+[dir="rtl"] * {
+  letter-spacing: normal;
+}
+
+[lang="ar"] [lang="en"],
+[dir="rtl"] [lang="en"] {
+  letter-spacing: var(--tracking-latin-inline, normal);
 }
 
 @media (prefers-reduced-motion: reduce) {

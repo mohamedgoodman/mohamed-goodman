@@ -2,7 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { XIcon } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from "@/data/morocco";
+import { formatMAD } from "@/lib/money";
 
 const DISMISS_KEY = "eh:announcement-dismissed";
 const ROTATE_MS = 5000;
@@ -15,7 +18,16 @@ const ROTATE_MS = 5000;
  */
 export function AnnouncementBar() {
   const t = useTranslations("announcement");
-  const messages = t.raw("messages") as string[];
+  const locale = useLocale();
+
+  // Shipping cost and the free-delivery threshold are the two facts a first
+  // time buyer wants before they start shopping, so they ride in the rotation
+  // rather than waiting until checkout.
+  const messages = (t.raw("messages") as string[]).map((message) =>
+    message
+      .replace("{fee}", formatMAD(SHIPPING_FEE, { locale }))
+      .replace("{threshold}", formatMAD(FREE_SHIPPING_THRESHOLD, { locale })),
+  );
 
   const [dismissed, setDismissed] = useState(false);
   const [mounted, setMounted] = useState(false);

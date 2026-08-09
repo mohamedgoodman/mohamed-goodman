@@ -1,3 +1,4 @@
+import { MapPinIcon, PhoneIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
@@ -28,7 +29,7 @@ export function Footer() {
 
   return (
     <footer className="border-border mt-(--space-section) border-t">
-      <div className="container-editorial py-(--space-16)">
+      <div className="container-editorial py-(--space-section)">
         <div className="grid gap-(--space-12) lg:grid-cols-12">
           <div className="lg:order-last lg:col-span-4">
             <NewsletterForm />
@@ -58,7 +59,50 @@ export function Footer() {
           </nav>
         </div>
 
-        <div className="border-border mt-(--space-16) flex flex-col gap-6 border-t pt-8 lg:flex-row lg:items-center lg:justify-between">
+        {/* Where the shop physically is, and how to reach a person. Both are
+            reasons a first-time buyer decides the store is real. */}
+        <div className="border-border mt-(--space-12) grid gap-6 border-t pt-8 sm:grid-cols-2">
+          <div>
+            <h3 className="eyebrow">{t("store.title")}</h3>
+            {/* A Latin street address inside RTL copy gets reordered by the
+                bidi algorithm ("12, rue…" comes out "rue…, 12"). Each line is
+                isolated so it keeps its own reading order. */}
+            <address className="mt-3 text-sm not-italic">
+              <bdi>{brand.store.line1}</bdi>
+              <br />
+              <bdi>
+                {brand.store.district}, {brand.store.city}
+              </bdi>
+              <br />
+              <span className="text-muted-foreground">
+                {t("store.hours", { hours: brand.store.hours })}
+              </span>
+            </address>
+            <a
+              href={brand.store.mapsUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="link-underline mt-3 inline-flex items-center gap-1.5 text-sm"
+            >
+              <MapPinIcon className="size-4" aria-hidden="true" />
+              {t("store.directions")}
+            </a>
+          </div>
+
+          <div>
+            <h3 className="eyebrow">{t("callUs")}</h3>
+            <a
+              href={`tel:${brand.phone}`}
+              dir="ltr"
+              className="text-h5 mt-3 inline-flex items-center gap-2 font-serif tabular-nums transition-opacity hover:opacity-70"
+            >
+              <PhoneIcon className="size-4 shrink-0" aria-hidden="true" />
+              {brand.phoneDisplay}
+            </a>
+          </div>
+        </div>
+
+        <div className="border-border mt-(--space-12) flex flex-col gap-6 border-t pt-8 lg:flex-row lg:items-center lg:justify-between">
           <ul aria-label={t("followUs")} className="flex flex-wrap gap-4">
             {socials.map(({ key, label }) => (
               <li key={key}>
@@ -81,7 +125,10 @@ export function Footer() {
         </div>
 
         <p className="text-muted-foreground text-2xs mt-8">
-          © {year} {brand.name}. {t("rights")}
+          <bdi>
+            © {year} {brand.name}.
+          </bdi>{" "}
+          {t("rights")}
         </p>
       </div>
     </footer>
