@@ -55,10 +55,29 @@ export const hasAddress = shop.ADDRESS.trim() !== "";
 export const hasMapsUrl = shop.MAPS_URL.trim() !== "";
 export const hasHeroImage = shop.HERO_IMAGE.trim() !== "";
 
+/**
+ * The public origin, used for canonicals, the sitemap and robots.txt.
+ *
+ * Order matters: an explicit SITE_URL wins (set it once a real domain is
+ * bought), then the domain Vercel assigns the production deployment, and only
+ * then the fallback. It is read on the server alone — never inline it into a
+ * client bundle, or the build would freeze one deployment's host into every
+ * page.
+ */
+function siteUrl(): string {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (explicit) return explicit.replace(/\/$/, "");
+
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (vercel) return `https://${vercel}`;
+
+  return "https://edenhouse.vercel.app";
+}
+
 export const brand = {
   name: "EDEN HOUSE",
   wordmark: "EDEN HOUSE",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://edenhouse.ma",
+  url: siteUrl(),
   city: "Ben Guerir",
   whatsapp: shop.WHATSAPP,
   phone: shopLinks.tel,
