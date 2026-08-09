@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "EDEN HOUSE — Vestiaire masculin",
+    "description": "Chemises, tailleur, chaussures et accessoires pour homme. Livraison partout au Maroc, paiement à la livraison."
+  },
+  "common": {
+    "brand": "EDEN HOUSE",
+    "skipToContent": "Aller au contenu",
+    "search": "Rechercher",
+    "account": "Compte",
+    "cart": "Panier",
+    "menu": "Menu",
+    "close": "Fermer",
+    "language": "Langue",
+    "theme": "Thème",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeSystem": "Système",
+    "readMore": "Lire la suite",
+    "readLess": "Réduire",
+    "loading": "Chargement",
+    "currency": "DH"
+  },
+  "tokens": {
+    "eyebrow": "Système de design",
+    "title": "Jetons de design",
+    "intro": "Aperçu vivant du thème EDEN HOUSE. Toutes ces valeurs viennent d'un seul fichier, src/styles/theme.css — modifiez-le et cette page change avec tout le site.",
+    "colorTitle": "Couleur",
+    "colorIntro": "Les rôles sémantiques ci-dessous sont les seuls que les composants doivent utiliser.",
+    "brandPalette": "Palette de marque",
+    "semantic": "Rôles sémantiques",
+    "typeTitle": "Typographie",
+    "typeIntro": "Serif éditoriale pour les titres, grotesque neutre pour l'interface.",
+    "spaceTitle": "Espacement",
+    "radiusTitle": "Rayons",
+    "shadowTitle": "Ombres",
+    "motionTitle": "Mouvement",
+    "componentsTitle": "Aperçus",
+    "priceTitle": "Format des prix",
+    "priceIntro": "Toujours en dirhams, sans décimales.",
+    "sample": "Le vestiaire d'une vie",
+    "sampleBody": "Nous dessinons peu de pièces, et nous les gardons longtemps. Chaque saison ajoute une ou deux nouveautés au vestiaire, jamais une collection entière."
+  }
+}

@@ -1,123 +1,189 @@
 @import "tailwindcss";
-@import "tw-animate-css";
+@import "../styles/theme.css";
 
 @custom-variant dark (&:is(.dark *));
 
-/*
-  ── ACCENT COLOR ──────────────────────────────────────────────
-  Single source of truth for the site's accent color. Change the
-  two variables below (light + dark) to re-theme the entire site
-  in one place. Value is indigo (oklch) by default.
-*/
-:root {
-  --accent-brand: oklch(0.585 0.233 264.1);
-  --accent-brand-foreground: oklch(0.98 0.005 264.1);
-}
-
-.dark {
-  --accent-brand: oklch(0.685 0.19 264.1);
-  --accent-brand-foreground: oklch(0.145 0.01 264.1);
-}
-/* ──────────────────────────────────────────────────────────── */
-
-:root {
-  --radius: 0.75rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0.01 264);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0.01 264);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0.01 264);
-  --primary: var(--accent-brand);
-  --primary-foreground: var(--accent-brand-foreground);
-  --secondary: oklch(0.96 0.005 264);
-  --secondary-foreground: oklch(0.205 0.01 264);
-  --muted: oklch(0.96 0.005 264);
-  --muted-foreground: oklch(0.48 0.015 264);
-  --accent: oklch(0.96 0.005 264);
-  --accent-foreground: oklch(0.205 0.01 264);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0.005 264);
-  --input: oklch(0.9 0.005 264);
-  --ring: var(--accent-brand);
-}
-
-.dark {
-  --background: oklch(0.13 0.01 264);
-  --foreground: oklch(0.96 0.005 264);
-  --card: oklch(0.17 0.012 264);
-  --card-foreground: oklch(0.96 0.005 264);
-  --popover: oklch(0.17 0.012 264);
-  --popover-foreground: oklch(0.96 0.005 264);
-  --primary: var(--accent-brand);
-  --primary-foreground: var(--accent-brand-foreground);
-  --secondary: oklch(0.23 0.012 264);
-  --secondary-foreground: oklch(0.96 0.005 264);
-  --muted: oklch(0.23 0.012 264);
-  --muted-foreground: oklch(0.65 0.015 264);
-  --accent: oklch(0.25 0.012 264);
-  --accent-foreground: oklch(0.96 0.005 264);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: var(--accent-brand);
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --animate-shine: shine 6s linear infinite;
-}
-
-@keyframes shine {
-  to {
-    background-position: 200% center;
-  }
-}
-
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  *,
+  *::before,
+  *::after {
+    border-color: var(--border);
   }
+
   html {
     scroll-behavior: smooth;
+    /* Keeps anchored sections clear of the sticky header. */
+    scroll-padding-top: calc(var(--header-h) + var(--space-4));
+    -webkit-text-size-adjust: 100%;
   }
+
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
     font-feature-settings:
       "rlig" 1,
       "calt" 1;
+    text-rendering: optimizeLegibility;
   }
+
+  /* Editorial headings: serif, large, tight tracking, generous leading. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: var(--font-serif);
+    font-weight: var(--weight-regular);
+    letter-spacing: var(--tracking-display);
+    line-height: var(--leading-snug);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* One consistent focus ring everywhere, keyboard-only. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
   ::selection {
-    @apply bg-primary/20;
+    background-color: color-mix(in srgb, var(--brand) 22%, transparent);
+  }
+
+  /* Native form controls follow the theme (incl. dark mode). */
+  :root {
+    color-scheme: light;
+  }
+  .dark {
+    color-scheme: dark;
+  }
+}
+
+@layer components {
+  /* Page shell — every section uses one of these two. */
+  .container-editorial {
+    width: 100%;
+    max-width: var(--container);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .container-narrow {
+    width: 100%;
+    max-width: var(--container-narrow);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .container-prose {
+    width: 100%;
+    max-width: var(--container-prose);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* Uppercase micro-label used above headings and on badges. */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  /* Quiet editorial underline for inline links. */
+  .link-underline {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+    text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+    transition: text-decoration-color var(--dur-fast) var(--ease-out);
+  }
+  .link-underline:hover {
+    text-decoration-color: currentColor;
   }
 }
 
 @layer utilities {
-  .container-page {
-    @apply mx-auto w-full max-w-6xl px-6 sm:px-8 lg:px-10;
+  .section-y {
+    padding-block: var(--space-section);
+  }
+
+  /* Horizontal scrollers (category bubbles, carousels) — mobile first. */
+  .scroll-row {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+  .scroll-row::-webkit-scrollbar {
+    display: none;
+  }
+  .scroll-row > * {
+    scroll-snap-align: start;
+    flex: none;
+  }
+
+  /* Scroll-driven section reveal. Falls back to "always visible" in
+     browsers without animation-timeline, so content is never hidden. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .reveal {
+        animation: eh-reveal linear both;
+        animation-timeline: view();
+        animation-range: entry 10% cover 26%;
+      }
+    }
+  }
+
+  .clamp-3 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+
+  /* Shimmer for skeletons — we never use spinners. */
+  .skeleton {
+    background-color: var(--surface-3);
+    background-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      color-mix(in srgb, var(--surface) 55%, transparent) 50%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    animation: eh-shimmer 1.4s var(--ease-in-out) infinite;
+  }
+}
+
+@keyframes eh-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes eh-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
   }
 }
 

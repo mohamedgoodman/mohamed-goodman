@@ -1,0 +1,383 @@
+/* ============================================================================
+   EDEN HOUSE — DESIGN TOKENS
+   ----------------------------------------------------------------------------
+   This is the single source of truth for the whole storefront: colour,
+   typography, spacing, radii, shadows, motion and layout.
+
+   To rebrand the store you should only ever need to touch this file.
+
+   Structure
+     1. Brand palette      — raw brand colours, the "paint tins"
+     2. Semantic colour    — role-based aliases (light theme)
+     3. Dark theme         — the same roles, re-pointed
+     4. Typography         — families, fluid size scale, tracking
+     5. Space & layout     — spacing scale, gutters, containers
+     6. Radii / shadows / borders
+     7. Motion             — durations + easings
+     8. Elevation (z-index)
+     9. @theme inline      — expose everything to Tailwind as utilities
+   ========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   1. BRAND PALETTE — raw values. Change these to rebrand.
+   ------------------------------------------------------------------------ */
+:root {
+  --eh-sand: #faf8f4; /* warm off-white — page background      */
+  --eh-sand-deep: #f2eee6; /* one step down, for cards / wells      */
+  --eh-sand-deeper: #e8e3d8; /* subtle fills, skeletons               */
+  --eh-ink: #14140f; /* near-black, all primary text          */
+  --eh-ink-soft: #3a3a33; /* secondary text on light               */
+  --eh-olive: #3f4a34; /* deep olive — accent / primary action  */
+  --eh-olive-hover: #333d29; /* pressed / hovered olive               */
+  --eh-olive-tint: #eaece4; /* olive at 8% over sand                 */
+  --eh-muted: #8a8578; /* muted text, meta, placeholders        */
+  --eh-terracotta: #b4552f; /* sale + badges only — never body text  */
+  --eh-terracotta-tint: #f7e9e2;
+
+  /* Dark-theme raw values (kept beside the light ones on purpose so the
+     whole palette is legible in a single screenful). */
+  --eh-ink-bg: #121210; /* page background in dark               */
+  --eh-ink-surface: #1b1b17; /* raised surface in dark                */
+  --eh-ink-surface-2: #24241f;
+  --eh-bone: #f4f1ea; /* primary text in dark                  */
+  --eh-bone-soft: #cfcabd;
+  --eh-olive-light: #9aa886; /* olive lifted for dark backgrounds     */
+  --eh-olive-light-hover: #b0bd9d;
+  --eh-terracotta-light: #d9784f;
+}
+
+/* ---------------------------------------------------------------------------
+   2. SEMANTIC COLOUR — light theme.
+   Components should ONLY ever reference these roles, never the raw brand
+   values above. That is what makes a rebrand a one-file change.
+   ------------------------------------------------------------------------ */
+:root {
+  --background: var(--eh-sand);
+  --foreground: var(--eh-ink);
+
+  --surface: #ffffff; /* cards, drawers, menus                 */
+  --surface-2: var(--eh-sand-deep); /* wells, inputs, hovered rows           */
+  --surface-3: var(
+    --eh-sand-deeper
+  ); /* skeletons, image placeholders         */
+  --surface-foreground: var(--eh-ink);
+
+  --brand: var(--eh-olive); /* THE accent — buttons, links, focus    */
+  --brand-hover: var(--eh-olive-hover);
+  --brand-foreground: var(--eh-sand);
+  --brand-tint: var(
+    --eh-olive-tint
+  ); /* quiet olive wash behind sections      */
+
+  --muted: var(--eh-sand-deep);
+  --muted-foreground: var(--eh-muted);
+  --subtle-foreground: var(--eh-ink-soft); /* body copy that isn't a heading */
+
+  --sale: var(--eh-terracotta); /* badges, sale price, "last pieces"     */
+  --sale-foreground: #ffffff;
+  --sale-tint: var(--eh-terracotta-tint);
+
+  --border: color-mix(in srgb, var(--eh-ink) 12%, transparent);
+  --border-strong: color-mix(in srgb, var(--eh-ink) 24%, transparent);
+  --input: color-mix(in srgb, var(--eh-ink) 18%, transparent);
+  --ring: var(--eh-olive);
+
+  --overlay: color-mix(in srgb, var(--eh-ink) 45%, transparent);
+  --on-image: #ffffff; /* text laid over photography            */
+
+  --success: #3f6b45;
+  --warning: #9a6b1f;
+  --destructive: #a33325;
+
+  /* shadcn/ui compatibility aliases — these primitives read these names. */
+  --card: var(--surface);
+  --card-foreground: var(--surface-foreground);
+  --popover: var(--surface);
+  --popover-foreground: var(--surface-foreground);
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  --secondary: var(--surface-2);
+  --secondary-foreground: var(--foreground);
+  --accent: var(--surface-2); /* NB: shadcn "accent" = hover surface,  */
+  --accent-foreground: var(
+    --foreground
+  ); /*     the brand accent is --brand.      */
+}
+
+/* ---------------------------------------------------------------------------
+   3. DARK THEME — same roles, re-pointed. Applied via `.dark` on <html>.
+   ------------------------------------------------------------------------ */
+.dark {
+  --background: var(--eh-ink-bg);
+  --foreground: var(--eh-bone);
+
+  --surface: var(--eh-ink-surface);
+  --surface-2: var(--eh-ink-surface-2);
+  --surface-3: #2e2e27;
+  --surface-foreground: var(--eh-bone);
+
+  --brand: var(--eh-olive-light);
+  --brand-hover: var(--eh-olive-light-hover);
+  --brand-foreground: var(--eh-ink-bg);
+  --brand-tint: #23271e;
+
+  --muted: var(--eh-ink-surface-2);
+  --muted-foreground: #9a9488;
+  --subtle-foreground: var(--eh-bone-soft);
+
+  --sale: var(--eh-terracotta-light);
+  --sale-foreground: var(--eh-ink-bg);
+  --sale-tint: #33201a;
+
+  --border: color-mix(in srgb, var(--eh-bone) 14%, transparent);
+  --border-strong: color-mix(in srgb, var(--eh-bone) 28%, transparent);
+  --input: color-mix(in srgb, var(--eh-bone) 22%, transparent);
+  --ring: var(--eh-olive-light);
+
+  --overlay: color-mix(in srgb, #000000 60%, transparent);
+  --on-image: #ffffff;
+
+  --success: #7da585;
+  --warning: #d2a45c;
+  --destructive: #d97a6c;
+}
+
+/* ---------------------------------------------------------------------------
+   4. TYPOGRAPHY
+   Two families: a high-contrast serif for editorial headings, a neutral
+   grotesque for everything else. Both are injected by next/font.
+   Sizes are fluid (clamp) so mobile-first scales up without breakpoints.
+   ------------------------------------------------------------------------ */
+:root {
+  --font-serif:
+    var(--font-instrument-serif), ui-serif, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Arabic locale swaps in faces with Arabic coverage. Nothing else about the
+   type system changes — sizes, tracking and rhythm are shared. */
+[dir="rtl"] {
+  --font-serif: var(--font-arabic-serif), ui-serif, serif;
+  --font-sans: var(--font-arabic-sans), ui-sans-serif, system-ui, sans-serif;
+  --tracking-display: 0; /* Arabic must never be letter-spaced */
+  --tracking-tight: 0;
+  --tracking-eyebrow: 0;
+}
+
+:root {
+  /* UI / body scale */
+  --text-2xs: 0.6875rem; /* 11px — legal, payment labels */
+  --text-xs: 0.75rem; /* 12px — eyebrows, badges      */
+  --text-sm: 0.8125rem; /* 13px — meta, nav             */
+  --text-base: 0.9375rem; /* 15px — body                  */
+  --text-md: 1rem; /* 16px — lead body, inputs     */
+  --text-lg: 1.125rem;
+
+  /* Editorial display scale — fluid from 375px to 1440px */
+  --text-h6: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --text-h5: clamp(1.125rem, 1.05rem + 0.35vw, 1.375rem);
+  --text-h4: clamp(1.375rem, 1.24rem + 0.6vw, 1.75rem);
+  --text-h3: clamp(1.75rem, 1.5rem + 1.1vw, 2.5rem);
+  --text-h2: clamp(2.25rem, 1.8rem + 2vw, 3.5rem);
+  --text-h1: clamp(2.75rem, 2rem + 3.2vw, 4.75rem);
+  --text-display: clamp(3.25rem, 2rem + 5.4vw, 7rem);
+
+  --leading-tight: 1.02; /* display serif                */
+  --leading-snug: 1.15;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7; /* long-form brand copy         */
+
+  --tracking-display: -0.03em; /* big serif wants negative     */
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.06em;
+  --tracking-eyebrow: 0.16em; /* uppercase micro-labels       */
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+}
+
+/* ---------------------------------------------------------------------------
+   5. SPACE & LAYOUT — 4px base grid.
+   ------------------------------------------------------------------------ */
+:root {
+  --space-0: 0;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+
+  /* Vertical rhythm between homepage sections — the main "air" dial. */
+  --space-section: clamp(3.5rem, 2rem + 6vw, 7rem);
+  --space-section-sm: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+
+  --gutter: clamp(1rem, 0.5rem + 2.2vw, 2.5rem); /* page side padding */
+  --container: 1440px; /* full editorial width  */
+  --container-narrow: 1120px; /* product / cart        */
+  --container-prose: 68ch; /* long-form copy        */
+
+  --header-h: 3.5rem; /* mobile header height  */
+  --header-h-lg: 4.5rem;
+  --announcement-h: 2.25rem;
+}
+
+/* ---------------------------------------------------------------------------
+   6. RADII / SHADOWS / BORDERS
+   Editorial premium = mostly square. Radius is used sparingly.
+   ------------------------------------------------------------------------ */
+:root {
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 12px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+  --radius: var(--radius-sm); /* shadcn base */
+
+  --shadow-xs: 0 1px 2px color-mix(in srgb, var(--eh-ink) 6%, transparent);
+  --shadow-sm: 0 2px 8px color-mix(in srgb, var(--eh-ink) 7%, transparent);
+  --shadow-md: 0 8px 24px color-mix(in srgb, var(--eh-ink) 9%, transparent);
+  --shadow-lg: 0 20px 56px color-mix(in srgb, var(--eh-ink) 14%, transparent);
+}
+
+/* ---------------------------------------------------------------------------
+   7. MOTION — subtle, never bouncy.
+   ------------------------------------------------------------------------ */
+:root {
+  --dur-instant: 90ms;
+  --dur-fast: 160ms;
+  --dur-base: 260ms;
+  --dur-slow: 420ms;
+  --dur-slower: 700ms;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-editorial: cubic-bezier(0.16, 0.84, 0.44, 1);
+}
+
+/* ---------------------------------------------------------------------------
+   8. ELEVATION
+   ------------------------------------------------------------------------ */
+:root {
+  --z-base: 0;
+  --z-sticky: 20;
+  --z-header: 40;
+  --z-megamenu: 45;
+  --z-drawer: 60;
+  --z-modal: 70;
+  --z-toast: 80;
+  --z-whatsapp: 50;
+  --z-skip-link: 100;
+}
+
+/* ---------------------------------------------------------------------------
+   9. TAILWIND BRIDGE
+   Everything above becomes a utility: bg-brand, text-muted-foreground,
+   font-serif, p-section, rounded-lg, shadow-md, ease-editorial…
+   ------------------------------------------------------------------------ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-foreground: var(--surface-foreground);
+
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-tint: var(--brand-tint);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-subtle-foreground: var(--subtle-foreground);
+
+  --color-sale: var(--sale);
+  --color-sale-foreground: var(--sale-foreground);
+  --color-sale-tint: var(--sale-tint);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-overlay: var(--overlay);
+  --color-on-image: var(--on-image);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-destructive: var(--destructive);
+
+  /* shadcn aliases */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+
+  --text-2xs: var(--text-2xs);
+  --text-xs: var(--text-xs);
+  --text-sm: var(--text-sm);
+  --text-base: var(--text-base);
+  --text-md: var(--text-md);
+  --text-lg: var(--text-lg);
+  --text-h6: var(--text-h6);
+  --text-h5: var(--text-h5);
+  --text-h4: var(--text-h4);
+  --text-h3: var(--text-h3);
+  --text-h2: var(--text-h2);
+  --text-h1: var(--text-h1);
+  --text-display: var(--text-display);
+
+  --leading-tight: var(--leading-tight);
+  --leading-snug: var(--leading-snug);
+  --leading-normal: var(--leading-normal);
+  --leading-relaxed: var(--leading-relaxed);
+
+  --tracking-display: var(--tracking-display);
+  --tracking-tight: var(--tracking-tight);
+  --tracking-wide: var(--tracking-wide);
+  --tracking-eyebrow: var(--tracking-eyebrow);
+
+  --spacing-section: var(--space-section);
+  --spacing-section-sm: var(--space-section-sm);
+  --spacing-gutter: var(--gutter);
+  --spacing-header: var(--header-h);
+  --spacing-header-lg: var(--header-h-lg);
+
+  --container-editorial: var(--container);
+  --container-narrow: var(--container-narrow);
+
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  --ease-out: var(--ease-out);
+  --ease-in-out: var(--ease-in-out);
+  --ease-editorial: var(--ease-editorial);
+}

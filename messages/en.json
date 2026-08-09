@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "EDEN HOUSE — Menswear",
+    "description": "Shirts, tailoring, shoes and accessories for men. Delivered across Morocco, cash on delivery."
+  },
+  "common": {
+    "brand": "EDEN HOUSE",
+    "skipToContent": "Skip to content",
+    "search": "Search",
+    "account": "Account",
+    "cart": "Cart",
+    "menu": "Menu",
+    "close": "Close",
+    "language": "Language",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System",
+    "readMore": "Read more",
+    "readLess": "Read less",
+    "loading": "Loading",
+    "currency": "DH"
+  },
+  "tokens": {
+    "eyebrow": "Design system",
+    "title": "Design tokens",
+    "intro": "A living preview of the EDEN HOUSE theme. Every value here comes from a single file, src/styles/theme.css — change it and this page changes along with the whole store.",
+    "colorTitle": "Colour",
+    "colorIntro": "The semantic roles below are the only ones components should ever use.",
+    "brandPalette": "Brand palette",
+    "semantic": "Semantic roles",
+    "typeTitle": "Typography",
+    "typeIntro": "Editorial serif for headings, neutral grotesque for the interface.",
+    "spaceTitle": "Spacing",
+    "radiusTitle": "Radii",
+    "shadowTitle": "Shadows",
+    "motionTitle": "Motion",
+    "componentsTitle": "Previews",
+    "priceTitle": "Price format",
+    "priceIntro": "Always dirhams, never decimals.",
+    "sample": "A wardrobe for life",
+    "sampleBody": "We design few pieces, and we keep them a long time. Each season adds one or two things to the wardrobe, never a whole collection."
+  }
+}
