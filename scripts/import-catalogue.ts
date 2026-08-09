@@ -61,6 +61,8 @@ const BADGE_ALIASES: Record<string, BadgeKey> = {
   soldes: "sale",
   sale: "sale",
   "meilleure vente": "bestseller",
+  "top vente": "bestseller",
+  "meilleures ventes": "bestseller",
   bestseller: "bestseller",
   "best seller": "bestseller",
 };

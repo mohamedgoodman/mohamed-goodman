@@ -11,8 +11,6 @@ import { footerNav } from "@/data/navigation";
 const socials: Array<{ key: keyof typeof brand.social; label: string }> = [
   { key: "instagram", label: "Instagram" },
   { key: "tiktok", label: "TikTok" },
-  { key: "facebook", label: "Facebook" },
-  { key: "pinterest", label: "Pinterest" },
 ];
 
 /**
@@ -31,13 +29,13 @@ export function Footer() {
     <footer className="border-border mt-(--space-section) border-t">
       <div className="container-editorial py-(--space-section)">
         <div className="grid gap-(--space-12) lg:grid-cols-12">
-          <div className="lg:order-last lg:col-span-4">
+          <div className="lg:order-last lg:col-span-5">
             <NewsletterForm />
           </div>
 
           <nav
-            aria-label={t("columns.wardrobe")}
-            className="grid grid-cols-2 gap-(--space-8) sm:grid-cols-4 lg:col-span-8"
+            aria-label={t("columns.shop")}
+            className="grid grid-cols-2 gap-(--space-8) sm:grid-cols-3 lg:col-span-7"
           >
             {footerNav.map((column) => (
               <div key={column.key}>
@@ -94,7 +92,7 @@ export function Footer() {
             <a
               href={`tel:${brand.phone}`}
               dir="ltr"
-              className="text-h5 mt-3 inline-flex items-center gap-2 font-serif tabular-nums transition-opacity hover:opacity-70"
+              className="text-h5 font-display mt-3 inline-flex items-center gap-2 tabular-nums transition-opacity hover:opacity-70"
             >
               <PhoneIcon className="size-4 shrink-0" aria-hidden="true" />
               {brand.phoneDisplay}

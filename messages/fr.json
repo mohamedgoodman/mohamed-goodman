@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "EDEN HOUSE — Vestiaire masculin",
-    "description": "Chemises, tailleur, chaussures et accessoires pour homme. Livraison partout au Maroc, paiement à la livraison."
+    "title": "EDEN HOUSE — Sneakers & streetwear à Ben Guerir",
+    "description": "Sneakers, t-shirts, hoodies et vestes. Livraison le jour même à Ben Guerir, vous payez à la livraison."
   },
   "common": {
     "brand": "EDEN HOUSE",
@@ -16,38 +16,73 @@
     "themeLight": "Clair",
     "themeDark": "Sombre",
     "themeSystem": "Système",
-    "readMore": "Lire la suite",
-    "readLess": "Réduire",
+    "readMore": "Voir plus",
+    "readLess": "Voir moins",
     "loading": "Chargement",
     "currency": "DH"
   },
-  "tokens": {
-    "eyebrow": "Système de design",
-    "title": "Jetons de design",
-    "intro": "Aperçu vivant du thème EDEN HOUSE. Toutes ces valeurs viennent d'un seul fichier, src/styles/theme.css — modifiez-le et cette page change avec tout le site.",
-    "colorTitle": "Couleur",
-    "colorIntro": "Les rôles sémantiques ci-dessous sont les seuls que les composants doivent utiliser.",
-    "brandPalette": "Palette de marque",
-    "semantic": "Rôles sémantiques",
-    "typeTitle": "Typographie",
-    "typeIntro": "Serif éditoriale pour les titres, grotesque neutre pour l'interface.",
-    "spaceTitle": "Espacement",
-    "radiusTitle": "Rayons",
-    "shadowTitle": "Ombres",
-    "motionTitle": "Mouvement",
-    "componentsTitle": "Aperçus",
-    "priceTitle": "Format des prix",
-    "priceIntro": "Toujours en dirhams, sans décimales.",
-    "sample": "Le vestiaire d'une vie",
-    "sampleBody": "Nous dessinons peu de pièces, et nous les gardons longtemps. Chaque saison ajoute une ou deux nouveautés au vestiaire, jamais une collection entière."
-  },
   "announcement": {
-    "dismiss": "Masquer les annonces",
+    "dismiss": "Masquer",
     "messages": [
-      "Livraison partout au Maroc — paiement à la livraison",
-      "Livraison {fee} — offerte à partir de {threshold}",
-      "48h à Casablanca, Rabat et Marrakech"
+      "Ben Guerir seulement · Livraison le jour même · Vous payez à la livraison",
+      "Commandez sur WhatsApp, on vous rappelle pour confirmer",
+      "Passez essayer en boutique avant d'acheter"
     ]
+  },
+  "home": {
+    "hero": {
+      "headline": "Sneakers et streetwear, livrés aujourd'hui",
+      "tagline": "Toutes les pointures en stock à Ben Guerir. Commandez avant 18h, vous êtes livré le jour même.",
+      "cta": "Voir les nouveautés",
+      "ctaWhatsapp": "Commander sur WhatsApp",
+      "imagePlaceholder": "Votre photo produit ici",
+      "imagePlaceholderHint": "1200 × 1500 · fond uni"
+    }
+  },
+  "howItWorks": {
+    "title": "Comment ça marche",
+    "steps": [
+      {
+        "title": "Vous commandez",
+        "body": "Sur le site ou directement sur WhatsApp."
+      },
+      {
+        "title": "On vous appelle",
+        "body": "Pour confirmer la pointure et l'adresse."
+      },
+      {
+        "title": "On livre le jour même",
+        "body": "Partout dans Ben Guerir."
+      },
+      {
+        "title": "Vous payez au livreur",
+        "body": "En liquide, à la réception."
+      }
+    ]
+  },
+  "trust": {
+    "cod": {
+      "title": "Paiement à la livraison",
+      "body": "Vous payez au livreur, pas avant"
+    },
+    "delivery": {
+      "title": "Livré le jour même",
+      "body": "Commande avant 18h, dans Ben Guerir"
+    },
+    "store": {
+      "title": "Essayez en boutique",
+      "body": "Voir l'adresse"
+    },
+    "whatsapp": {
+      "title": "Une question ?",
+      "body": "Écrivez-nous sur WhatsApp"
+    },
+    "freeShipping": "Livraison offerte"
+  },
+  "whatsapp": {
+    "order": "Commander sur WhatsApp",
+    "orderShort": "WhatsApp",
+    "contact": "Nous écrire sur WhatsApp"
   },
   "nav": {
     "viewAll": "Tout voir",
@@ -55,215 +90,50 @@
     "closeMenu": "Fermer le menu",
     "items": {
       "new": "Nouveautés",
-      "clothing": "Vêtements",
-      "tailoring": "Tailleur",
-      "shoes": "Chaussures",
-      "accessories": "Accessoires",
-      "sale": "Soldes"
+      "sneakers": "Sneakers",
+      "tops": "Hauts",
+      "jackets": "Vestes",
+      "promos": "Promos"
     },
     "groups": {
-      "discover": "Découvrir",
-      "byCategory": "Par catégorie",
-      "tops": "Hauts",
-      "bottoms": "Bas",
-      "layers": "Par-dessus",
-      "pieces": "Les pièces",
-      "finish": "La finition",
-      "styles": "Les modèles",
-      "leather": "Cuir",
-      "finishing": "Détails",
-      "sale": "Fins de séries"
+      "shop": "Voir"
     },
     "links": {
-      "allNew": "Toutes les nouveautés",
-      "bestSellers": "Les plus portés",
-      "tailoringRoom": "La salle de coupe",
-      "shirts": "Chemises",
-      "knitwear": "Mailles",
-      "shoes": "Chaussures",
-      "polos": "Polos",
+      "allNew": "Nouveautés",
+      "allSneakers": "Toutes les sneakers",
+      "tshirts": "T-shirts",
+      "hoodies": "Hoodies",
+      "sweats": "Sweats",
+      "jackets": "Vestes",
+      "tracksuits": "Survêtements",
       "trousers": "Pantalons",
-      "shorts": "Shorts",
-      "outerwear": "Vestes",
-      "allClothing": "Tous les vêtements",
-      "suits": "Costumes",
-      "blazers": "Blazers",
-      "tailoredTrousers": "Pantalons de tailleur",
-      "ties": "Cravates",
-      "sizeGuide": "Guide des tailles",
-      "loafers": "Mocassins",
-      "boots": "Bottes",
-      "allShoes": "Toutes les chaussures",
-      "belts": "Ceintures",
-      "wallets": "Maroquinerie",
-      "scarves": "Écharpes",
-      "eyewear": "Lunettes",
-      "allSale": "Toutes les fins de séries",
-      "lastSizes": "Dernières tailles",
-      "accessories": "Accessoires",
-      "shipping": "Livraison",
-      "returns": "Retours",
+      "caps": "Casquettes",
+      "bags": "Sacs",
+      "allPromos": "Promos",
+      "howItWorks": "Comment ça marche",
       "orderTracking": "Suivre ma commande",
-      "about": "La maison",
-      "stores": "Nos points de vente",
-      "contact": "Nous écrire"
-    },
-    "tiles": {
-      "newSeason": {
-        "title": "La saison en cours",
-        "caption": "Les pièces entrées ce mois-ci"
-      },
-      "linen": {
-        "title": "Le lin",
-        "caption": "Pour les mois chauds"
-      },
-      "everyday": {
-        "title": "Le vestiaire quotidien",
-        "caption": "Ce qui se porte tous les jours"
-      },
-      "knit": {
-        "title": "Mérinos",
-        "caption": "Maille fine, portée seule ou sous une veste"
-      },
-      "tailoringRoom": {
-        "title": "La salle de coupe",
-        "caption": "Tailleur souple, jamais rigide"
-      },
-      "ceremony": {
-        "title": "Les grandes occasions",
-        "caption": "Costumes et gilets"
-      },
-      "leather": {
-        "title": "Le cuir",
-        "caption": "Montés pour durer"
-      },
-      "summer": {
-        "title": "Sans doublure",
-        "caption": "Mocassins et espadrilles"
-      },
-      "details": {
-        "title": "Les détails",
-        "caption": "Cuir, soie et laine"
-      },
-      "gifts": {
-        "title": "À offrir",
-        "caption": "Petite maroquinerie"
-      },
-      "endOfSeries": {
-        "title": "Dernières tailles",
-        "caption": "Jusqu'à −30%"
-      }
+      "sizeGuide": "Guide des tailles"
     }
   },
   "search": {
     "title": "Rechercher",
-    "placeholder": "Chemise, costume, référence…",
+    "placeholder": "Sneakers, hoodie, taille…",
     "submit": "Rechercher",
-    "close": "Fermer la recherche",
+    "close": "Fermer",
     "resultsFor": "Résultats pour « {query} »",
-    "empty": "Aucun article ne correspond à cette recherche.",
+    "empty": "Rien ne correspond à cette recherche.",
     "count": "{count, plural, =0 {aucun article} one {# article} other {# articles}}"
   },
   "cart": {
     "open": "Ouvrir le panier",
     "itemCount": "{count, plural, =0 {Panier vide} one {# article} other {# articles}}"
   },
-  "footer": {
-    "columns": {
-      "wardrobe": "Le vestiaire",
-      "shoesAccessories": "Chaussures & accessoires",
-      "help": "Aide",
-      "house": "La maison"
-    },
-    "newsletter": {
-      "title": "Restez au courant",
-      "body": "Laissez votre numéro : on vous écrit sur WhatsApp quand une nouvelle pièce arrive.",
-      "phoneLabel": "Numéro WhatsApp",
-      "phonePlaceholder": "06 12 34 56 78",
-      "emailLabel": "E-mail (facultatif)",
-      "emailPlaceholder": "vous@exemple.ma",
-      "submit": "Je m'inscris",
-      "success": "C'est noté — à bientôt.",
-      "errorPhone": "Entrez un numéro marocain valide (06 ou 07).",
-      "errorEmail": "Cet e-mail ne semble pas valide."
-    },
-    "followUs": "Nous suivre",
-    "payments": "Moyens de paiement acceptés",
-    "cod": "Paiement à la livraison",
-    "rights": "Tous droits réservés.",
-    "store": {
-      "title": "La boutique",
-      "hours": "Tous les jours, {hours}",
-      "directions": "Voir sur la carte"
-    },
-    "callUs": "Appelez-nous"
-  },
-  "home": {
-    "hero": {
-      "headline": "Le vestiaire qui dure",
-      "tagline": "Des pièces simples, coupées pour rester des années.",
-      "cta": "Voir les nouveautés",
-      "imageAlt": "Un homme en chemise de lin et pantalon de tailleur, adossé à un mur chaulé."
-    }
-  },
-  "trust": {
-    "cod": {
-      "title": "Paiement à la livraison",
-      "body": "Vous payez quand le colis arrive"
-    },
-    "delivery": {
-      "title": "Livraison 48h",
-      "body": "Casablanca, Rabat, Marrakech · 72h ailleurs"
-    },
-    "returns": {
-      "title": "Retours gratuits",
-      "body": "7 jours pour changer d'avis"
-    },
-    "phone": {
-      "title": "Une question ?",
-      "body": "Appelez-nous"
-    },
-    "shippingNote": "Livraison {fee} · offerte dès {threshold}",
-    "freeShipping": "Livraison offerte"
-  },
-  "whatsapp": {
-    "order": "Commander par WhatsApp",
-    "orderShort": "WhatsApp",
-    "contact": "Nous écrire sur WhatsApp"
-  },
-  "sizeGuide": {
-    "title": "Guide des tailles",
-    "intro": "Deux façons de trouver votre taille : le tableau, ou — plus sûr — mesurer une chemise que vous portez déjà.",
-    "tabChart": "Tableau des tailles",
-    "tabMeasure": "Mesurer une chemise",
-    "chartIntro": "Mesures du vêtement à plat, en centimètres.",
-    "colSize": "Taille",
-    "colEu": "EU",
-    "colChest": "Poitrine à plat",
-    "colLength": "Longueur",
-    "colSleeve": "Manche",
-    "measureIntro": "Posez à plat une chemise qui vous va bien, et mesurez-la. Pas besoin de mètre ruban : une règle ou une feuille A4 (21 cm) suffit.",
-    "measureChest": "Poitrine à plat",
-    "measureChestHelp": "D'une couture d'aisselle à l'autre, chemise fermée et posée à plat.",
-    "measureLength": "Longueur",
-    "measureLengthHelp": "Du haut de l'épaule jusqu'au bas de la chemise.",
-    "measureSleeve": "Manche",
-    "measureSleeveHelp": "De la couture d'épaule jusqu'au bout du poignet.",
-    "cm": "cm",
-    "result": "Votre taille",
-    "resultBody": "D'après vos mesures, la taille {size} devrait tomber comme votre chemise.",
-    "resultBetween": "Vous êtes entre deux tailles. Prenez {size} pour une coupe près du corps, {larger} pour plus d'aise.",
-    "resultNone": "Entrez au moins la mesure de poitrine pour voir une recommandation.",
-    "outOfRange": "Cette mesure sort de nos tailles — écrivez-nous sur WhatsApp, on vous aidera.",
-    "reset": "Recommencer",
-    "saved": "Taille enregistrée pour vos prochaines visites."
-  },
   "badges": {
-    "new": "Nouveauté",
+    "new": "Nouveau",
     "essential": "Essentiel",
-    "last-pieces": "Dernières pièces",
+    "last-pieces": "Dernières tailles",
     "sale": "Promo",
-    "bestseller": "Meilleure vente"
+    "bestseller": "Top vente"
   },
   "product": {
     "noImage": "Photo à venir",
@@ -275,12 +145,96 @@
     "previous": "Précédent",
     "next": "Suivant",
     "viewAll": "Voir tout",
-    "viewAllCount": "{count, plural, one {# pièce} other {# pièces}}"
+    "viewAllCount": "{count, plural, one {# article} other {# articles}}"
   },
   "sections": {
     "newArrivals": "Nouveautés",
     "newArrivalsLink": "Voir la collection",
-    "tailoring": "La salle de coupe",
-    "tailoringLink": "Voir le tailleur"
+    "sneakers": "Sneakers",
+    "sneakersLink": "Voir la collection"
+  },
+  "footer": {
+    "columns": {
+      "shop": "Boutique",
+      "more": "Plus",
+      "help": "Aide"
+    },
+    "newsletter": {
+      "title": "Restez au courant",
+      "body": "Laissez votre numéro : on vous écrit sur WhatsApp dès qu'un nouveau modèle arrive.",
+      "phoneLabel": "Numéro WhatsApp",
+      "phonePlaceholder": "06 12 34 56 78",
+      "emailLabel": "E-mail (facultatif)",
+      "emailPlaceholder": "vous@exemple.ma",
+      "submit": "Je m'inscris",
+      "success": "C'est noté — à bientôt.",
+      "errorPhone": "Entrez un numéro marocain valide (06 ou 07).",
+      "errorEmail": "Cet e-mail ne semble pas valide."
+    },
+    "store": {
+      "title": "La boutique",
+      "hours": "Tous les jours, {hours}",
+      "directions": "Voir sur la carte"
+    },
+    "callUs": "Appelez-nous",
+    "followUs": "Nous suivre",
+    "payments": "Paiement",
+    "cod": "Paiement à la livraison",
+    "rights": "Tous droits réservés."
+  },
+  "delivery": {
+    "zoneTitle": "Livraison à Ben Guerir uniquement",
+    "zoneBody": "On livre seulement dans Ben Guerir, le jour même. Vous êtes ailleurs ? Écrivez-nous sur WhatsApp, on trouve une solution.",
+    "neighbourhood": "Quartier",
+    "pickup": "Retrait en boutique",
+    "chooseNeighbourhood": "Choisissez votre quartier",
+    "outsideZone": "Nous ne livrons pas encore dans cette zone."
+  },
+  "sizeGuide": {
+    "title": "Guide des tailles",
+    "intro": "Deux façons de trouver votre taille : le tableau, ou — plus fiable — mesurer un t-shirt que vous portez déjà.",
+    "tabChart": "Tableau des tailles",
+    "tabMeasure": "Mesurer un t-shirt",
+    "chartIntro": "Mesures du vêtement à plat, en centimètres.",
+    "colSize": "Taille",
+    "colEu": "EU",
+    "colChest": "Poitrine à plat",
+    "colLength": "Longueur",
+    "colSleeve": "Manche",
+    "measureIntro": "Posez à plat un t-shirt qui vous va bien, et mesurez-le. Pas besoin de mètre : une règle ou une feuille A4 (21 cm) suffit.",
+    "measureChest": "Poitrine à plat",
+    "measureChestHelp": "D'une couture d'aisselle à l'autre, posé à plat.",
+    "measureLength": "Longueur",
+    "measureLengthHelp": "Du haut de l'épaule jusqu'au bas.",
+    "measureSleeve": "Manche",
+    "measureSleeveHelp": "De la couture d'épaule jusqu'au bout de la manche.",
+    "cm": "cm",
+    "result": "Votre taille",
+    "resultBody": "D'après vos mesures, la taille {size} devrait tomber comme le vôtre.",
+    "resultBetween": "Vous êtes entre deux tailles. Prenez {size} pour un tombé près du corps, {larger} pour plus large.",
+    "resultNone": "Entrez au moins la mesure de poitrine.",
+    "outOfRange": "Cette mesure sort de nos tailles — écrivez-nous sur WhatsApp.",
+    "reset": "Recommencer",
+    "saved": "Taille enregistrée pour vos prochaines visites."
+  },
+  "tokens": {
+    "eyebrow": "Système de design",
+    "title": "Jetons de design",
+    "intro": "Aperçu du thème. Toutes ces valeurs viennent d'un seul fichier, src/styles/theme.css.",
+    "colorTitle": "Couleur",
+    "colorIntro": "Les rôles ci-dessous sont les seuls que les composants doivent utiliser.",
+    "brandPalette": "Palette",
+    "semantic": "Rôles sémantiques",
+    "typeTitle": "Typographie",
+    "typeIntro": "Une grotesque large pour les titres, Inter pour l'interface.",
+    "spaceTitle": "Espacement",
+    "radiusTitle": "Rayons",
+    "shadowTitle": "Ombres",
+    "motionTitle": "Mouvement",
+    "componentsTitle": "Aperçus",
+    "priceTitle": "Format des prix",
+    "priceIntro": "Toujours en dirhams, sans décimales.",
+    "sample": "Sneakers et streetwear",
+    "sampleBody": "Ce qui est en stock, dans toutes les pointures, livré le jour même à Ben Guerir."
   }
 }

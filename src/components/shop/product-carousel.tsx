@@ -189,7 +189,7 @@ export function ProductCarousel({
               href={viewAllHref}
               className="border-border hover:border-foreground flex aspect-3/4 w-full flex-col items-center justify-center rounded-xs border border-dashed text-center transition-colors"
             >
-              <span className="text-h5 font-serif">{t("viewAll")}</span>
+              <span className="text-h5 font-display">{t("viewAll")}</span>
               <span className="text-muted-foreground mt-2 text-xs">
                 {t("viewAllCount", { count: products.length })}
               </span>

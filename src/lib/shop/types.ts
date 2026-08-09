@@ -103,5 +103,4 @@ export interface Collection {
   handle: string;
   title: Localized;
   description: Localized;
-  image: { src: string; alt: Localized };
 }

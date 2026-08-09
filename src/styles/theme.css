@@ -1,212 +1,164 @@
 /* ============================================================================
    EDEN HOUSE — DESIGN TOKENS
    ----------------------------------------------------------------------------
-   This is the single source of truth for the whole storefront: colour,
-   typography, spacing, radii, shadows, motion and layout.
+   Streetwear retail: sneakers, tees, hoodies, jackets. Ben Guerir only.
 
-   To rebrand the store you should only ever need to touch this file.
+   The system is deliberately colourless. Product photography is the only
+   colour on the page; everything else is white, greys and near-black. The one
+   saturated value, --sale, is reserved for reduced prices and promo badges —
+   using it anywhere else is a bug, not a style choice.
+
+   To rebrand, edit section 1. Nothing outside this file hard-codes a colour.
 
    Structure
-     1. Brand palette      — raw brand colours, the "paint tins"
-     2. Semantic colour    — role-based aliases (light theme)
-     3. Dark theme         — the same roles, re-pointed
-     4. Typography         — families, fluid size scale, tracking
-     5. Space & layout     — spacing scale, gutters, containers
+     1. Palette            — the six raw values, and nothing else
+     2. Semantic colour    — role-based aliases (light)
+     3. Dark theme         — inverted
+     4. Typography         — Archivo display + Inter UI, Arabic overrides
+     5. Space & layout
      6. Radii / shadows / borders
-     7. Motion             — durations + easings
-     8. Elevation (z-index)
-     9. @theme inline      — expose everything to Tailwind as utilities
+     7. Motion
+     8. Elevation
+     9. @theme inline      — expose to Tailwind
    ========================================================================== */
 
 /* ---------------------------------------------------------------------------
-   1. BRAND PALETTE — raw values. Change these to rebrand.
+   1. PALETTE — six values. That is the entire brand.
    ------------------------------------------------------------------------ */
 :root {
-  --eh-sand: #faf8f4; /* warm off-white — page background      */
-  --eh-sand-deep: #f2eee6; /* one step down, for cards / wells      */
-  --eh-sand-deeper: #e8e3d8; /* subtle fills, skeletons               */
-  --eh-ink: #14140f; /* near-black, all primary text          */
-  --eh-ink-soft: #3a3a33; /* secondary text on light               */
-  --eh-olive: #3f4a34; /* deep olive — accent / primary action  */
-  --eh-olive-hover: #333d29; /* pressed / hovered olive               */
-  --eh-olive-tint: #eaece4; /* olive at 8% over sand                 */
-  --eh-muted: #8a8578; /* muted text, meta, placeholders        */
-  --eh-terracotta: #b4552f; /* sale + badges only — never body text  */
-  --eh-terracotta-tint: #f7e9e2;
-
-  /* Dark-theme raw values (kept beside the light ones on purpose so the
-     whole palette is legible in a single screenful). */
-  --eh-ink-bg: #121210; /* page background in dark               */
-  --eh-ink-surface: #1b1b17; /* raised surface in dark                */
-  --eh-ink-surface-2: #24241f;
-  --eh-bone: #f4f1ea; /* primary text in dark                  */
-  --eh-bone-soft: #cfcabd;
-  --eh-olive-light: #9aa886; /* olive lifted for dark backgrounds     */
-  --eh-olive-light-hover: #b0bd9d;
-  --eh-terracotta-light: #d9784f;
+  --canvas: #ffffff; /* page background                        */
+  --surface-raw: #f5f5f5; /* image backdrops, alternating bands     */
+  --border-raw: #e5e5e5; /* hairlines, dividers, card edges        */
+  --muted-raw: #767676; /* secondary text, struck prices          */
+  --ink: #111111; /* all primary text, primary button fill  */
+  --sale-raw: #c8102e; /* reduced prices and promo badges ONLY   */
 }
 
 /* ---------------------------------------------------------------------------
-   2. SEMANTIC COLOUR — light theme.
-   Components should ONLY ever reference these roles, never the raw brand
-   values above. That is what makes a rebrand a one-file change.
+   2. SEMANTIC COLOUR — light.
+   Components reference these roles only, never the values above.
    ------------------------------------------------------------------------ */
 :root {
-  --background: var(--eh-sand);
-  --foreground: var(--eh-ink);
+  --background: var(--canvas);
+  --foreground: var(--ink);
 
-  --surface: #ffffff; /* cards, drawers, menus                 */
-  --surface-2: var(--eh-sand-deep); /* wells, inputs, hovered rows           */
-  --surface-3: var(
-    --eh-sand-deeper
-  ); /* skeletons, image placeholders         */
-  --surface-foreground: var(--eh-ink);
+  /* Product images always sit on --surface, never on white: it makes photos
+     with inconsistent backgrounds read as deliberate rather than mismatched. */
+  --surface: var(--surface-raw);
+  --surface-2: var(--surface-raw);
+  --surface-3: var(--surface-raw);
+  --surface-foreground: var(--ink);
 
-  --brand: var(--eh-olive); /* THE accent — buttons, links, focus    */
-  --brand-hover: var(--eh-olive-hover);
-  --brand-foreground: var(--eh-sand);
-  --brand-tint: var(
-    --eh-olive-tint
-  ); /* quiet olive wash behind sections      */
+  --muted: var(--surface-raw);
+  --muted-foreground: var(--muted-raw);
+  --subtle-foreground: var(--muted-raw);
 
-  --muted: var(--eh-sand-deep);
-  --muted-foreground: var(--eh-muted);
-  --subtle-foreground: var(--eh-ink-soft); /* body copy that isn't a heading */
-
-  --sale: var(--eh-terracotta); /* badges, sale price, "last pieces"     */
+  --sale: var(--sale-raw);
   --sale-foreground: #ffffff;
-  --sale-tint: var(--eh-terracotta-tint);
 
-  --border: color-mix(in srgb, var(--eh-ink) 12%, transparent);
-  --border-strong: color-mix(in srgb, var(--eh-ink) 24%, transparent);
-  --input: color-mix(in srgb, var(--eh-ink) 18%, transparent);
-  --ring: var(--eh-olive);
+  --border: var(--border-raw);
+  --border-strong: var(--ink);
+  --input: var(--border-raw);
+  --ring: var(--ink);
 
-  --overlay: color-mix(in srgb, var(--eh-ink) 45%, transparent);
-  --on-image: #ffffff; /* text laid over photography            */
-
-  --success: #3f6b45;
-  --warning: #9a6b1f;
-  --destructive: #a33325;
-
-  /* shadcn/ui compatibility aliases — these primitives read these names. */
-  --card: var(--surface);
-  --card-foreground: var(--surface-foreground);
-  --popover: var(--surface);
-  --popover-foreground: var(--surface-foreground);
-  --primary: var(--brand);
-  --primary-foreground: var(--brand-foreground);
-  --secondary: var(--surface-2);
-  --secondary-foreground: var(--foreground);
-  --accent: var(--surface-2); /* NB: shadcn "accent" = hover surface,  */
-  --accent-foreground: var(
-    --foreground
-  ); /*     the brand accent is --brand.      */
-}
-
-/* ---------------------------------------------------------------------------
-   3. DARK THEME — same roles, re-pointed. Applied via `.dark` on <html>.
-   ------------------------------------------------------------------------ */
-.dark {
-  --background: var(--eh-ink-bg);
-  --foreground: var(--eh-bone);
-
-  --surface: var(--eh-ink-surface);
-  --surface-2: var(--eh-ink-surface-2);
-  --surface-3: #2e2e27;
-  --surface-foreground: var(--eh-bone);
-
-  --brand: var(--eh-olive-light);
-  --brand-hover: var(--eh-olive-light-hover);
-  --brand-foreground: var(--eh-ink-bg);
-  --brand-tint: #23271e;
-
-  --muted: var(--eh-ink-surface-2);
-  --muted-foreground: #9a9488;
-  --subtle-foreground: var(--eh-bone-soft);
-
-  --sale: var(--eh-terracotta-light);
-  --sale-foreground: var(--eh-ink-bg);
-  --sale-tint: #33201a;
-
-  --border: color-mix(in srgb, var(--eh-bone) 14%, transparent);
-  --border-strong: color-mix(in srgb, var(--eh-bone) 28%, transparent);
-  --input: color-mix(in srgb, var(--eh-bone) 22%, transparent);
-  --ring: var(--eh-olive-light);
-
-  --overlay: color-mix(in srgb, #000000 60%, transparent);
+  --overlay: color-mix(in srgb, var(--ink) 55%, transparent);
   --on-image: #ffffff;
 
-  --success: #7da585;
-  --warning: #d2a45c;
-  --destructive: #d97a6c;
+  /* Status colours stay monochrome — there is no green/amber in this system.
+     Success reads as ink; only errors borrow --sale, because an error and a
+     sale price are never on screen in the same role. */
+  --success: var(--ink);
+  --warning: var(--ink);
+  --destructive: var(--sale-raw);
+
+  /* shadcn/ui compatibility aliases. */
+  --card: var(--canvas);
+  --card-foreground: var(--ink);
+  --popover: var(--canvas);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: #ffffff;
+  --secondary: var(--surface-raw);
+  --secondary-foreground: var(--ink);
+  --accent: var(--surface-raw);
+  --accent-foreground: var(--ink);
+}
+
+/* ---------------------------------------------------------------------------
+   3. DARK — a straight inversion. --sale lightens so it stays legible.
+   ------------------------------------------------------------------------ */
+.dark {
+  --canvas: #111111;
+  --surface-raw: #1c1c1c;
+  --border-raw: #2e2e2e;
+  --muted-raw: #a1a1a1;
+  --ink: #ffffff;
+  --sale-raw: #e8394f;
+
+  --sale-foreground: #111111;
+  --primary-foreground: #111111;
+  --on-image: #ffffff;
+  --overlay: color-mix(in srgb, #000000 65%, transparent);
 }
 
 /* ---------------------------------------------------------------------------
    4. TYPOGRAPHY
-   Two families: a high-contrast serif for editorial headings, a neutral
-   grotesque for everything else. Both are injected by next/font.
-   Sizes are fluid (clamp) so mobile-first scales up without breakpoints.
+   A wide grotesque for display (Archivo, Bold + Black), Inter for UI.
+   No serif anywhere — this is a sneaker shop, not a tailor.
    ------------------------------------------------------------------------ */
 :root {
-  --font-serif:
-    var(--font-instrument-serif), ui-serif, "Times New Roman", serif;
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
   /* UI / body scale */
-  --text-2xs: 0.6875rem; /* 11px — legal, payment labels */
-  --text-xs: 0.75rem; /* 12px — eyebrows, badges      */
-  --text-sm: 0.8125rem; /* 13px — meta, nav             */
-  --text-base: 0.9375rem; /* 15px — body                  */
-  --text-md: 1rem; /* 16px — lead body, inputs     */
+  --text-2xs: 0.6875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-md: 1rem;
   --text-lg: 1.125rem;
 
-  /* Editorial display scale — fluid from 375px to 1440px */
+  /* Display scale — fluid from 375px to 1440px */
   --text-h6: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
   --text-h5: clamp(1.125rem, 1.05rem + 0.35vw, 1.375rem);
   --text-h4: clamp(1.375rem, 1.24rem + 0.6vw, 1.75rem);
-  --text-h3: clamp(1.75rem, 1.5rem + 1.1vw, 2.5rem);
-  --text-h2: clamp(2.25rem, 1.8rem + 2vw, 3.5rem);
-  --text-h1: clamp(2.75rem, 2rem + 3.2vw, 4.75rem);
-  --text-display: clamp(3.25rem, 2rem + 5.4vw, 7rem);
+  --text-h3: clamp(1.625rem, 1.4rem + 1vw, 2.25rem);
+  --text-h2: clamp(2rem, 1.6rem + 1.8vw, 3rem);
+  --text-h1: clamp(2.5rem, 1.9rem + 2.8vw, 4rem);
+  --text-display: clamp(2.75rem, 2rem + 3.6vw, 5rem);
 
-  --leading-tight: 1.02; /* display serif                */
-  --leading-snug: 1.15;
+  --leading-tight: 1.02;
+  --leading-snug: 1.1;
   --leading-normal: 1.5;
-  --leading-relaxed: 1.7; /* long-form brand copy         */
+  --leading-relaxed: 1.7;
 
-  --tracking-display: -0.03em; /* big serif wants negative     */
-  --tracking-tight: -0.015em;
+  /* Headlines are tight, sentence case, never all-caps. */
+  --tracking-display: -0.02em;
+  --tracking-tight: -0.01em;
   --tracking-normal: 0;
-  --tracking-wide: 0.06em;
-  --tracking-eyebrow: 0.16em; /* uppercase micro-labels       */
+  --tracking-wide: 0.04em;
+  --tracking-eyebrow: 0.1em; /* small uppercase labels only */
 
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-black: 900;
 }
 
 /* ---------------------------------------------------------------------------
    ARABIC TYPE
-   Arabic is not "the Latin system with different glyphs". Three things change:
-
-   1. Tracking is zero, always. Letter-spacing in Arabic pulls apart the
-      cursive joins between letters and breaks word shaping — this is the
-      single most common way an Arabic page is ruined. The blanket reset that
-      enforces it lives in globals.css, outside any cascade layer, so it beats
-      every utility class; these variables are belt-and-braces.
-   2. Leading is looser. Arabic ascenders/descenders and vowel marks need more
-      vertical room than Latin at the same size.
-   3. Size goes up roughly one step. Arabic has a smaller x-height equivalent
-      and reads visually lighter than Latin at an identical font-size, so
-      matching the French page's optical weight means matching, not sharing,
-      the numbers.
+   Tracking is zero, always: letter-spacing pulls apart Arabic cursive joins
+   and breaks word shaping. The blanket reset that enforces it lives in
+   globals.css, outside any cascade layer, so it beats every utility class.
+   Leading is looser and sizes step up, because Arabic reads visually lighter
+   than Latin at the same font-size.
    ------------------------------------------------------------------------ */
 [lang="ar"],
 [dir="rtl"] {
-  --font-serif: var(--font-arabic-serif), ui-serif, serif;
+  --font-display: var(--font-arabic-sans), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-arabic-sans), ui-sans-serif, system-ui, sans-serif;
 
   --tracking-display: 0;
@@ -220,7 +172,6 @@
   --leading-normal: 1.7;
   --leading-relaxed: 1.9;
 
-  /* One step up across body + UI. */
   --text-2xs: 0.75rem;
   --text-xs: 0.8125rem;
   --text-sm: 0.875rem;
@@ -228,14 +179,12 @@
   --text-md: 1.0625rem;
   --text-lg: 1.1875rem;
 
-  /* Display sizes come down slightly: Naskh sets larger on the body than the
-     Latin serif does at the same value, and needs the extra leading above. */
   --text-h5: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
   --text-h4: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
   --text-h3: clamp(1.5rem, 1.3rem + 0.9vw, 2.125rem);
-  --text-h2: clamp(1.875rem, 1.55rem + 1.5vw, 2.875rem);
-  --text-h1: clamp(2.5rem, 2rem + 2.2vw, 3.75rem);
-  --text-display: clamp(3rem, 2.35rem + 2.9vw, 5rem);
+  --text-h2: clamp(1.875rem, 1.55rem + 1.5vw, 2.75rem);
+  --text-h1: clamp(2.25rem, 1.8rem + 2.2vw, 3.5rem);
+  --text-display: clamp(2.5rem, 2rem + 2.6vw, 4.25rem);
 }
 
 /* ---------------------------------------------------------------------------
@@ -257,50 +206,50 @@
   --space-24: 6rem;
   --space-32: 8rem;
 
-  /* Vertical rhythm between homepage sections — the main "air" dial.
-     Phones get roughly half the desktop value: on a 390px screen the editorial
-     air that reads as luxury on a 27" display just reads as scrolling. */
-  --space-section: clamp(2.75rem, 1.1rem + 5.2vw, 7rem);
+  /* Phones get roughly half the desktop rhythm. */
+  --space-section: clamp(2.75rem, 1.1rem + 5.2vw, 6rem);
   --space-section-sm: clamp(1.75rem, 0.9rem + 3vw, 4rem);
 
-  --gutter: clamp(1rem, 0.5rem + 2.2vw, 2.5rem); /* page side padding */
-  --container: 1440px; /* full editorial width  */
-  --container-narrow: 1120px; /* product / cart        */
-  --container-prose: 68ch; /* long-form copy        */
+  --gutter: clamp(1rem, 0.5rem + 2.2vw, 2.5rem);
+  --container: 1440px;
+  --container-narrow: 1120px;
+  --container-prose: 68ch;
 
-  --header-h: 3.5rem; /* mobile header height  */
+  --header-h: 3.5rem;
   --header-h-lg: 4.5rem;
   --announcement-h: 2.25rem;
 }
 
 /* ---------------------------------------------------------------------------
    6. RADII / SHADOWS / BORDERS
-   Editorial premium = mostly square. Radius is used sparingly.
+   Square is the default. Buttons get 2px at most.
    ------------------------------------------------------------------------ */
 :root {
   --radius-none: 0px;
-  --radius-xs: 2px;
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 12px;
-  --radius-xl: 20px;
-  --radius-full: 9999px;
-  --radius: var(--radius-sm); /* shadcn base */
+  --radius-xs: 0px;
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 2px;
+  --radius-xl: 2px;
+  --radius-full: 9999px; /* avatars and the cart count only */
+  --radius: 2px;
 
-  --shadow-xs: 0 1px 2px color-mix(in srgb, var(--eh-ink) 6%, transparent);
-  --shadow-sm: 0 2px 8px color-mix(in srgb, var(--eh-ink) 7%, transparent);
-  --shadow-md: 0 8px 24px color-mix(in srgb, var(--eh-ink) 9%, transparent);
-  --shadow-lg: 0 20px 56px color-mix(in srgb, var(--eh-ink) 14%, transparent);
+  /* Elevation is carried by hairlines, not shadows. Shadows exist only for
+     things that genuinely float above the page. */
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: 0 8px 24px rgb(0 0 0 / 8%);
+  --shadow-lg: 0 20px 56px rgb(0 0 0 / 12%);
 }
 
 /* ---------------------------------------------------------------------------
-   7. MOTION — subtle, never bouncy.
+   7. MOTION
    ------------------------------------------------------------------------ */
 :root {
   --dur-instant: 90ms;
   --dur-fast: 160ms;
-  --dur-base: 260ms;
-  --dur-slow: 420ms;
+  --dur-base: 240ms;
+  --dur-slow: 400ms;
   --dur-slower: 700ms;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -325,8 +274,6 @@
 
 /* ---------------------------------------------------------------------------
    9. TAILWIND BRIDGE
-   Everything above becomes a utility: bg-brand, text-muted-foreground,
-   font-serif, p-section, rounded-lg, shadow-md, ease-editorial…
    ------------------------------------------------------------------------ */
 @theme inline {
   --color-background: var(--background);
@@ -336,18 +283,12 @@
   --color-surface-3: var(--surface-3);
   --color-surface-foreground: var(--surface-foreground);
 
-  --color-brand: var(--brand);
-  --color-brand-hover: var(--brand-hover);
-  --color-brand-foreground: var(--brand-foreground);
-  --color-brand-tint: var(--brand-tint);
-
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-subtle-foreground: var(--subtle-foreground);
 
   --color-sale: var(--sale);
   --color-sale-foreground: var(--sale-foreground);
-  --color-sale-tint: var(--sale-tint);
 
   --color-border: var(--border);
   --color-border-strong: var(--border-strong);
@@ -372,7 +313,7 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
 
-  --font-serif: var(--font-serif);
+  --font-display: var(--font-display);
   --font-sans: var(--font-sans);
 
   --text-2xs: var(--text-2xs);

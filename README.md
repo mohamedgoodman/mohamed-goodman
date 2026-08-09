@@ -1,10 +1,11 @@
 # EDEN HOUSE
 
-Men's clothing storefront for the Moroccan market — Next.js (App Router),
-TypeScript, Tailwind CSS v4.
+Sneakers and streetwear shop in Ben Guerir — Next.js (App Router), TypeScript,
+Tailwind CSS v4.
 
-Premium, calm, editorial. Prices in dirhams, cash on delivery first,
-trilingual (French / Arabic RTL / English), mobile-first.
+Neutral and photo-led: white, greys and near-black, with one saturated red
+reserved for sale prices. Prices in dirhams, pay on delivery, same-day inside
+Ben Guerir, trilingual (French default / Arabic RTL / English), mobile-first.
 
 ## Getting started
 
@@ -13,12 +14,12 @@ npm install
 npm run dev     # http://localhost:3000
 ```
 
-| Command          | What it does     |
-| ---------------- | ---------------- |
-| `npm run dev`    | Dev server       |
-| `npm run build`  | Production build |
-| `npm run lint`   | ESLint           |
-| `npm run format` | Prettier write   |
+| Command                    | What it does                          |
+| -------------------------- | ------------------------------------- |
+| `npm run dev`              | Dev server                            |
+| `npm run build`            | Production build                      |
+| `npm run lint`             | ESLint                                |
+| `npm run format`           | Prettier write                        |
 | `npm run import:catalogue` | Rebuild products from the spreadsheet |
 
 ## Where things live
@@ -38,12 +39,12 @@ src/
     products.generated.ts GENERATED from the spreadsheet — never edit
     collection-handles.ts Valid `categorie` values, shared with the importer
     collections.ts        Collection metadata (trilingual)
-    morocco.ts            Cities, delivery zones, shipping fees
+    delivery.ts           Ben Guerir neighbourhoods, pickup, fees
     brand.ts              Name, WhatsApp number, socials
   lib/
     shop/                 THE data layer — getProducts / getProduct / …
     money.ts              formatMAD → "450 DH"
-    fonts.ts              next/font: Instrument Serif + Inter (+ Arabic faces)
+    fonts.ts              next/font: Archivo + Inter + IBM Plex Sans Arabic
     design-tokens.ts      Token inventory for the preview page
 ```
 
@@ -113,24 +114,30 @@ seed so a given product always renders the same photo. Swap the host in
 
 ## Theming
 
-`src/styles/theme.css` holds the whole system in three layers:
+`src/styles/theme.css` is the whole visual system, in three layers:
 
-1. **Brand palette** — the raw paint tins (`--eh-olive`, `--eh-sand`, …).
-2. **Semantic roles** — what components actually use (`--brand`,
-   `--muted-foreground`, `--sale`, `--border`, …).
-3. **Dark theme** — the same roles, re-pointed under `.dark`.
+1. **Palette** — six raw values (`--canvas`, `--surface-raw`, `--border-raw`,
+   `--muted-raw`, `--ink`, `--sale-raw`). That is the entire brand.
+2. **Semantic roles** — what components use (`--background`, `--foreground`,
+   `--surface`, `--border`, `--sale`…).
+3. **Dark** — a straight inversion; `--sale` lightens so it stays legible.
 
-Plus typography (fluid clamp scale), spacing, radii, shadows, motion and
-z-index. Everything is bridged into Tailwind through `@theme inline`, so the
-tokens are available as utilities: `bg-brand`, `text-muted-foreground`,
-`text-h2`, `rounded-sm`, `ease-editorial`.
+Rules the system depends on:
 
-Rebranding = editing layer 1. Dark mode comes free because it rides the same
-role names.
+- **No brand colour in the chrome.** Product photography is the only colour on
+  the page. If a component reaches for an accent, it uses ink.
+- **`--sale` is the only saturated value**, and only for a reduced price, a
+  promo badge, or the Promos nav item. Anywhere else is a bug.
+- **Product images always sit on `--surface`, never white** — it makes photos
+  with inconsistent backgrounds read as deliberate.
+- **Primary button** = ink fill, white text, 2px radius. **Secondary** =
+  transparent with a 1px ink border.
 
-Preview it all at **`/design/tokens`** — colours, type scale, spacing, radii,
-shadows, motion and price formatting, with light/dark and locale switches so
-the system can be checked in dark mode and in RTL.
+Type is Archivo (Bold/Black) for headlines — large, tight, sentence case — and
+Inter for UI. No serif anywhere. Arabic uses IBM Plex Sans Arabic with
+letter-spacing forced to `normal`, looser leading and a size step up.
+
+Preview it at **`/design/tokens`**.
 
 ## Internationalisation
 
@@ -143,14 +150,17 @@ the system can be checked in dark mode and in RTL.
   `next/link`, so URLs keep their locale prefix.
 - Copy lives in `messages/*.json`.
 
-## Morocco specifics
+## Ben Guerir specifics
 
-- Prices in MAD, formatted `450 DH` / `1 890 DH` — no decimals (`formatMAD`).
-- Cash on delivery is the primary checkout; card is a disabled secondary option.
-- Delivery estimates by city: 48h for Casablanca / Rabat / Marrakech, 72h
-  elsewhere (`src/data/morocco.ts`).
-- Sizes shown in both EU and cm.
-- WhatsApp contact with a pre-filled product reference.
+Delivery is Ben Guerir only, and that constraint drives the site:
+
+- Announcement bar, trust strip and the "Comment ça marche" section all say so.
+- Checkout picks a **neighbourhood**, not a city (`src/data/delivery.ts`), with
+  collect-in-store as a first-class option. Anyone outside the zone is told
+  plainly and handed a WhatsApp link.
+- Prices in MAD, formatted `450 DH` (`formatMAD`), pay cash to the driver.
+- Phone, address and Instagram are single TODO constants at the top of
+  `src/data/brand.ts` — set them once and every surface updates.
 
 ## Build order
 

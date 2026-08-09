@@ -29,17 +29,21 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* Editorial headings: serif, large, tight tracking, generous leading. */
+  /* Headlines: the wide grotesque, heavy, tight, sentence case. */
   h1,
   h2,
   h3,
   h4,
   h5 {
-    font-family: var(--font-serif);
-    font-weight: var(--weight-regular);
+    font-family: var(--font-display);
+    font-weight: var(--weight-bold);
     letter-spacing: var(--tracking-display);
     line-height: var(--leading-snug);
     text-wrap: balance;
+  }
+
+  h1 {
+    font-weight: var(--weight-black);
   }
 
   p {
@@ -54,7 +58,7 @@
   }
 
   ::selection {
-    background-color: color-mix(in srgb, var(--brand) 22%, transparent);
+    background-color: color-mix(in srgb, var(--ink) 15%, transparent);
   }
 
   /* Native form controls follow the theme (incl. dark mode). */

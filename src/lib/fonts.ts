@@ -1,24 +1,18 @@
-import {
-  IBM_Plex_Sans_Arabic,
-  Instrument_Serif,
-  Inter,
-  Noto_Naskh_Arabic,
-} from "next/font/google";
+import { Archivo, IBM_Plex_Sans_Arabic, Inter } from "next/font/google";
 
 /**
- * Editorial display face. Used for every heading via `--font-serif`.
- * Instrument Serif ships a single weight by design — its contrast comes
- * from size, not weight, which is what gives the pages their magazine feel.
+ * Display face: a wide grotesque, Bold and Black. Headlines are set large and
+ * tight (see --tracking-display) in sentence case — the weight and width do
+ * the work, not capitals.
  */
-export const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
+export const archivo = Archivo({
+  variable: "--font-archivo",
+  subsets: ["latin", "latin-ext"],
+  weight: ["500", "700", "900"],
   display: "swap",
 });
 
-/** Neutral grotesque for all UI and body copy. */
+/** UI and body copy. */
 export const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin", "latin-ext"],
@@ -26,26 +20,18 @@ export const inter = Inter({
 });
 
 /**
- * Arabic counterparts. Latin faces have no Arabic coverage, so the RTL
- * locale swaps `--font-sans` / `--font-serif` onto these (see theme.css).
+ * Arabic. Latin faces have no Arabic coverage, so the RTL locale points both
+ * --font-display and --font-sans at this (see theme.css).
  */
 export const arabicSans = IBM_Plex_Sans_Arabic({
   variable: "--font-arabic-sans",
   subsets: ["arabic"],
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
-
-export const arabicSerif = Noto_Naskh_Arabic({
-  variable: "--font-arabic-serif",
-  subsets: ["arabic"],
-  weight: ["400", "500"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
 export const fontVariables = [
-  instrumentSerif.variable,
+  archivo.variable,
   inter.variable,
   arabicSans.variable,
-  arabicSerif.variable,
 ].join(" ");

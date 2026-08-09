@@ -11,20 +11,15 @@ export interface TokenGroup {
 }
 
 export const brandPalette: TokenGroup = {
-  title: "Brand palette",
-  hint: "Raw values. Change these to rebrand — nothing else references them directly.",
+  title: "Palette",
+  hint: "Six values. Everything else on the site is derived from these.",
   tokens: [
-    { name: "--eh-sand", usage: "Page background" },
-    { name: "--eh-sand-deep", usage: "Wells, inputs" },
-    { name: "--eh-sand-deeper", usage: "Skeletons" },
-    { name: "--eh-ink", usage: "Primary text" },
-    { name: "--eh-ink-soft", usage: "Body copy" },
-    { name: "--eh-olive", usage: "Accent / primary action" },
-    { name: "--eh-olive-hover", usage: "Pressed accent" },
-    { name: "--eh-olive-tint", usage: "Section wash" },
-    { name: "--eh-muted", usage: "Meta, placeholders" },
-    { name: "--eh-terracotta", usage: "Sale, badges" },
-    { name: "--eh-terracotta-tint", usage: "Badge background" },
+    { name: "--canvas", usage: "Page background" },
+    { name: "--surface-raw", usage: "Image backdrops, bands" },
+    { name: "--border-raw", usage: "Hairlines, card edges" },
+    { name: "--muted-raw", usage: "Secondary text" },
+    { name: "--ink", usage: "Text and primary buttons" },
+    { name: "--sale-raw", usage: "Reduced prices and promo badges ONLY" },
   ],
 };
 
@@ -33,41 +28,25 @@ export const semanticColors: TokenGroup[] = [
     title: "Surface & text",
     tokens: [
       { name: "--background", usage: "Page" },
-      { name: "--foreground", usage: "Headings, primary text" },
-      { name: "--surface", usage: "Cards, drawers, menus" },
-      { name: "--surface-2", usage: "Wells, hovered rows" },
-      { name: "--surface-3", usage: "Image placeholders" },
-      { name: "--subtle-foreground", usage: "Body copy" },
-      { name: "--muted-foreground", usage: "Meta, captions" },
-    ],
-  },
-  {
-    title: "Accent",
-    tokens: [
-      { name: "--brand", usage: "Buttons, links, focus ring" },
-      { name: "--brand-hover", usage: "Hover / pressed" },
-      { name: "--brand-foreground", usage: "Text on accent" },
-      { name: "--brand-tint", usage: "Quiet accent wash" },
-    ],
-  },
-  {
-    title: "Sale & status",
-    tokens: [
-      { name: "--sale", usage: "Sale price, badges" },
-      { name: "--sale-tint", usage: "Badge background" },
-      { name: "--success", usage: "In stock, order confirmed" },
-      { name: "--warning", usage: "Low stock" },
-      { name: "--destructive", usage: "Errors, remove" },
+      { name: "--foreground", usage: "All primary text" },
+      { name: "--surface", usage: "Product images sit here, never on white" },
+      { name: "--muted-foreground", usage: "Meta, struck prices" },
     ],
   },
   {
     title: "Lines & overlays",
     tokens: [
       { name: "--border", usage: "Default hairline" },
-      { name: "--border-strong", usage: "Emphasised divider" },
-      { name: "--input", usage: "Form field border" },
+      { name: "--border-strong", usage: "Emphasised edge" },
       { name: "--ring", usage: "Focus outline" },
       { name: "--overlay", usage: "Modal scrim" },
+    ],
+  },
+  {
+    title: "The one colour",
+    tokens: [
+      { name: "--sale", usage: "Sale price, promo badge, Promos nav" },
+      { name: "--destructive", usage: "Form errors" },
     ],
   },
 ];
@@ -76,83 +55,56 @@ export const typeScale = [
   {
     name: "--text-display",
     label: "Display",
-    sample: "EDEN HOUSE",
-    serif: true,
+    sample: "Sneakers livrés aujourd'hui",
+    display: true,
   },
-  { name: "--text-h1", label: "H1", sample: "Le vestiaire", serif: true },
-  { name: "--text-h2", label: "H2", sample: "Nouveautés", serif: true },
-  { name: "--text-h3", label: "H3", sample: "La salle de coupe", serif: true },
+  { name: "--text-h1", label: "H1", sample: "Nouveautés", display: true },
+  { name: "--text-h2", label: "H2", sample: "Sneakers", display: true },
   {
-    name: "--text-h4",
-    label: "H4",
-    sample: "Chemise Oxford Atlas",
-    serif: true,
+    name: "--text-h3",
+    label: "H3",
+    sample: "Comment ça marche",
+    display: true,
   },
-  {
-    name: "--text-h5",
-    label: "H5",
-    sample: "Matière & entretien",
-    serif: true,
-  },
+  { name: "--text-h4", label: "H4", sample: "Hoodie molleton", display: true },
   {
     name: "--text-lg",
     label: "Body large",
-    sample: "Coton oxford lavé, coupe droite.",
+    sample: "Toutes les pointures en stock.",
   },
   {
     name: "--text-md",
     label: "Body",
-    sample: "Coton oxford lavé, coupe droite.",
+    sample: "Toutes les pointures en stock.",
   },
   {
     name: "--text-base",
     label: "Body small",
-    sample: "Coton oxford lavé, coupe droite.",
+    sample: "Toutes les pointures en stock.",
   },
-  { name: "--text-sm", label: "Meta", sample: "3 couleurs disponibles" },
-  { name: "--text-xs", label: "Eyebrow", sample: "NOUVEAUTÉ" },
+  { name: "--text-sm", label: "Meta", sample: "3 couleurs" },
+  { name: "--text-xs", label: "Eyebrow", sample: "NOUVEAU" },
   { name: "--text-2xs", label: "Legal", sample: "Paiement à la livraison" },
 ];
 
 export const spaceScale = [
   "--space-1",
   "--space-2",
-  "--space-3",
   "--space-4",
   "--space-6",
   "--space-8",
   "--space-12",
   "--space-16",
   "--space-24",
-  "--space-32",
   "--space-section",
   "--gutter",
 ];
 
-export const radiusScale = [
-  "--radius-none",
-  "--radius-xs",
-  "--radius-sm",
-  "--radius-md",
-  "--radius-lg",
-  "--radius-xl",
-  "--radius-full",
-];
+export const radiusScale = ["--radius-none", "--radius-sm", "--radius-full"];
 
-export const shadowScale = [
-  "--shadow-xs",
-  "--shadow-sm",
-  "--shadow-md",
-  "--shadow-lg",
-];
+export const shadowScale = ["--shadow-md", "--shadow-lg"];
 
 export const motionTokens = {
-  durations: [
-    "--dur-instant",
-    "--dur-fast",
-    "--dur-base",
-    "--dur-slow",
-    "--dur-slower",
-  ],
+  durations: ["--dur-instant", "--dur-fast", "--dur-base", "--dur-slow"],
   easings: ["--ease-out", "--ease-in-out", "--ease-editorial"],
 };

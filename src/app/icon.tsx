@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og";
 export const size = { width: 64, height: 64 };
 export const contentType = "image/png";
 
-/** EH monogram in the brand olive on warm off-white. */
+/** EH monogram, ink on white. */
 export default function Icon() {
   return new ImageResponse(
     <div
@@ -13,11 +13,11 @@ export default function Icon() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#3F4A34",
-        color: "#FAF8F4",
+        background: "#111111",
+        color: "#FFFFFF",
         fontSize: 30,
-        letterSpacing: -1,
-        fontFamily: "serif",
+        letterSpacing: 0,
+        fontFamily: "sans-serif",
       }}
     >
       EH

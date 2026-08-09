@@ -2,10 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { XIcon } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-
-import { FREE_SHIPPING_THRESHOLD, SHIPPING_FEE } from "@/data/morocco";
-import { formatMAD } from "@/lib/money";
+import { useTranslations } from "next-intl";
 
 const DISMISS_KEY = "eh:announcement-dismissed";
 const ROTATE_MS = 5000;
@@ -18,16 +15,10 @@ const ROTATE_MS = 5000;
  */
 export function AnnouncementBar() {
   const t = useTranslations("announcement");
-  const locale = useLocale();
 
-  // Shipping cost and the free-delivery threshold are the two facts a first
-  // time buyer wants before they start shopping, so they ride in the rotation
-  // rather than waiting until checkout.
-  const messages = (t.raw("messages") as string[]).map((message) =>
-    message
-      .replace("{fee}", formatMAD(SHIPPING_FEE, { locale }))
-      .replace("{threshold}", formatMAD(FREE_SHIPPING_THRESHOLD, { locale })),
-  );
+  // The delivery promise is the shop's whole positioning, so it leads the
+  // rotation rather than waiting until checkout.
+  const messages = t.raw("messages") as string[];
 
   const [dismissed, setDismissed] = useState(false);
   const [mounted, setMounted] = useState(false);

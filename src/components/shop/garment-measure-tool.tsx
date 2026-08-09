@@ -11,11 +11,11 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * "Measure a shirt you already own".
+ * "Measure a t-shirt you already own".
  *
  * A size chart asks you to measure your own body with a tape measure you don't
- * own, then trust an abstract number. This asks you to measure a shirt that
- * already fits — something anyone can do with a ruler — and matches it against
+ * own, then trust an abstract number. This asks you to measure a tee or hoodie
+ * that already fits — something anyone can do with a ruler — and matches it against
  * the same garment-flat measurements our shirts are cut to.
  *
  * The result is stored so product pages can pre-select the size later.
@@ -49,7 +49,7 @@ const FIELDS: Field[] = [
   },
 ];
 
-export function ShirtMeasureTool() {
+export function GarmentMeasureTool() {
   const t = useTranslations("sizeGuide");
   const [values, setValues] = useState<Record<string, string>>({});
   const [saved, setSaved] = useState(false);
@@ -132,7 +132,7 @@ export function ShirtMeasureTool() {
         className={cn(
           "mt-(--space-8) rounded-sm p-(--space-6)",
           match.status === "ok" || match.status === "between"
-            ? "bg-brand-tint"
+            ? "bg-surface"
             : "bg-surface-2",
         )}
       >
@@ -143,7 +143,7 @@ export function ShirtMeasureTool() {
         ) : match.status === "between" && match.size && match.larger ? (
           <>
             <p className="eyebrow">{t("result")}</p>
-            <p className="text-h3 mt-2 font-serif">
+            <p className="text-h3 font-display mt-2">
               {match.size.label} / {match.larger.label}
             </p>
             <p className="text-subtle-foreground text-md mt-3 max-w-prose">
@@ -156,7 +156,7 @@ export function ShirtMeasureTool() {
         ) : match.size ? (
           <>
             <p className="eyebrow">{t("result")}</p>
-            <p className="text-h2 mt-2 font-serif">{match.size.label}</p>
+            <p className="text-h2 font-display mt-2">{match.size.label}</p>
             <p className="text-subtle-foreground text-md mt-3 max-w-prose">
               {t("resultBody", { size: match.size.label })}
             </p>
@@ -205,7 +205,7 @@ export function ShirtMeasureTool() {
               key={size.id}
               className={cn(
                 "border-border border-b",
-                match.size?.id === size.id && "bg-brand-tint",
+                match.size?.id === size.id && "bg-surface",
               )}
             >
               <th scope="row" className="py-2.5 text-start text-sm font-medium">

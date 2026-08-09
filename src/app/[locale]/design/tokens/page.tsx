@@ -123,13 +123,13 @@ export default async function TokensPage({
                 </p>
               </div>
               <p
-                className={item.serif ? "font-serif" : "font-sans"}
+                className={item.display ? "font-display" : "font-sans"}
                 style={{
                   fontSize: `var(${item.name})`,
-                  lineHeight: item.serif
+                  lineHeight: item.display
                     ? "var(--leading-snug)"
                     : "var(--leading-normal)",
-                  letterSpacing: item.serif
+                  letterSpacing: item.display
                     ? "var(--tracking-display)"
                     : "var(--tracking-normal)",
                 }}
@@ -156,7 +156,7 @@ export default async function TokensPage({
                 {name}
               </code>
               <span
-                className="bg-brand h-3 rounded-xs"
+                className="bg-foreground h-3 rounded-xs"
                 style={{ width: `var(${name})` }}
               />
               <TokenValue name={name} />
@@ -248,7 +248,7 @@ export default async function TokensPage({
         <div className="flex flex-wrap items-center gap-4">
           <button
             type="button"
-            className="bg-brand text-brand-foreground hover:bg-brand-hover h-12 rounded-sm px-8 text-sm font-medium transition-colors"
+            className="bg-foreground text-background h-12 rounded-sm px-8 text-sm font-medium transition-colors hover:opacity-90"
           >
             Ajouter au panier
           </button>

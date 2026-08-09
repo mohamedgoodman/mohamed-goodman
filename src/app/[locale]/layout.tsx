@@ -49,8 +49,8 @@ export async function generateMetadata({
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FAF8F4" },
-    { media: "(prefers-color-scheme: dark)", color: "#121210" },
+    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
+    { media: "(prefers-color-scheme: dark)", color: "#111111" },
   ],
 };
 
@@ -87,7 +87,7 @@ export default async function LocaleLayout({
           <NextIntlClientProvider>
             <a
               href="#main"
-              className="bg-brand text-brand-foreground sr-only rounded-sm px-4 py-2 focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[100]"
+              className="bg-foreground text-background sr-only rounded-sm px-4 py-2 focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-[100]"
             >
               {t("skipToContent")}
             </a>

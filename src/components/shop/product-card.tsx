@@ -7,7 +7,6 @@ import { useLocale, useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
 import { Price } from "@/components/ui/price";
-import { FREE_SHIPPING_THRESHOLD } from "@/data/morocco";
 import { pick, type Product } from "@/lib/shop/types";
 import { cn } from "@/lib/utils";
 
@@ -41,8 +40,6 @@ export function ProductCard({
   const secondary = product.images[1];
   const canSwap = Boolean(secondary?.present);
   const shown = hovered && canSwap ? secondary : primary;
-
-  const freeShipping = product.price >= FREE_SHIPPING_THRESHOLD;
 
   return (
     <article
@@ -115,7 +112,7 @@ export function ProductCard({
             locale={locale}
             className={cn(
               "text-sm",
-              product.compareAtPrice ? "text-sale font-medium" : "",
+              product.compareAtPrice && "text-sale font-medium",
             )}
           />
         </p>
@@ -157,12 +154,6 @@ export function ProductCard({
               })}
             </span>
           </p>
-        ) : null}
-
-        {/* Delivery cost belongs on the card, not only at checkout — it's the
-            number that decides whether a hesitant buyer clicks through. */}
-        {freeShipping ? (
-          <p className="text-success text-2xs mt-2">{t("freeShipping")}</p>
         ) : null}
       </div>
     </article>

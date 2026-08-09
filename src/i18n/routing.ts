@@ -23,4 +23,7 @@ export const routing = defineRouting({
   defaultLocale,
   // French is the default and lives at `/`; `/ar` and `/en` are prefixed.
   localePrefix: "as-needed",
+  // Browser Accept-Language was sending anyone with an English phone to /en.
+  // The shop is French-first; visitors switch language deliberately.
+  localeDetection: false,
 });

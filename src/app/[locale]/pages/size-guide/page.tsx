@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { ShirtMeasureTool } from "@/components/shop/shirt-measure-tool";
+import { GarmentMeasureTool } from "@/components/shop/garment-measure-tool";
 import { routing } from "@/i18n/routing";
 
 export function generateStaticParams() {
@@ -36,7 +36,7 @@ export default async function SizeGuidePage({
       </p>
 
       <div className="mt-(--space-12)">
-        <ShirtMeasureTool />
+        <GarmentMeasureTool />
       </div>
     </div>
   );

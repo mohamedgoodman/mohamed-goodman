@@ -1,33 +1,24 @@
 /**
  * Valid `categorie` values for the catalogue spreadsheet.
  *
- * Kept in its own module with no dependencies so the import script can
- * validate against it without pulling in app code, and so adding a collection
- * is a single edit that both the importer and the storefront pick up.
+ * No dependencies, so the import script can validate against it without
+ * pulling in app code. Adding a collection is a single edit here that both the
+ * importer and the storefront pick up — and a `categorie` the sheet uses that
+ * isn't in this list fails the import loudly rather than creating a page
+ * nobody can navigate to.
  */
 export const collectionHandles = [
   "nouveautes",
-  "vetements",
-  "chemises",
-  "mailles",
-  "polos",
-  "pantalons",
-  "shorts",
+  "sneakers",
+  "t-shirts",
+  "hoodies",
+  "sweats",
   "vestes",
-  "tailleur",
-  "costumes",
-  "blazers",
-  "chaussures",
-  "mocassins",
-  "bottes",
-  "accessoires",
-  "ceintures",
-  "maroquinerie",
-  "cravates",
-  "echarpes",
-  "lunettes",
-  "meilleures-ventes",
-  "fins-de-series",
+  "survetements",
+  "pantalons",
+  "casquettes",
+  "sacs",
+  "promos",
 ] as const;
 
 export type CollectionHandle = (typeof collectionHandles)[number];

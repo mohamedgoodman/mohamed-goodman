@@ -53,7 +53,7 @@ export function NewsletterForm() {
 
   return (
     <div>
-      <h3 className="text-h5 font-serif">{t("title")}</h3>
+      <h3 className="text-h5 font-display">{t("title")}</h3>
       <p className="text-muted-foreground mt-2 text-sm">{t("body")}</p>
 
       <form onSubmit={submit} noValidate className="mt-4 space-y-4">

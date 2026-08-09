@@ -1,32 +1,34 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PhoneIcon, ShoppingBagIcon, UserIcon } from "lucide-react";
+import { ShoppingBagIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { Link, usePathname } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
-import { MegaMenu } from "@/components/layout/mega-menu";
+import { MainNav } from "@/components/layout/main-nav";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { SearchOverlay } from "@/components/layout/search-overlay";
 import { Wordmark } from "@/components/layout/wordmark";
 import { WhatsAppContactLink } from "@/components/shop/whatsapp-button";
-import { brand } from "@/data/brand";
 import { useCartCount } from "@/lib/cart/use-cart-count";
 import { cn } from "@/lib/utils";
 
 /**
- * Sticky site header.
+ * Sticky header: wordmark left, nav centre, three actions right.
  *
- * Pages that open on full-bleed photography render `<HeaderHeroSentinel />` as
- * their first element; while that sentinel is in view the header floats
- * transparently over the image, and it turns solid the moment it scrolls past.
- * Pages without a sentinel are solid from the start, so this stays a per-page
- * decision without the layout needing to know which page it's rendering.
+ * The previous version carried nav, a centred wordmark, a phone number, three
+ * language codes and three icons in one row — too much to scan. Everything
+ * that isn't shopping (language, phone) is now demoted: language to a
+ * dropdown, phone into the trust strip and footer where it has room to be a
+ * real, tappable number.
+ *
+ * Pages that open on a full-bleed hero render `<HeaderHeroSentinel />` first;
+ * while it's in view the header floats transparent over the image and turns
+ * solid the moment it scrolls past.
  */
 export function Header() {
   const t = useTranslations("common");
-  const tNav = useTranslations("nav");
   const tCart = useTranslations("cart");
   const pathname = usePathname();
   const count = useCartCount();
@@ -64,69 +66,40 @@ export function Header() {
       className={cn(
         "sticky top-0 z-40 w-full transition-colors duration-300 ease-out",
         // Over a hero the header floats transparent — but the moment a
-        // mega-menu or the search panel opens beneath it, it has to become
-        // solid or its white labels sit on the panel's light background.
+        // mega-menu or the search panel opens beneath it, it goes solid or its
+        // white labels would sit on the panel's light background.
         overHero
           ? "text-on-image has-[[data-header-panel]]:bg-background has-[[data-header-panel]]:text-foreground bg-transparent"
-          : "bg-background/95 border-border border-b backdrop-blur-sm",
+          : "bg-background border-border border-b",
       )}
     >
-      <div className="container-editorial relative flex h-(--header-h) items-center justify-between lg:h-(--header-h-lg) xl:grid xl:grid-cols-[1fr_auto_1fr]">
-        {/* start: menu (mobile) / primary nav (desktop) */}
-        <div className="flex h-full items-center justify-start">
+      <div className="container-editorial relative flex h-(--header-h) items-center gap-4 lg:h-(--header-h-lg)">
+        {/* start: wordmark, with the drawer trigger beside it on phones */}
+        <div className="flex items-center gap-1">
           <MobileNav />
-          <MegaMenu className="hidden xl:block" />
+          <Wordmark />
         </div>
 
-        {/* Centre: two layouts, because the two constraints differ.
-            Below xl there is no nav, but the icon counts on each side are
-            unequal — a three-column grid would push the logo visibly off
-            centre, so it is absolutely centred instead.
-            From xl the mega-menu is present and the real risk is the nav
-            running under the logo, so the grid comes back and reserves the
-            space. (Centring is symmetric, so the physical translate below xl
-            is correct in RTL too.) */}
-        <div className="pointer-events-none absolute inset-y-0 left-1/2 flex -translate-x-1/2 items-center xl:pointer-events-auto xl:static xl:translate-x-0 xl:justify-center">
-          <Wordmark className="pointer-events-auto" />
-        </div>
+        {/* centre: five items, desktop only */}
+        <MainNav className="hidden flex-1 justify-center lg:flex" />
 
-        {/* end: utilities */}
-        <div className="flex h-full items-center justify-end gap-0.5 sm:gap-1">
-          {/* A visible phone number on desktop does more for trust here than
-              any badge — plenty of customers will call before they buy. */}
-          <a
-            href={`tel:${brand.phone}`}
-            dir="ltr"
-            className="me-3 hidden items-center gap-1.5 text-sm tabular-nums transition-opacity hover:opacity-70 xl:flex"
-          >
-            <PhoneIcon className="size-4" aria-hidden="true" />
-            {brand.phoneDisplay}
-          </a>
+        {/* end: search, WhatsApp, cart */}
+        <div className="ms-auto flex items-center gap-0.5 sm:gap-1 lg:ms-0">
+          <LocaleSwitcher className="me-1 hidden sm:block" />
 
-          {/* On phones, WhatsApp replaces it: nobody types a number they can
-              tap through to a chat. */}
-          <WhatsAppContactLink className="grid size-9 place-items-center xl:hidden" />
-
-          <LocaleSwitcher className="me-1 hidden xl:flex" />
           <SearchOverlay />
 
-          <Link
-            href="/orders/track"
-            aria-label={tNav("links.orderTracking")}
-            className="hidden size-9 place-items-center rounded-xs transition-opacity hover:opacity-70 sm:grid"
-          >
-            <UserIcon className="size-[1.15rem]" aria-hidden="true" />
-          </Link>
+          <WhatsAppContactLink className="grid size-9 place-items-center" />
 
           <Link
             href="/cart"
-            className="relative grid size-9 place-items-center rounded-xs transition-opacity hover:opacity-70"
+            className="relative grid size-9 place-items-center transition-opacity hover:opacity-70"
           >
             <ShoppingBagIcon className="size-[1.15rem]" aria-hidden="true" />
             {count > 0 ? (
               <span
                 aria-hidden="true"
-                className="bg-sale text-sale-foreground text-2xs absolute end-0.5 top-1 grid min-w-4 place-items-center rounded-full px-1 leading-4 font-medium"
+                className="bg-foreground text-background text-2xs absolute end-0.5 top-1 grid min-w-4 place-items-center rounded-full px-1 leading-4 font-medium"
               >
                 {count}
               </span>

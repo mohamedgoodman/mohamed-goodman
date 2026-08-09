@@ -85,7 +85,7 @@ export function SearchOverlay() {
             />
             <button
               type="submit"
-              className="tracking-eyebrow hover:text-brand hidden text-xs uppercase transition-colors sm:block"
+              className="tracking-eyebrow hidden text-xs uppercase transition-colors hover:opacity-70 sm:block"
             >
               {t("submit")}
             </button>

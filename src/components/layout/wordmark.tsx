@@ -3,24 +3,24 @@ import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
 /**
- * The centred wordmark. Set in the display serif with wide tracking — the
- * one place in the system where letter-spacing opens up rather than tightens.
- * Kept as text (not an image) so it stays crisp and translatable-free.
+ * The wordmark, set in the display grotesque at its heaviest weight.
+ *
+ * It stays Latin in every locale — a logotype isn't translated — so it keeps
+ * its slight tracking even on the Arabic page. `lang="en"` is both the opt-out
+ * hook for the RTL letter-spacing reset and the right hint for a screen
+ * reader.
  */
 export function Wordmark({ className }: { className?: string }) {
   return (
     <Link
       href="/"
-      // EDEN HOUSE is a Latin logotype: it keeps its wide tracking even on the
-      // Arabic page, and lang="en" is both the opt-out hook for the RTL
-      // letter-spacing reset and the right hint for a screen reader.
       lang="en"
       className={cn(
-        "font-serif text-[1.05rem] leading-none whitespace-nowrap uppercase sm:text-[1.25rem]",
-        "tracking-[0.22em] [--tracking-latin-inline:0.22em]",
-        // Also pin the Latin serif: on the Arabic page --font-serif points at
-        // the Naskh face, whose Latin glyphs are not the logotype.
-        "[--font-serif:var(--font-instrument-serif),ui-serif,serif]",
+        "font-display text-base leading-none font-black whitespace-nowrap uppercase sm:text-lg",
+        "tracking-[0.04em] [--tracking-latin-inline:0.04em]",
+        // Pin the Latin face: on the Arabic page --font-display points at the
+        // Arabic family, whose Latin glyphs are not the logotype.
+        "[--font-display:var(--font-archivo),ui-sans-serif,sans-serif]",
         className,
       )}
     >
