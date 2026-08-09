@@ -1,8 +1,8 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
-import { formatMAD } from "@/lib/money";
-import { getProducts } from "@/lib/shop";
+import { Price } from "@/components/ui/price";
+import { getProducts, pick } from "@/lib/shop";
 
 /**
  * Search results. Intentionally plain for now — the product card built in the
@@ -46,9 +46,15 @@ export default async function SearchPage({
             <li key={product.id}>
               <Link href={`/products/${product.slug}`} className="group block">
                 <div className="bg-surface-3 aspect-3/4 w-full overflow-hidden rounded-xs" />
-                <h2 className="mt-3 font-sans text-base">{product.name}</h2>
+                <h2 className="mt-3 font-sans text-base">
+                  {pick(product.name, locale)}
+                </h2>
                 <p className="text-muted-foreground text-sm">
-                  {formatMAD(product.price, { locale })}
+                  <Price
+                    amount={product.price}
+                    compareAt={product.compareAtPrice}
+                    locale={locale}
+                  />
                 </p>
               </Link>
             </li>

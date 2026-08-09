@@ -1,6 +1,6 @@
 import { brand } from "@/data/brand";
 import { formatMAD } from "@/lib/money";
-import type { Product } from "@/lib/shop/types";
+import { pick, type Product } from "@/lib/shop/types";
 
 /**
  * WhatsApp is how a large share of Moroccan orders actually get placed, so the
@@ -9,7 +9,7 @@ import type { Product } from "@/lib/shop/types";
  */
 
 export interface WhatsAppOrderInput {
-  product: Pick<Product, "name" | "reference" | "price">;
+  product: Pick<Product, "name" | "ref" | "price">;
   /** Display label, e.g. "M" or "42". */
   size?: string;
   /** Display name, e.g. "Écru". */
@@ -63,8 +63,8 @@ export function buildWhatsAppMessage({
   const lines = [
     GREETING[locale] ?? GREETING.fr,
     "",
-    `• ${product.name}`,
-    `• ${l.ref} ${product.reference}`,
+    `• ${pick(product.name, locale)}`,
+    `• ${l.ref} ${product.ref}`,
   ];
 
   if (color) lines.push(`• ${l.color} : ${color}`);

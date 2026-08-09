@@ -257,5 +257,30 @@
     "priceIntro": "ديما بالدرهم، بلا كسور.",
     "sample": "خزانة كتدوم",
     "sampleBody": "كنصمّمو قطع قليلة، وكنبقاو معاها مدة طويلة. كل موسم كيزيد قطعة ولا جوج للخزانة، ماشي مجموعة كاملة."
+  },
+  "badges": {
+    "new": "جديد",
+    "essential": "أساسي",
+    "last-pieces": "آخر القطع",
+    "sale": "تخفيض",
+    "bestseller": "الأكثر مبيعاً"
+  },
+  "product": {
+    "noImage": "التصويرة غادي توصل",
+    "colorCount": "{count, plural, one {لون واحد} two {جوج ألوان} few {# ألوان} other {# لون}}",
+    "ratingLabel": "التنقيط {value} من 5 من {count} كليان",
+    "freeShipping": "التوصيل مجاني"
+  },
+  "carousel": {
+    "previous": "السابق",
+    "next": "التالي",
+    "viewAll": "شوف الكل",
+    "viewAllCount": "{count, plural, one {قطعة وحدة} two {جوج قطع} few {# قطع} other {# قطعة}}"
+  },
+  "sections": {
+    "newArrivals": "وصل حديثاً",
+    "newArrivalsLink": "شوف المجموعة",
+    "tailoring": "الأناقة الرسمية",
+    "tailoringLink": "شوف البدلات"
   }
 }

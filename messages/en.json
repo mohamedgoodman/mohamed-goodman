@@ -257,5 +257,30 @@
     "outOfRange": "That's outside our size run — message us on WhatsApp and we'll help.",
     "reset": "Start again",
     "saved": "Size saved for your next visits."
+  },
+  "badges": {
+    "new": "New",
+    "essential": "Essential",
+    "last-pieces": "Last pieces",
+    "sale": "Sale",
+    "bestseller": "Best seller"
+  },
+  "product": {
+    "noImage": "Photo coming",
+    "colorCount": "{count, plural, one {# colour} other {# colours}}",
+    "ratingLabel": "Rated {value} out of 5 by {count} customers",
+    "freeShipping": "Free delivery"
+  },
+  "carousel": {
+    "previous": "Previous",
+    "next": "Next",
+    "viewAll": "View all",
+    "viewAllCount": "{count, plural, one {# piece} other {# pieces}}"
+  },
+  "sections": {
+    "newArrivals": "New arrivals",
+    "newArrivalsLink": "View the collection",
+    "tailoring": "The tailoring room",
+    "tailoringLink": "View tailoring"
   }
 }

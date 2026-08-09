@@ -2,19 +2,16 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { HeaderHeroSentinel } from "@/components/layout/header";
+import { ProductCarousel } from "@/components/shop/product-carousel";
 import { TrustStrip } from "@/components/shop/trust-strip";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { getProducts } from "@/lib/shop";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-/**
- * Home. The remaining homepage sections land in the next step; the hero and
- * trust strip are here because the Arabic pass and the mobile rhythm work
- * needed something real to be measured against.
- */
 export default async function HomePage({
   params,
 }: {
@@ -22,7 +19,16 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+
   const t = await getTranslations("home.hero");
+  const tSections = await getTranslations("sections");
+
+  // Both rails come from the same query surface — the carousel takes a list,
+  // it doesn't know which collection it's showing.
+  const [newArrivals, tailoring] = await Promise.all([
+    getProducts({ collection: "nouveautes", limit: 12 }),
+    getProducts({ collection: "tailleur", limit: 12 }),
+  ]);
 
   return (
     <>
@@ -30,9 +36,6 @@ export default async function HomePage({
       <section className="relative -mt-(--header-h) lg:-mt-(--header-h-lg)">
         <HeaderHeroSentinel />
 
-        {/* 70vh on phones: a full-height hero costs a whole scroll before any
-            product is visible, which is the wrong trade on the device most of
-            this traffic arrives on. */}
         <div className="relative flex min-h-[70svh] items-end md:min-h-[82svh]">
           <Image
             src="https://picsum.photos/seed/eh-hero-home/1920/1400"
@@ -42,7 +45,6 @@ export default async function HomePage({
             sizes="100vw"
             className="object-cover"
           />
-          {/* Scrim: keeps the headline legible over any photo. */}
           <div
             aria-hidden="true"
             className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-black/55"
@@ -55,7 +57,7 @@ export default async function HomePage({
             </p>
             <p className="mt-(--space-6)">
               <Link
-                href="/collections/new"
+                href="/collections/nouveautes"
                 className="bg-background text-foreground inline-flex h-12 items-center rounded-sm px-8 text-sm font-medium transition-opacity hover:opacity-90"
               >
                 {t("cta")}
@@ -66,6 +68,22 @@ export default async function HomePage({
       </section>
 
       <TrustStrip />
+
+      <ProductCarousel
+        title={tSections("newArrivals")}
+        href="/collections/nouveautes"
+        linkLabel={tSections("newArrivalsLink")}
+        products={newArrivals.items}
+        viewAllHref="/collections/nouveautes"
+      />
+
+      <ProductCarousel
+        title={tSections("tailoring")}
+        href="/collections/tailleur"
+        linkLabel={tSections("tailoringLink")}
+        products={tailoring.items}
+        viewAllHref="/collections/tailleur"
+      />
     </>
   );
 }

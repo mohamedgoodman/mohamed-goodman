@@ -1,93 +1,77 @@
 /**
  * Domain types for the storefront.
  *
- * These are deliberately source-agnostic: the mock file, a Shopify adapter or
- * a REST API all have to produce exactly these shapes. Nothing in the UI
- * imports from `data/products.ts` directly — it goes through `@/lib/shop`.
+ * These mirror the catalogue spreadsheet, which is the source of truth: one
+ * row per product, sizes as a flat list, colours as name+hex. Nothing here is
+ * invented by the app — if a field exists it came from a column.
+ *
+ * `products.generated.ts` is produced from the sheet by
+ * `npm run import:catalogue` and must satisfy exactly these shapes.
  */
 
-/** Money is stored as an integer number of MAD centimes-free dirhams. */
+/** Money is an integer number of dirhams — no centimes anywhere in the store. */
 export type Price = number;
 
-export type Badge = "new" | "essential" | "last-pieces" | "sale";
-
-export interface ProductImage {
-  /** Absolute or app-relative URL. Placeholders come from picsum.photos. */
-  url: string;
-  /** Required — every image on the site must be described. */
-  alt: string;
-  width: number;
-  height: number;
-  /** Which colour this shot belongs to; undefined = shared/hero shot. */
-  colorId?: string;
+/** Every customer-facing string exists in all three locales. */
+export interface Localized {
+  fr: string;
+  ar: string;
+  en: string;
 }
+
+/** Resolves a localized field, falling back to French. */
+export function pick(value: Localized, locale: string): string {
+  return value[locale as keyof Localized] || value.fr;
+}
+
+/** Badge keys map to a trilingual dictionary in messages (`badges.*`). */
+export type BadgeKey =
+  "new" | "essential" | "last-pieces" | "sale" | "bestseller";
 
 export interface ProductColor {
+  /** Slug of the colour name, stable enough to use as a React key. */
   id: string;
-  /** Display name, already localised at the data layer for now. */
   name: string;
   /** CSS colour for the swatch. */
-  swatch: string;
-  /** Optional second swatch colour for two-tone / patterned fabrics. */
-  swatchSecondary?: string;
+  hex: string;
 }
 
-export interface ProductSize {
-  /** Canonical size code, e.g. "M", "42", "30". */
-  id: string;
-  label: string;
-  /** EU equivalent shown in the size guide. */
-  eu?: string;
-  /** Key body measurement in cm, shown in the size guide. */
-  cm?: string;
-}
-
-export interface ProductVariant {
-  id: string;
-  colorId: string;
-  sizeId: string;
-  price: Price;
-  /** Strikethrough reference price when the variant is discounted. */
-  compareAtPrice?: Price;
-  available: boolean;
-  /** Drives the "last pieces" badge. */
-  stock: number;
-  sku: string;
+export interface ProductImage {
+  /** `/images/products/…`, or an absolute URL for placeholder photography. */
+  src: string;
+  /** True when the file was found on disk (or is a remote URL). */
+  present: boolean;
 }
 
 export interface Product {
+  /** The sheet's `ref`. */
   id: string;
+  ref: string;
   slug: string;
-  /** Customer-facing reference, used in the WhatsApp pre-filled message. */
-  reference: string;
-  name: string;
-  subtitle?: string;
-  description: string;
-  fabricAndCare: string;
+  /** The sheet's `ordre`; null sorts last. */
+  order: number | null;
+  /** Collection handle from `categorie`. */
+  collection: string;
+
+  name: Localized;
+  description: Localized;
+  material: Localized;
+  care: Localized;
+
   price: Price;
+  /** Only set when strictly greater than `price`. */
   compareAtPrice?: Price;
   currency: "MAD";
-  collections: string[];
-  category: ProductCategory;
-  badges: Badge[];
+
+  badge?: BadgeKey;
   colors: ProductColor[];
-  sizes: ProductSize[];
-  variants: ProductVariant[];
+  sizes: string[];
+  /** Sizes rendered disabled in the selector. */
+  soldOutSizes: string[];
   images: ProductImage[];
-  rating: { value: number; count: number };
-  /** Slugs of products shown in "Complete the look". */
-  relatedSlugs: string[];
-  createdAt: string;
-}
 
-export type ProductCategory =
-  "clothing" | "tailoring" | "shoes" | "accessories";
-
-export interface Collection {
-  handle: string;
-  title: string;
-  description: string;
-  image: ProductImage;
+  /** Absent when the sheet has no rating — stars are hidden entirely. */
+  rating?: { value: number; count: number };
 }
 
 /* ── Query surface ───────────────────────────────────────────────────────── */
@@ -97,14 +81,13 @@ export type SortKey =
 
 export interface ProductQuery {
   collection?: string;
-  category?: ProductCategory;
   colors?: string[];
   sizes?: string[];
   minPrice?: Price;
   maxPrice?: Price;
-  /** Only products with at least one available variant. */
+  /** Only products with at least one size still available. */
   inStockOnly?: boolean;
-  badges?: Badge[];
+  badges?: BadgeKey[];
   search?: string;
   sort?: SortKey;
   limit?: number;
@@ -114,4 +97,11 @@ export interface ProductQuery {
 export interface ProductList {
   items: Product[];
   total: number;
+}
+
+export interface Collection {
+  handle: string;
+  title: Localized;
+  description: Localized;
+  image: { src: string; alt: Localized };
 }

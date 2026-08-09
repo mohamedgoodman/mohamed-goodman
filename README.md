@@ -19,6 +19,7 @@ npm run dev     # http://localhost:3000
 | `npm run build`  | Production build |
 | `npm run lint`   | ESLint           |
 | `npm run format` | Prettier write   |
+| `npm run import:catalogue` | Rebuild products from the spreadsheet |
 
 ## Where things live
 
@@ -34,8 +35,9 @@ src/
   i18n/                   routing · navigation · request config (next-intl)
   proxy.ts                Locale negotiation (Next 16's middleware convention)
   data/
-    products.ts           MOCK catalogue — replace with real data
-    collections.ts        MOCK collections
+    products.generated.ts GENERATED from the spreadsheet — never edit
+    collection-handles.ts Valid `categorie` values, shared with the importer
+    collections.ts        Collection metadata (trilingual)
     morocco.ts            Cities, delivery zones, shipping fees
     brand.ts              Name, WhatsApp number, socials
   lib/
@@ -44,6 +46,41 @@ src/
     fonts.ts              next/font: Instrument Serif + Inter (+ Arabic faces)
     design-tokens.ts      Token inventory for the preview page
 ```
+
+## The catalogue
+
+Products come from a spreadsheet, not from TypeScript. To update the store:
+
+```bash
+# 1. drop your spreadsheet here (this exact filename)
+#    data/EDEN-HOUSE-catalogue-produits.xlsx
+# 2. regenerate
+npm run import:catalogue
+```
+
+That reads the `PRODUITS` sheet and writes `src/data/products.generated.ts`.
+It is idempotent — an unchanged sheet leaves the file byte-identical, so it
+produces no git noise. You never edit product data by hand.
+
+The importer refuses to emit a broken catalogue. Any malformed row prints the
+spreadsheet row number, the column and what was wrong, then exits non-zero
+without writing anything:
+
+```
+✖ 2 problem(s) — nothing was written:
+   row 7 · column "categorie": "chapeaux" is not a known collection handle…
+   row 9 · column "couleurs": "#zzz" is not a hex colour (expected #RGB or #RRGGBB)
+```
+
+Missing image files are a **warning**, not an error — photography usually lands
+after the data, so the import continues and the card shows a placeholder.
+
+Column mapping lives at the top of `scripts/import-catalogue.ts`. Valid values
+for `categorie` are the handles in `src/data/collection-handles.ts`.
+
+Until the real spreadsheet is in place the importer falls back to
+`data/catalogue-sample.xlsx` (and says so loudly) so the storefront has
+something to render.
 
 ## The data layer
 
