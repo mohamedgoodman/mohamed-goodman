@@ -146,6 +146,19 @@ export async function getRelatedProducts(
   );
 }
 
+/**
+ * Handles that actually contain products right now.
+ *
+ * The navigation filters against this so a customer is never sent to an empty
+ * category page. It's derived from the catalogue rather than configured, so
+ * categories disappear and come back on their own as the spreadsheet changes —
+ * nothing to remember to switch on when stock arrives.
+ */
+export async function getPopulatedCollections(): Promise<string[]> {
+  const all = await source();
+  return [...new Set(all.map((product) => product.collection))];
+}
+
 export async function getCollections(): Promise<Collection[]> {
   return collectionSource();
 }

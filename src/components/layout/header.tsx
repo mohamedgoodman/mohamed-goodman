@@ -29,7 +29,12 @@ import { cn } from "@/lib/utils";
  * while it's in view the header floats transparent over the image and turns
  * solid the moment it scrolls past.
  */
-export function Header() {
+export function Header({
+  populatedCollections,
+}: {
+  /** Handles with stock; empty categories are hidden from the nav. */
+  populatedCollections: string[];
+}) {
   const t = useTranslations("common");
   const tCart = useTranslations("cart");
   const pathname = usePathname();
@@ -78,12 +83,15 @@ export function Header() {
       <div className="container-editorial relative flex h-(--header-h) items-center gap-4 lg:h-(--header-h-lg)">
         {/* start: wordmark, with the drawer trigger beside it on phones */}
         <div className="flex items-center gap-1">
-          <MobileNav />
+          <MobileNav populatedCollections={populatedCollections} />
           <Wordmark />
         </div>
 
         {/* centre: five items, desktop only */}
-        <MainNav className="hidden flex-1 justify-center lg:flex" />
+        <MainNav
+          className="hidden flex-1 justify-center lg:flex"
+          populatedCollections={populatedCollections}
+        />
 
         {/* end: search, WhatsApp, cart */}
         <div className="ms-auto flex items-center gap-0.5 sm:gap-1 lg:ms-0">

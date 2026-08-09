@@ -25,12 +25,27 @@ import { cn } from "@/lib/utils";
  * more tap between someone and the sneakers. Sub-collections follow as a
  * secondary list.
  */
-export function MobileNav() {
+export function MobileNav({
+  populatedCollections,
+}: {
+  populatedCollections: string[];
+}) {
   const t = useTranslations("nav");
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
 
-  const secondary = footerNav.filter((column) => column.key !== "shop");
+  const isLive = (href: string) =>
+    !href.startsWith("/collections/") ||
+    populatedCollections.some((handle) => href.endsWith(`/${handle}`));
+
+  const items = mainNav.filter((item) => isLive(item.href));
+  const secondary = footerNav
+    .filter((column) => column.key !== "shop")
+    .map((column) => ({
+      ...column,
+      links: column.links.filter((l) => isLive(l.href)),
+    }))
+    .filter((column) => column.links.length > 0);
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -73,7 +88,7 @@ export function MobileNav() {
 
         <nav className="flex-1 overflow-y-auto overscroll-contain pb-(--space-16)">
           <ul>
-            {mainNav.map((item) => (
+            {items.map((item) => (
               <li key={item.key} className="border-border border-b">
                 <Link
                   href={item.href}

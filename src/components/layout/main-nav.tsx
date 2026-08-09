@@ -14,14 +14,25 @@ import { cn } from "@/lib/utils";
  * header felt crowded. Sub-collections live in the footer and the mobile
  * drawer, where there's room for them.
  */
-export function MainNav({ className }: { className?: string }) {
+export function MainNav({
+  className,
+  populatedCollections,
+}: {
+  className?: string;
+  populatedCollections: string[];
+}) {
   const t = useTranslations("nav");
   const pathname = usePathname();
+
+  // Never link to a category with nothing in it.
+  const items = mainNav.filter((item) =>
+    populatedCollections.some((handle) => item.href.endsWith(`/${handle}`)),
+  );
 
   return (
     <nav className={cn("items-center", className)} aria-label={t("openMenu")}>
       <ul className="flex items-center gap-6 xl:gap-8">
-        {mainNav.map((item) => {
+        {items.map((item) => {
           const current = pathname.startsWith(item.href);
           return (
             <li key={item.key}>

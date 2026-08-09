@@ -11,6 +11,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { brand } from "@/config/shop";
 import { fontVariables } from "@/lib/fonts";
 import { getDirection, routing, type Locale } from "@/i18n/routing";
+import { getPopulatedCollections } from "@/lib/shop";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -69,6 +70,7 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   const t = await getTranslations({ locale, namespace: "common" });
+  const populatedCollections = await getPopulatedCollections();
   const dir = getDirection(locale as Locale);
 
   return (
@@ -93,11 +95,11 @@ export default async function LocaleLayout({
               {t("skipToContent")}
             </a>
             <AnnouncementBar />
-            <Header />
+            <Header populatedCollections={populatedCollections} />
             <main id="main" className="flex-1">
               {children}
             </main>
-            <Footer />
+            <Footer populatedCollections={populatedCollections} />
             <FloatingWhatsApp />
           </NextIntlClientProvider>
         </ThemeProvider>

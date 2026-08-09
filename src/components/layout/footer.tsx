@@ -23,10 +23,26 @@ import { footerNav } from "@/data/navigation";
  * an address block reading "à compléter" or a social icon linking nowhere
  * damages trust more than the missing block would.
  */
-export function Footer() {
+export function Footer({
+  populatedCollections,
+}: {
+  populatedCollections: string[];
+}) {
   const t = useTranslations("footer");
   const tNav = useTranslations("nav");
   const year = new Date().getFullYear();
+
+  // Same rule as the header: no link into an empty category.
+  const isLive = (href: string) =>
+    !href.startsWith("/collections/") ||
+    populatedCollections.some((handle) => href.endsWith(`/${handle}`));
+
+  const columns = footerNav
+    .map((column) => ({
+      ...column,
+      links: column.links.filter((link) => isLive(link.href)),
+    }))
+    .filter((column) => column.links.length > 0);
 
   const socials = [
     hasInstagram ? { href: shopLinks.instagram, label: "Instagram" } : null,
@@ -45,7 +61,7 @@ export function Footer() {
             aria-label={t("columns.shop")}
             className="grid grid-cols-2 gap-(--space-8) sm:grid-cols-3 lg:col-span-7"
           >
-            {footerNav.map((column) => (
+            {columns.map((column) => (
               <div key={column.key}>
                 <h3 className="eyebrow">{t(`columns.${column.key}`)}</h3>
                 <ul className="mt-4 space-y-2.5">
