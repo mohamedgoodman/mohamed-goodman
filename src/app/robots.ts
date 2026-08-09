@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { brand } from "@/data/brand";
+import { brand } from "@/config/shop";
 
 export default function robots(): MetadataRoute.Robots {
   return {

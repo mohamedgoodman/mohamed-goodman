@@ -1,7 +1,7 @@
 import { BanknoteIcon, MapPinIcon, StoreIcon, TruckIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import { brand } from "@/data/brand";
+import { brand, hasAddress, hasMapsUrl, shop } from "@/config/shop";
 import { buildWhatsAppContactLink } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 
@@ -47,21 +47,33 @@ export function TrustStrip({ className }: { className?: string }) {
           </div>
         </li>
 
+        {/* Only claim there's a shop to visit once there's an address. */}
         <li className="border-border flex items-start gap-2.5 py-4 pe-4 md:border-e md:py-5 md:ps-6 md:pe-6">
           <StoreIcon className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
           <div>
             <p className="text-sm leading-snug font-medium">
               {t("store.title")}
             </p>
-            <a
-              href={brand.store.mapsUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="link-underline mt-1 inline-flex items-center gap-1 text-xs md:text-sm"
-            >
-              <MapPinIcon className="size-3.5 shrink-0" aria-hidden="true" />
-              {t("store.body")}
-            </a>
+            {hasAddress ? (
+              <p className="text-muted-foreground mt-1 text-xs md:text-sm">
+                <bdi>{shop.ADDRESS}</bdi>
+              </p>
+            ) : (
+              <p className="text-muted-foreground mt-1 text-xs md:text-sm">
+                {t("store.bodyFallback")}
+              </p>
+            )}
+            {hasMapsUrl ? (
+              <a
+                href={shop.MAPS_URL}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="link-underline mt-1 inline-flex items-center gap-1 text-xs md:text-sm"
+              >
+                <MapPinIcon className="size-3.5 shrink-0" aria-hidden="true" />
+                {t("store.body")}
+              </a>
+            ) : null}
           </div>
         </li>
 

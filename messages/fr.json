@@ -35,8 +35,7 @@
       "tagline": "Toutes les pointures en stock à Ben Guerir. Commandez avant 18h, vous êtes livré le jour même.",
       "cta": "Voir les nouveautés",
       "ctaWhatsapp": "Commander sur WhatsApp",
-      "imagePlaceholder": "Votre photo produit ici",
-      "imagePlaceholderHint": "1200 × 1500 · fond uni"
+      "imageAlt": "Photo produit EDEN HOUSE"
     }
   },
   "howItWorks": {
@@ -71,7 +70,8 @@
     },
     "store": {
       "title": "Essayez en boutique",
-      "body": "Voir l'adresse"
+      "body": "Voir l'adresse",
+      "bodyFallback": "Ben Guerir centre"
     },
     "whatsapp": {
       "title": "Une question ?",
@@ -122,11 +122,23 @@
     "close": "Fermer",
     "resultsFor": "Résultats pour « {query} »",
     "empty": "Rien ne correspond à cette recherche.",
-    "count": "{count, plural, =0 {aucun article} one {# article} other {# articles}}"
+    "count": "{count, plural, =0 {aucun article} one {# article} other {# articles}}",
+    "emptyHint": "Essayez une de ces catégories :"
   },
   "cart": {
     "open": "Ouvrir le panier",
-    "itemCount": "{count, plural, =0 {Panier vide} one {# article} other {# articles}}"
+    "itemCount": "{count, plural, =0 {Panier vide} one {# article} other {# articles}}",
+    "title": "Panier",
+    "empty": "Votre panier est vide.",
+    "emptyCta": "Voir les nouveautés",
+    "remove": "Retirer",
+    "quantity": "Quantité",
+    "subtotal": "Sous-total",
+    "checkoutWhatsapp": "Commander sur WhatsApp",
+    "continue": "Continuer mes achats",
+    "size": "Taille",
+    "color": "Couleur",
+    "deliveryNote": "Livraison le jour même à Ben Guerir. Vous payez à la livraison."
   },
   "badges": {
     "new": "Nouveau",
@@ -139,7 +151,9 @@
     "noImage": "Photo à venir",
     "colorCount": "{count, plural, one {# couleur} other {# couleurs}}",
     "ratingLabel": "Noté {value} sur 5 par {count} clients",
-    "freeShipping": "Livraison offerte"
+    "freeShipping": "Livraison offerte",
+    "wishlist": "Ajouter {name} aux favoris",
+    "soldOut": "Épuisé"
   },
   "carousel": {
     "previous": "Précédent",
@@ -236,5 +250,34 @@
     "priceIntro": "Toujours en dirhams, sans décimales.",
     "sample": "Sneakers et streetwear",
     "sampleBody": "Ce qui est en stock, dans toutes les pointures, livré le jour même à Ben Guerir."
+  },
+  "collection": {
+    "empty": "Rien dans cette catégorie pour le moment.",
+    "emptyCta": "Voir les nouveautés",
+    "count": "{count, plural, one {# article} other {# articles}}"
+  },
+  "tracking": {
+    "title": "Suivre ma commande",
+    "intro": "Entrez le numéro que vous avez donné en commandant. Pas besoin de compte.",
+    "phoneLabel": "Votre numéro",
+    "submit": "Chercher",
+    "invalid": "Entrez un numéro marocain valide (06 ou 07).",
+    "notFoundTitle": "Aucune commande trouvée pour ce numéro",
+    "notFoundBody": "Le suivi en ligne n'est pas encore branché. Écrivez-nous sur WhatsApp avec votre numéro, on vous répond tout de suite.",
+    "askWhatsapp": "Demander sur WhatsApp"
+  },
+  "pdp": {
+    "chooseSize": "Choisissez une taille",
+    "chooseColor": "Couleur",
+    "addToCart": "Ajouter au panier",
+    "added": "Ajouté au panier",
+    "sizeRequired": "Choisissez d'abord une taille",
+    "soldOut": "Épuisé",
+    "description": "Description",
+    "material": "Matière",
+    "care": "Entretien",
+    "related": "Ça va aussi avec",
+    "sizeGuide": "Guide des tailles",
+    "reference": "Réf."
   }
 }

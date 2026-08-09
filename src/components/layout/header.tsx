@@ -10,7 +10,9 @@ import { MainNav } from "@/components/layout/main-nav";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { SearchOverlay } from "@/components/layout/search-overlay";
 import { Wordmark } from "@/components/layout/wordmark";
+import { InstagramGlyph } from "@/components/shop/social-icons";
 import { WhatsAppContactLink } from "@/components/shop/whatsapp-button";
+import { hasInstagram, shopLinks } from "@/config/shop";
 import { useCartCount } from "@/lib/cart/use-cart-count";
 import { cn } from "@/lib/utils";
 
@@ -89,7 +91,23 @@ export function Header() {
 
           <SearchOverlay />
 
+          {/* Always visible, including mobile: WhatsApp is how most orders
+              actually start. */}
           <WhatsAppContactLink className="grid size-9 place-items-center" />
+
+          {/* Hidden entirely until INSTAGRAM is set — a dead icon is worse
+              than no icon. */}
+          {hasInstagram ? (
+            <a
+              href={shopLinks.instagram}
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="Instagram"
+              className="grid size-9 place-items-center transition-opacity hover:opacity-70"
+            >
+              <InstagramGlyph className="size-[1.15rem]" />
+            </a>
+          ) : null}
 
           <Link
             href="/cart"

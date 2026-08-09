@@ -1,4 +1,4 @@
-import { brand } from "@/data/brand";
+import { brand } from "@/config/shop";
 import { formatMAD } from "@/lib/money";
 import { pick, type Product } from "@/lib/shop/types";
 
@@ -82,6 +82,41 @@ export function buildWhatsAppMessage({
 export function buildWhatsAppOrderLink(input: WhatsAppOrderInput): string {
   const text = encodeURIComponent(buildWhatsAppMessage(input));
   return `https://wa.me/${brand.whatsapp}?text=${text}`;
+}
+
+/** Whole-basket message, used by the cart when handing off to WhatsApp. */
+export function buildWhatsAppCartLink(
+  lines: Array<{
+    name: string;
+    ref: string;
+    size: string;
+    color: string;
+    quantity: number;
+    price: number;
+  }>,
+  subtotal: number,
+  locale = "fr",
+): string {
+  const l = LABELS[locale] ?? LABELS.fr;
+  const totals: Record<string, string> = {
+    fr: "Total",
+    ar: "المجموع",
+    en: "Total",
+  };
+
+  const body = [
+    GREETING[locale] ?? GREETING.fr,
+    "",
+    ...lines.map(
+      (line) =>
+        `• ${line.name} (${l.ref} ${line.ref}) — ${l.size} ${line.size}, ` +
+        `${l.color} ${line.color} × ${line.quantity}`,
+    ),
+    "",
+    `${totals[locale] ?? totals.fr} : ${formatMAD(subtotal, { locale })}`,
+  ].join("\n");
+
+  return `https://wa.me/${brand.whatsapp}?text=${encodeURIComponent(body)}`;
 }
 
 /** Plain "talk to us" link, for the header and contact points. */

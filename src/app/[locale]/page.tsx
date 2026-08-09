@@ -1,12 +1,16 @@
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { HowItWorks } from "@/components/shop/how-it-works";
+import { ProductCard } from "@/components/shop/product-card";
 import { ProductCarousel } from "@/components/shop/product-carousel";
 import { TrustStrip } from "@/components/shop/trust-strip";
 import { Link } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { getProducts } from "@/lib/shop";
 import { buildWhatsAppContactLink } from "@/lib/whatsapp";
+import { hasHeroImage, shop } from "@/config/shop";
+import { cn } from "@/lib/utils";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -29,18 +33,28 @@ export default async function HomePage({
     getProducts({ collection: "sneakers", limit: 12 }),
   ]);
 
+  const featured = newArrivals.items.slice(0, 3);
+
   return (
     <>
       {/*
-        Product-led hero: copy on the left, one large image slot on the right.
-        The slot is deliberately an empty placeholder — a stock photo of some
-        other brand's product is worse than no photo, and this shop's own
-        photography is the only imagery that belongs here.
+        Typographic hero. There is no product photography yet, and a large
+        empty grey box reads as a broken page — so the type carries it, and
+        three real product cards sit immediately below the fold instead.
+
+        Set HERO_IMAGE in config/shop.ts to switch this to an image-led hero;
+        nothing else needs to change.
       */}
       <section className="border-border border-b">
-        <div className="container-editorial grid items-center gap-(--space-8) py-(--space-section) lg:grid-cols-2 lg:gap-(--space-16)">
+        <div
+          className={cn(
+            "container-editorial py-(--space-section)",
+            hasHeroImage &&
+              "grid items-center gap-(--space-8) lg:grid-cols-2 lg:gap-(--space-16)",
+          )}
+        >
           <div>
-            <h1 className="text-display max-w-[14ch]">{t("headline")}</h1>
+            <h1 className="text-display max-w-[18ch]">{t("headline")}</h1>
             <p className="text-muted-foreground mt-5 max-w-[46ch] text-lg">
               {t("tagline")}
             </p>
@@ -63,14 +77,37 @@ export default async function HomePage({
             </div>
           </div>
 
-          {/* TODO: swap for the shop's own photo. */}
-          <div className="bg-surface border-border relative aspect-4/5 w-full border sm:aspect-3/2 lg:aspect-4/5">
-            <div className="text-muted-foreground absolute inset-0 grid place-content-center gap-1 text-center">
-              <p className="text-sm font-medium">{t("imagePlaceholder")}</p>
-              <p className="text-xs">{t("imagePlaceholderHint")}</p>
+          {hasHeroImage ? (
+            <div className="bg-surface relative aspect-4/5 w-full">
+              <Image
+                src={shop.HERO_IMAGE}
+                alt={t("imageAlt")}
+                fill
+                priority
+                sizes="(min-width: 1024px) 45vw, 100vw"
+                className="object-cover"
+              />
             </div>
-          </div>
+          ) : null}
         </div>
+
+        {/* Three cards above the fold: the fastest proof that this is a shop. */}
+        {featured.length > 0 ? (
+          <ul className="container-editorial grid grid-cols-2 gap-x-4 gap-y-8 pb-(--space-section) md:grid-cols-3">
+            {featured.map((product, i) => (
+              <li
+                key={product.id}
+                className={i === 2 ? "hidden md:block" : undefined}
+              >
+                <ProductCard
+                  product={product}
+                  priority={i === 0}
+                  sizes="(min-width: 768px) 30vw, 45vw"
+                />
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </section>
 
       <TrustStrip />

@@ -6,8 +6,9 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { FloatingWhatsApp } from "@/components/shop/floating-whatsapp";
 import { ThemeProvider } from "@/components/theme-provider";
-import { brand } from "@/data/brand";
+import { brand } from "@/config/shop";
 import { fontVariables } from "@/lib/fonts";
 import { getDirection, routing, type Locale } from "@/i18n/routing";
 import "../globals.css";
@@ -97,6 +98,7 @@ export default async function LocaleLayout({
               {children}
             </main>
             <Footer />
+            <FloatingWhatsApp />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

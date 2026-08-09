@@ -5,25 +5,33 @@ import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/layout/locale-switcher";
 import { NewsletterForm } from "@/components/layout/newsletter-form";
 import { PaymentMarks } from "@/components/layout/payment-marks";
-import { brand } from "@/data/brand";
+import {
+  brand,
+  hasAddress,
+  hasInstagram,
+  hasMapsUrl,
+  hasTiktok,
+  shop,
+  shopLinks,
+} from "@/config/shop";
 import { footerNav } from "@/data/navigation";
 
-const socials: Array<{ key: keyof typeof brand.social; label: string }> = [
-  { key: "instagram", label: "Instagram" },
-  { key: "tiktok", label: "TikTok" },
-];
-
 /**
- * Site footer: three link columns plus the newsletter, then a bottom rule with
- * socials, payment marks and the language switcher.
+ * Site footer.
  *
- * On mobile the columns stack; the newsletter comes first there because it's
- * the only thing in the footer a phone visitor is likely to act on.
+ * Every block here is conditional on the config actually holding a value —
+ * an address block reading "à compléter" or a social icon linking nowhere
+ * damages trust more than the missing block would.
  */
 export function Footer() {
   const t = useTranslations("footer");
   const tNav = useTranslations("nav");
   const year = new Date().getFullYear();
+
+  const socials = [
+    hasInstagram ? { href: shopLinks.instagram, label: "Instagram" } : null,
+    hasTiktok ? { href: shopLinks.tiktok, label: "TikTok" } : null,
+  ].filter((s): s is { href: string; label: string } => s !== null);
 
   return (
     <footer className="border-border mt-(--space-section) border-t">
@@ -45,7 +53,7 @@ export function Footer() {
                     <li key={`${column.key}-${link.key}`}>
                       <Link
                         href={link.href}
-                        className="text-subtle-foreground hover:text-foreground text-base transition-colors"
+                        className="text-muted-foreground hover:text-foreground text-base transition-colors"
                       >
                         {tNav(`links.${link.key}`)}
                       </Link>
@@ -57,35 +65,33 @@ export function Footer() {
           </nav>
         </div>
 
-        {/* Where the shop physically is, and how to reach a person. Both are
-            reasons a first-time buyer decides the store is real. */}
         <div className="border-border mt-(--space-12) grid gap-6 border-t pt-8 sm:grid-cols-2">
-          <div>
-            <h3 className="eyebrow">{t("store.title")}</h3>
-            {/* A Latin street address inside RTL copy gets reordered by the
-                bidi algorithm ("12, rue…" comes out "rue…, 12"). Each line is
-                isolated so it keeps its own reading order. */}
-            <address className="mt-3 text-sm not-italic">
-              <bdi>{brand.store.line1}</bdi>
-              <br />
-              <bdi>
-                {brand.store.district}, {brand.store.city}
-              </bdi>
-              <br />
-              <span className="text-muted-foreground">
-                {t("store.hours", { hours: brand.store.hours })}
-              </span>
-            </address>
-            <a
-              href={brand.store.mapsUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="link-underline mt-3 inline-flex items-center gap-1.5 text-sm"
-            >
-              <MapPinIcon className="size-4" aria-hidden="true" />
-              {t("store.directions")}
-            </a>
-          </div>
+          {/* The store block only appears once there's a real address. */}
+          {hasAddress ? (
+            <div>
+              <h3 className="eyebrow">{t("store.title")}</h3>
+              <address className="mt-3 text-sm not-italic">
+                {/* A Latin address inside RTL copy gets reordered by the bidi
+                    algorithm, so each line is isolated. */}
+                <bdi>{shop.ADDRESS}</bdi>
+                <br />
+                <span className="text-muted-foreground">
+                  {t("store.hours", { hours: brand.hours })}
+                </span>
+              </address>
+              {hasMapsUrl ? (
+                <a
+                  href={shop.MAPS_URL}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="link-underline mt-3 inline-flex items-center gap-1.5 text-sm"
+                >
+                  <MapPinIcon className="size-4" aria-hidden="true" />
+                  {t("store.directions")}
+                </a>
+              ) : null}
+            </div>
+          ) : null}
 
           <div>
             <h3 className="eyebrow">{t("callUs")}</h3>
@@ -101,24 +107,26 @@ export function Footer() {
         </div>
 
         <div className="border-border mt-(--space-12) flex flex-col gap-6 border-t pt-8 lg:flex-row lg:items-center lg:justify-between">
-          <ul aria-label={t("followUs")} className="flex flex-wrap gap-4">
-            {socials.map(({ key, label }) => (
-              <li key={key}>
-                <a
-                  href={brand.social[key]}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
+          {socials.length > 0 ? (
+            <ul aria-label={t("followUs")} className="flex flex-wrap gap-4">
+              {socials.map(({ href, label }) => (
+                <li key={label}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          ) : null}
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
             <PaymentMarks />
-            <LocaleSwitcher className="xl:hidden" />
+            <LocaleSwitcher className="lg:hidden" />
           </div>
         </div>
 

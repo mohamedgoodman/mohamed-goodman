@@ -1,6 +1,6 @@
 import { useLocale, useTranslations } from "next-intl";
 
-import { brand } from "@/data/brand";
+import { brand } from "@/config/shop";
 import {
   buildWhatsAppContactLink,
   buildWhatsAppOrderLink,
@@ -31,13 +31,16 @@ function WhatsAppIcon({ className }: { className?: string }) {
 export function WhatsAppOrderButton({
   order,
   className,
-  variant = "solid",
   showLabel = true,
+  /** When true the click is intercepted and `onBlocked` runs instead. */
+  blocked = false,
+  onBlocked,
 }: {
   order: WhatsAppOrderInput;
   className?: string;
-  variant?: "solid" | "outline" | "bare";
   showLabel?: boolean;
+  blocked?: boolean;
+  onBlocked?: () => boolean | void;
 }) {
   const t = useTranslations("whatsapp");
   const locale = useLocale();
@@ -54,12 +57,16 @@ export function WhatsAppOrderButton({
       target="_blank"
       rel="noreferrer noopener"
       aria-label={t("order")}
+      onClick={(event) => {
+        // An order message with no size just moves the question to the shop
+        // owner — ask here instead of sending an incomplete order.
+        if (blocked) {
+          event.preventDefault();
+          onBlocked?.();
+        }
+      }}
       className={cn(
-        "inline-flex h-11 items-center justify-center gap-2 rounded-sm px-5 text-sm font-medium transition-colors",
-        variant === "solid" && "bg-[#25D366] text-[#062e16] hover:bg-[#1fb855]",
-        variant === "outline" &&
-          "border-border hover:border-foreground border bg-transparent",
-        variant === "bare" && "h-auto px-0 hover:opacity-70",
+        "border-foreground text-foreground hover:bg-foreground hover:text-background inline-flex h-12 items-center justify-center gap-2 rounded-sm border px-6 text-sm font-medium transition-colors",
         className,
       )}
     >

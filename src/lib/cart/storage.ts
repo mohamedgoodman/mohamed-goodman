@@ -10,9 +10,17 @@ export const CART_STORAGE_KEY = "eh:cart";
 export const CART_CHANGE_EVENT = "eh:cart-change";
 
 export interface StoredCartLine {
+  /** `${slug}::${size}::${color}` — one line per size+colour combination. */
   variantId: string;
   slug: string;
+  size: string;
+  color: string;
   quantity: number;
+}
+
+/** Builds the variant key so every writer agrees on the shape. */
+export function variantId(slug: string, size: string, color: string): string {
+  return `${slug}::${size}::${color}`;
 }
 
 export function readCartLines(): StoredCartLine[] {

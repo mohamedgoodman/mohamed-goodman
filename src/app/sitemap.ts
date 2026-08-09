@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { brand } from "@/data/brand";
+import { brand } from "@/config/shop";
 import { defaultLocale, locales } from "@/i18n/routing";
 import { getCollections, getProductSlugs } from "@/lib/shop";
 

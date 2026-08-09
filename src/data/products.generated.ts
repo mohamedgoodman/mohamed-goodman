@@ -49,10 +49,6 @@ export const generatedProducts: Product[] = [
     sizes: ["39", "40", "41", "42", "43", "44", "45"],
     soldOutSizes: ["39"],
     images: [],
-    rating: {
-      value: 4.5,
-      count: 34,
-    },
   },
   {
     id: "EH-SNK-02",
@@ -98,10 +94,6 @@ export const generatedProducts: Product[] = [
     sizes: ["40", "41", "42", "43", "44", "45"],
     soldOutSizes: [],
     images: [],
-    rating: {
-      value: 4.3,
-      count: 41,
-    },
   },
   {
     id: "EH-HOD-01",
@@ -153,10 +145,6 @@ export const generatedProducts: Product[] = [
     sizes: ["S", "M", "L", "XL", "XXL"],
     soldOutSizes: ["XXL"],
     images: [],
-    rating: {
-      value: 4.7,
-      count: 88,
-    },
   },
   {
     id: "EH-SNK-03",
@@ -198,10 +186,6 @@ export const generatedProducts: Product[] = [
     sizes: ["40", "41", "42", "43", "44"],
     soldOutSizes: ["44"],
     images: [],
-    rating: {
-      value: 4.8,
-      count: 63,
-    },
   },
   {
     id: "EH-SNK-04",
@@ -246,10 +230,6 @@ export const generatedProducts: Product[] = [
     sizes: ["40", "41", "42", "43", "44", "45"],
     soldOutSizes: [],
     images: [],
-    rating: {
-      value: 4.2,
-      count: 19,
-    },
   },
   {
     id: "EH-TEE-01",
@@ -300,10 +280,6 @@ export const generatedProducts: Product[] = [
     sizes: ["S", "M", "L", "XL"],
     soldOutSizes: [],
     images: [],
-    rating: {
-      value: 4.6,
-      count: 152,
-    },
   },
   {
     id: "EH-JKT-01",
@@ -349,10 +325,6 @@ export const generatedProducts: Product[] = [
     sizes: ["M", "L", "XL"],
     soldOutSizes: [],
     images: [],
-    rating: {
-      value: 4.4,
-      count: 27,
-    },
   },
   {
     id: "EH-SWT-01",

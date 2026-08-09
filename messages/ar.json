@@ -35,8 +35,7 @@
       "tagline": "كل القياسات موجودة فبن جرير. طلب قبل 6 ديال العشية وتوصلك نفس النهار.",
       "cta": "شوف الجديد",
       "ctaWhatsapp": "اطلب عبر واتساب",
-      "imagePlaceholder": "تصويرة المنتوج ديالك هنا",
-      "imagePlaceholderHint": "1200 × 1500 · خلفية بسيطة"
+      "imageAlt": "تصويرة منتوج إيدن هاوس"
     }
   },
   "howItWorks": {
@@ -71,7 +70,8 @@
     },
     "store": {
       "title": "جرب فالمحل",
-      "body": "شوف العنوان"
+      "body": "شوف العنوان",
+      "bodyFallback": "وسط بن جرير"
     },
     "whatsapp": {
       "title": "عندك سؤال؟",
@@ -122,11 +122,23 @@
     "close": "إغلاق",
     "resultsFor": "نتائج «{query}»",
     "empty": "ما لقينا والو بهاد البحث.",
-    "count": "{count, plural, =0 {ما كاين حتى قطعة} one {قطعة وحدة} two {جوج قطع} few {# قطع} many {# قطعة} other {# قطعة}}"
+    "count": "{count, plural, =0 {ما كاين حتى قطعة} one {قطعة وحدة} two {جوج قطع} few {# قطع} many {# قطعة} other {# قطعة}}",
+    "emptyHint": "جرب وحدة من هاد الفئات:"
   },
   "cart": {
     "open": "فتح السلة",
-    "itemCount": "{count, plural, =0 {السلة خاوية} one {قطعة وحدة} two {جوج قطع} few {# قطع} many {# قطعة} other {# قطعة}}"
+    "itemCount": "{count, plural, =0 {السلة خاوية} one {قطعة وحدة} two {جوج قطع} few {# قطع} many {# قطعة} other {# قطعة}}",
+    "title": "السلة",
+    "empty": "السلة ديالك خاوية.",
+    "emptyCta": "شوف الجديد",
+    "remove": "حيد",
+    "quantity": "الكمية",
+    "subtotal": "المجموع",
+    "checkoutWhatsapp": "اطلب عبر واتساب",
+    "continue": "كمل التسوق",
+    "size": "القياس",
+    "color": "اللون",
+    "deliveryNote": "التوصيل نفس النهار فبن جرير. وكتخلص عند التوصيل."
   },
   "badges": {
     "new": "جديد",
@@ -139,7 +151,9 @@
     "noImage": "التصويرة غادي توصل",
     "colorCount": "{count, plural, one {لون واحد} two {جوج ألوان} few {# ألوان} other {# لون}}",
     "ratingLabel": "التنقيط {value} من 5 من {count} كليان",
-    "freeShipping": "التوصيل مجاني"
+    "freeShipping": "التوصيل مجاني",
+    "wishlist": "زيد {name} للمفضلة",
+    "soldOut": "سالا"
   },
   "carousel": {
     "previous": "السابق",
@@ -236,5 +250,34 @@
     "priceIntro": "ديما بالدرهم، بلا كسور.",
     "sample": "سنيكرز وستريت وير",
     "sampleBody": "اللي كاين فالستوك، بكل القياسات، وكيوصل نفس النهار فبن جرير."
+  },
+  "collection": {
+    "empty": "ما كاين والو فهاد الفئة دابا.",
+    "emptyCta": "شوف الجديد",
+    "count": "{count, plural, one {قطعة وحدة} two {جوج قطع} few {# قطع} other {# قطعة}}"
+  },
+  "tracking": {
+    "title": "تتبع الطلب",
+    "intro": "دخل الرقم اللي عطيتي ملي طلبتي. ما خاصكش حساب.",
+    "phoneLabel": "رقمك",
+    "submit": "قلب",
+    "invalid": "دخل رقم مغربي صحيح (06 ولا 07).",
+    "notFoundTitle": "ما لقينا حتى طلب بهاد الرقم",
+    "notFoundBody": "التتبع أونلاين مازال ما تبرمجش. راسلنا فواتساب بالرقم ديالك ونجاوبوك دغيا.",
+    "askWhatsapp": "سول فواتساب"
+  },
+  "pdp": {
+    "chooseSize": "ختار القياس",
+    "chooseColor": "اللون",
+    "addToCart": "زيد للسلة",
+    "added": "تزاد للسلة",
+    "sizeRequired": "ختار القياس الأول",
+    "soldOut": "سالا",
+    "description": "الوصف",
+    "material": "المادة",
+    "care": "العناية",
+    "related": "كيمشي معاه",
+    "sizeGuide": "دليل القياسات",
+    "reference": "المرجع"
   }
 }

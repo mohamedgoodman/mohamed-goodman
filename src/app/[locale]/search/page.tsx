@@ -2,7 +2,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Link } from "@/i18n/navigation";
 import { Price } from "@/components/ui/price";
-import { getProducts, pick } from "@/lib/shop";
+import { getCollections, getProducts, pick } from "@/lib/shop";
 
 /**
  * Search results. Intentionally plain for now — the product card built in the
@@ -26,6 +26,14 @@ export default async function SearchPage({
     ? await getProducts({ search: query })
     : { items: [] };
 
+  // When nothing matches, offer the main categories rather than a dead end.
+  const allCollections = await getCollections();
+  const suggestions = allCollections.filter((c) =>
+    ["nouveautes", "sneakers", "t-shirts", "hoodies", "promos"].includes(
+      c.handle,
+    ),
+  );
+
   return (
     <div className="container-editorial py-(--space-16)">
       <p className="eyebrow">{t("title")}</p>
@@ -37,9 +45,22 @@ export default async function SearchPage({
       </p>
 
       {query && items.length === 0 ? (
-        <p className="text-subtle-foreground text-md mt-(--space-12)">
-          {t("empty")}
-        </p>
+        <div className="mt-(--space-12)">
+          <p className="text-md">{t("empty")}</p>
+          <p className="text-muted-foreground mt-2 text-sm">{t("emptyHint")}</p>
+          <ul className="mt-6 flex flex-wrap gap-2">
+            {suggestions.map((collection) => (
+              <li key={collection.handle}>
+                <Link
+                  href={`/collections/${collection.handle}`}
+                  className="border-foreground hover:bg-foreground hover:text-background inline-flex h-10 items-center rounded-sm border px-4 text-sm transition-colors"
+                >
+                  {pick(collection.title, locale)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       ) : (
         <ul className="mt-(--space-12) grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
           {items.map((product) => (

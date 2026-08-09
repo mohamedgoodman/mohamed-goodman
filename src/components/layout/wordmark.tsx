@@ -1,4 +1,4 @@
-import { brand } from "@/data/brand";
+import { brand } from "@/config/shop";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
 
