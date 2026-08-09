@@ -1,0 +1,283 @@
+{
+  "meta": {
+    "title": "EDEN HOUSE — سنيكرز وستريت وير فبن جرير",
+    "description": "سنيكرز، تيشيرتات، هوديز وجواكيت. التوصيل نفس النهار فبن جرير، وكتخلص عند التوصيل."
+  },
+  "common": {
+    "brand": "EDEN HOUSE",
+    "skipToContent": "انتقل إلى المحتوى",
+    "search": "بحث",
+    "account": "حسابي",
+    "cart": "السلة",
+    "menu": "القائمة",
+    "close": "إغلاق",
+    "language": "اللغة",
+    "theme": "المظهر",
+    "themeLight": "فاتح",
+    "themeDark": "داكن",
+    "themeSystem": "حسب الجهاز",
+    "readMore": "شوف كثر",
+    "readLess": "شوف أقل",
+    "loading": "كيتحمل",
+    "currency": "درهم"
+  },
+  "announcement": {
+    "dismiss": "إخفاء",
+    "messages": [
+      "بن جرير فقط · التوصيل نفس النهار · وكتخلص عند التوصيل",
+      "طلب فواتساب، ونعيطو ليك باش نأكدو معاك",
+      "دوز جربها فالمحل قبل ما تشري"
+    ]
+  },
+  "home": {
+    "hero": {
+      "headline": "سنيكرز وستريت وير، كيوصلوك اليوم",
+      "tagline": "كل القياسات موجودة فبن جرير. طلب قبل 6 ديال العشية وتوصلك نفس النهار.",
+      "cta": "شوف الجديد",
+      "ctaWhatsapp": "اطلب عبر واتساب",
+      "imageAlt": "تصويرة منتوج إيدن هاوس"
+    }
+  },
+  "howItWorks": {
+    "title": "كيفاش كتخدم",
+    "steps": [
+      {
+        "title": "كتطلب",
+        "body": "من الموقع ولا نيشان فواتساب."
+      },
+      {
+        "title": "كنعيطو ليك",
+        "body": "باش نأكدو القياس والعنوان."
+      },
+      {
+        "title": "كنوصلو نفس النهار",
+        "body": "فأي حي فبن جرير."
+      },
+      {
+        "title": "كتخلص للليفرور",
+        "body": "كاش، ملي توصلك."
+      }
+    ]
+  },
+  "trust": {
+    "cod": {
+      "title": "الخلاص عند التوصيل",
+      "body": "كتخلص للليفرور، ماشي قبل"
+    },
+    "delivery": {
+      "title": "التوصيل نفس النهار",
+      "body": "طلب قبل 6 ديال العشية، داخل بن جرير"
+    },
+    "store": {
+      "title": "جرب فالمحل",
+      "body": "شوف العنوان",
+      "bodyFallback": "وسط بن جرير"
+    },
+    "whatsapp": {
+      "title": "عندك سؤال؟",
+      "body": "راسلنا فواتساب"
+    },
+    "freeShipping": "التوصيل مجاني"
+  },
+  "whatsapp": {
+    "order": "اطلب عبر واتساب",
+    "orderShort": "واتساب",
+    "contact": "راسلنا فواتساب"
+  },
+  "nav": {
+    "viewAll": "شوف الكل",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "items": {
+      "new": "جديد",
+      "sneakers": "سنيكرز",
+      "tops": "فوقاني",
+      "jackets": "جواكيت",
+      "promos": "تخفيضات"
+    },
+    "groups": {
+      "shop": "شوف"
+    },
+    "links": {
+      "allNew": "الجديد",
+      "allSneakers": "كل السنيكرز",
+      "tshirts": "تيشيرتات",
+      "hoodies": "هوديز",
+      "sweats": "سويت شيرت",
+      "jackets": "جواكيت",
+      "tracksuits": "تراكات",
+      "trousers": "سراويل",
+      "caps": "كاسكيطات",
+      "bags": "صاكات",
+      "allPromos": "تخفيضات",
+      "howItWorks": "كيفاش كتخدم",
+      "orderTracking": "تتبع الطلب",
+      "sizeGuide": "دليل القياسات"
+    }
+  },
+  "search": {
+    "title": "بحث",
+    "placeholder": "سنيكرز، هودي، قياس…",
+    "submit": "بحث",
+    "close": "إغلاق",
+    "resultsFor": "نتائج «{query}»",
+    "empty": "ما لقينا والو بهاد البحث.",
+    "count": "{count, plural, =0 {ما كاين حتى قطعة} one {قطعة وحدة} two {جوج قطع} few {# قطع} many {# قطعة} other {# قطعة}}",
+    "emptyHint": "جرب وحدة من هاد الفئات:"
+  },
+  "cart": {
+    "open": "فتح السلة",
+    "itemCount": "{count, plural, =0 {السلة خاوية} one {قطعة وحدة} two {جوج قطع} few {# قطع} many {# قطعة} other {# قطعة}}",
+    "title": "السلة",
+    "empty": "السلة ديالك خاوية.",
+    "emptyCta": "شوف الجديد",
+    "remove": "حيد",
+    "quantity": "الكمية",
+    "subtotal": "المجموع",
+    "checkoutWhatsapp": "اطلب عبر واتساب",
+    "continue": "كمل التسوق",
+    "size": "القياس",
+    "color": "اللون",
+    "deliveryNote": "التوصيل نفس النهار فبن جرير. وكتخلص عند التوصيل."
+  },
+  "badges": {
+    "new": "جديد",
+    "essential": "أساسي",
+    "last-pieces": "آخر القياسات",
+    "sale": "تخفيض",
+    "bestseller": "الأكثر مبيعاً"
+  },
+  "product": {
+    "noImage": "التصويرة غادي توصل",
+    "colorCount": "{count, plural, one {لون واحد} two {جوج ألوان} few {# ألوان} other {# لون}}",
+    "ratingLabel": "التنقيط {value} من 5 من {count} كليان",
+    "freeShipping": "التوصيل مجاني",
+    "wishlist": "زيد {name} للمفضلة",
+    "soldOut": "سالا"
+  },
+  "carousel": {
+    "previous": "السابق",
+    "next": "التالي",
+    "viewAll": "شوف الكل",
+    "viewAllCount": "{count, plural, one {قطعة وحدة} two {جوج قطع} few {# قطع} other {# قطعة}}"
+  },
+  "sections": {
+    "newArrivals": "وصل جديد",
+    "newArrivalsLink": "شوف المجموعة",
+    "sneakers": "سنيكرز",
+    "sneakersLink": "شوف المجموعة"
+  },
+  "footer": {
+    "columns": {
+      "shop": "المتجر",
+      "more": "زيادة",
+      "help": "مساعدة"
+    },
+    "newsletter": {
+      "title": "توصل بالجديد",
+      "body": "خلي لينا رقمك، ونراسلوك فواتساب ملي يدخل شي موديل جديد.",
+      "phoneLabel": "رقم واتساب",
+      "phonePlaceholder": "06 12 34 56 78",
+      "emailLabel": "البريد الإلكتروني (اختياري)",
+      "emailPlaceholder": "you@example.ma",
+      "submit": "سجلني",
+      "success": "مزيان — غادي نتواصلو معاك.",
+      "errorPhone": "دخل رقم مغربي صحيح (كيبدا بـ06 ولا 07).",
+      "errorEmail": "هاد البريد الإلكتروني ماشي صحيح."
+    },
+    "store": {
+      "title": "المحل",
+      "hours": "كل يوم، من {hours}",
+      "directions": "شوف الطريق فالخريطة"
+    },
+    "callUs": "عيط لينا",
+    "followUs": "تابعنا",
+    "payments": "الخلاص",
+    "cod": "الخلاص عند التوصيل",
+    "rights": "جميع الحقوق محفوظة."
+  },
+  "delivery": {
+    "zoneTitle": "التوصيل فبن جرير فقط",
+    "zoneBody": "كنوصلو غير داخل بن جرير، ونفس النهار. راك فشي بلاصة أخرى؟ راسلنا فواتساب ونشوفو حل.",
+    "neighbourhood": "الحي",
+    "pickup": "تسناه فالمحل",
+    "chooseNeighbourhood": "ختار الحي ديالك",
+    "outsideZone": "مازال ما كنوصلوش لهاد المنطقة."
+  },
+  "sizeGuide": {
+    "title": "دليل القياسات",
+    "intro": "عندك جوج طرق باش تلقى قياسك: الجدول، ولا — وهاد الطريقة أضمن — قيس تيشيرت عندك وكتلبسو مزيان.",
+    "tabChart": "جدول القياسات",
+    "tabMeasure": "قيس تيشيرت عندك",
+    "chartIntro": "قياسات القطعة وهي مبسوطة، بالسنتيمتر.",
+    "colSize": "القياس",
+    "colEu": "EU",
+    "colChest": "الصدر مبسوط",
+    "colLength": "الطول",
+    "colSleeve": "الكم",
+    "measureIntro": "بسط تيشيرت كيجيك مزيان وقيسو. ما خاصكش متر: مسطرة ولا ورقة A4 (21 سم) كافية.",
+    "measureChest": "الصدر مبسوط",
+    "measureChestHelp": "من تحت الإبط حتى للإبط الآخر، وهو مبسوط.",
+    "measureLength": "الطول",
+    "measureLengthHelp": "من فوق الكتف حتى لتحت.",
+    "measureSleeve": "الكم",
+    "measureSleeveHelp": "من خياطة الكتف حتى لطرف الكم.",
+    "cm": "سم",
+    "result": "قياسك",
+    "resultBody": "حسب القياسات ديالك، القياس {size} غادي يجيك بحال اللي عندك.",
+    "resultBetween": "نتا بين جوج قياسات. خود {size} إلا بغيتيه ضيق شوية، ولا {larger} إلا بغيتي واسع.",
+    "resultNone": "دخل على الأقل قياس الصدر.",
+    "outOfRange": "هاد القياس خارج القياسات اللي عندنا — راسلنا فواتساب.",
+    "reset": "عاود من الأول",
+    "saved": "سجلنا قياسك للمرات الجاية."
+  },
+  "tokens": {
+    "eyebrow": "نظام التصميم",
+    "title": "رموز التصميم",
+    "intro": "معاينة الثيم. كل القيم كتجي من ملف واحد، src/styles/theme.css.",
+    "colorTitle": "الألوان",
+    "colorIntro": "الأدوار اللي تحت هي الوحيدة اللي خاص المكونات تستعملها.",
+    "brandPalette": "الألوان",
+    "semantic": "الأدوار الدلالية",
+    "typeTitle": "الخطوط",
+    "typeIntro": "خط عريض للعناوين، وإنتر للواجهة.",
+    "spaceTitle": "المسافات",
+    "radiusTitle": "الانحناءات",
+    "shadowTitle": "الظلال",
+    "motionTitle": "الحركة",
+    "componentsTitle": "معاينات",
+    "priceTitle": "صيغة الأسعار",
+    "priceIntro": "ديما بالدرهم، بلا كسور.",
+    "sample": "سنيكرز وستريت وير",
+    "sampleBody": "اللي كاين فالستوك، بكل القياسات، وكيوصل نفس النهار فبن جرير."
+  },
+  "collection": {
+    "empty": "ما كاين والو فهاد الفئة دابا.",
+    "emptyCta": "شوف الجديد",
+    "count": "{count, plural, one {قطعة وحدة} two {جوج قطع} few {# قطع} other {# قطعة}}"
+  },
+  "tracking": {
+    "title": "تتبع الطلب",
+    "intro": "دخل الرقم اللي عطيتي ملي طلبتي. ما خاصكش حساب.",
+    "phoneLabel": "رقمك",
+    "submit": "قلب",
+    "invalid": "دخل رقم مغربي صحيح (06 ولا 07).",
+    "notFoundTitle": "ما لقينا حتى طلب بهاد الرقم",
+    "notFoundBody": "التتبع أونلاين مازال ما تبرمجش. راسلنا فواتساب بالرقم ديالك ونجاوبوك دغيا.",
+    "askWhatsapp": "سول فواتساب"
+  },
+  "pdp": {
+    "chooseSize": "ختار القياس",
+    "chooseColor": "اللون",
+    "addToCart": "زيد للسلة",
+    "added": "تزاد للسلة",
+    "sizeRequired": "ختار القياس الأول",
+    "soldOut": "سالا",
+    "description": "الوصف",
+    "material": "المادة",
+    "care": "العناية",
+    "related": "كيمشي معاه",
+    "sizeGuide": "دليل القياسات",
+    "reference": "المرجع"
+  }
+}

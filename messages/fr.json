@@ -1,0 +1,283 @@
+{
+  "meta": {
+    "title": "EDEN HOUSE — Sneakers & streetwear à Ben Guerir",
+    "description": "Sneakers, t-shirts, hoodies et vestes. Livraison le jour même à Ben Guerir, vous payez à la livraison."
+  },
+  "common": {
+    "brand": "EDEN HOUSE",
+    "skipToContent": "Aller au contenu",
+    "search": "Rechercher",
+    "account": "Compte",
+    "cart": "Panier",
+    "menu": "Menu",
+    "close": "Fermer",
+    "language": "Langue",
+    "theme": "Thème",
+    "themeLight": "Clair",
+    "themeDark": "Sombre",
+    "themeSystem": "Système",
+    "readMore": "Voir plus",
+    "readLess": "Voir moins",
+    "loading": "Chargement",
+    "currency": "DH"
+  },
+  "announcement": {
+    "dismiss": "Masquer",
+    "messages": [
+      "Ben Guerir seulement · Livraison le jour même · Vous payez à la livraison",
+      "Commandez sur WhatsApp, on vous rappelle pour confirmer",
+      "Passez essayer en boutique avant d'acheter"
+    ]
+  },
+  "home": {
+    "hero": {
+      "headline": "Sneakers et streetwear, livrés aujourd'hui",
+      "tagline": "Toutes les pointures en stock à Ben Guerir. Commandez avant 18h, vous êtes livré le jour même.",
+      "cta": "Voir les nouveautés",
+      "ctaWhatsapp": "Commander sur WhatsApp",
+      "imageAlt": "Photo produit EDEN HOUSE"
+    }
+  },
+  "howItWorks": {
+    "title": "Comment ça marche",
+    "steps": [
+      {
+        "title": "Vous commandez",
+        "body": "Sur le site ou directement sur WhatsApp."
+      },
+      {
+        "title": "On vous appelle",
+        "body": "Pour confirmer la pointure et l'adresse."
+      },
+      {
+        "title": "On livre le jour même",
+        "body": "Partout dans Ben Guerir."
+      },
+      {
+        "title": "Vous payez au livreur",
+        "body": "En liquide, à la réception."
+      }
+    ]
+  },
+  "trust": {
+    "cod": {
+      "title": "Paiement à la livraison",
+      "body": "Vous payez au livreur, pas avant"
+    },
+    "delivery": {
+      "title": "Livré le jour même",
+      "body": "Commande avant 18h, dans Ben Guerir"
+    },
+    "store": {
+      "title": "Essayez en boutique",
+      "body": "Voir l'adresse",
+      "bodyFallback": "Ben Guerir centre"
+    },
+    "whatsapp": {
+      "title": "Une question ?",
+      "body": "Écrivez-nous sur WhatsApp"
+    },
+    "freeShipping": "Livraison offerte"
+  },
+  "whatsapp": {
+    "order": "Commander sur WhatsApp",
+    "orderShort": "WhatsApp",
+    "contact": "Nous écrire sur WhatsApp"
+  },
+  "nav": {
+    "viewAll": "Tout voir",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "items": {
+      "new": "Nouveautés",
+      "sneakers": "Sneakers",
+      "tops": "Hauts",
+      "jackets": "Vestes",
+      "promos": "Promos"
+    },
+    "groups": {
+      "shop": "Voir"
+    },
+    "links": {
+      "allNew": "Nouveautés",
+      "allSneakers": "Toutes les sneakers",
+      "tshirts": "T-shirts",
+      "hoodies": "Hoodies",
+      "sweats": "Sweats",
+      "jackets": "Vestes",
+      "tracksuits": "Survêtements",
+      "trousers": "Pantalons",
+      "caps": "Casquettes",
+      "bags": "Sacs",
+      "allPromos": "Promos",
+      "howItWorks": "Comment ça marche",
+      "orderTracking": "Suivre ma commande",
+      "sizeGuide": "Guide des tailles"
+    }
+  },
+  "search": {
+    "title": "Rechercher",
+    "placeholder": "Sneakers, hoodie, taille…",
+    "submit": "Rechercher",
+    "close": "Fermer",
+    "resultsFor": "Résultats pour « {query} »",
+    "empty": "Rien ne correspond à cette recherche.",
+    "count": "{count, plural, =0 {aucun article} one {# article} other {# articles}}",
+    "emptyHint": "Essayez une de ces catégories :"
+  },
+  "cart": {
+    "open": "Ouvrir le panier",
+    "itemCount": "{count, plural, =0 {Panier vide} one {# article} other {# articles}}",
+    "title": "Panier",
+    "empty": "Votre panier est vide.",
+    "emptyCta": "Voir les nouveautés",
+    "remove": "Retirer",
+    "quantity": "Quantité",
+    "subtotal": "Sous-total",
+    "checkoutWhatsapp": "Commander sur WhatsApp",
+    "continue": "Continuer mes achats",
+    "size": "Taille",
+    "color": "Couleur",
+    "deliveryNote": "Livraison le jour même à Ben Guerir. Vous payez à la livraison."
+  },
+  "badges": {
+    "new": "Nouveau",
+    "essential": "Essentiel",
+    "last-pieces": "Dernières tailles",
+    "sale": "Promo",
+    "bestseller": "Top vente"
+  },
+  "product": {
+    "noImage": "Photo à venir",
+    "colorCount": "{count, plural, one {# couleur} other {# couleurs}}",
+    "ratingLabel": "Noté {value} sur 5 par {count} clients",
+    "freeShipping": "Livraison offerte",
+    "wishlist": "Ajouter {name} aux favoris",
+    "soldOut": "Épuisé"
+  },
+  "carousel": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "viewAll": "Voir tout",
+    "viewAllCount": "{count, plural, one {# article} other {# articles}}"
+  },
+  "sections": {
+    "newArrivals": "Nouveautés",
+    "newArrivalsLink": "Voir la collection",
+    "sneakers": "Sneakers",
+    "sneakersLink": "Voir la collection"
+  },
+  "footer": {
+    "columns": {
+      "shop": "Boutique",
+      "more": "Plus",
+      "help": "Aide"
+    },
+    "newsletter": {
+      "title": "Restez au courant",
+      "body": "Laissez votre numéro : on vous écrit sur WhatsApp dès qu'un nouveau modèle arrive.",
+      "phoneLabel": "Numéro WhatsApp",
+      "phonePlaceholder": "06 12 34 56 78",
+      "emailLabel": "E-mail (facultatif)",
+      "emailPlaceholder": "vous@exemple.ma",
+      "submit": "Je m'inscris",
+      "success": "C'est noté — à bientôt.",
+      "errorPhone": "Entrez un numéro marocain valide (06 ou 07).",
+      "errorEmail": "Cet e-mail ne semble pas valide."
+    },
+    "store": {
+      "title": "La boutique",
+      "hours": "Tous les jours, {hours}",
+      "directions": "Voir sur la carte"
+    },
+    "callUs": "Appelez-nous",
+    "followUs": "Nous suivre",
+    "payments": "Paiement",
+    "cod": "Paiement à la livraison",
+    "rights": "Tous droits réservés."
+  },
+  "delivery": {
+    "zoneTitle": "Livraison à Ben Guerir uniquement",
+    "zoneBody": "On livre seulement dans Ben Guerir, le jour même. Vous êtes ailleurs ? Écrivez-nous sur WhatsApp, on trouve une solution.",
+    "neighbourhood": "Quartier",
+    "pickup": "Retrait en boutique",
+    "chooseNeighbourhood": "Choisissez votre quartier",
+    "outsideZone": "Nous ne livrons pas encore dans cette zone."
+  },
+  "sizeGuide": {
+    "title": "Guide des tailles",
+    "intro": "Deux façons de trouver votre taille : le tableau, ou — plus fiable — mesurer un t-shirt que vous portez déjà.",
+    "tabChart": "Tableau des tailles",
+    "tabMeasure": "Mesurer un t-shirt",
+    "chartIntro": "Mesures du vêtement à plat, en centimètres.",
+    "colSize": "Taille",
+    "colEu": "EU",
+    "colChest": "Poitrine à plat",
+    "colLength": "Longueur",
+    "colSleeve": "Manche",
+    "measureIntro": "Posez à plat un t-shirt qui vous va bien, et mesurez-le. Pas besoin de mètre : une règle ou une feuille A4 (21 cm) suffit.",
+    "measureChest": "Poitrine à plat",
+    "measureChestHelp": "D'une couture d'aisselle à l'autre, posé à plat.",
+    "measureLength": "Longueur",
+    "measureLengthHelp": "Du haut de l'épaule jusqu'au bas.",
+    "measureSleeve": "Manche",
+    "measureSleeveHelp": "De la couture d'épaule jusqu'au bout de la manche.",
+    "cm": "cm",
+    "result": "Votre taille",
+    "resultBody": "D'après vos mesures, la taille {size} devrait tomber comme le vôtre.",
+    "resultBetween": "Vous êtes entre deux tailles. Prenez {size} pour un tombé près du corps, {larger} pour plus large.",
+    "resultNone": "Entrez au moins la mesure de poitrine.",
+    "outOfRange": "Cette mesure sort de nos tailles — écrivez-nous sur WhatsApp.",
+    "reset": "Recommencer",
+    "saved": "Taille enregistrée pour vos prochaines visites."
+  },
+  "tokens": {
+    "eyebrow": "Système de design",
+    "title": "Jetons de design",
+    "intro": "Aperçu du thème. Toutes ces valeurs viennent d'un seul fichier, src/styles/theme.css.",
+    "colorTitle": "Couleur",
+    "colorIntro": "Les rôles ci-dessous sont les seuls que les composants doivent utiliser.",
+    "brandPalette": "Palette",
+    "semantic": "Rôles sémantiques",
+    "typeTitle": "Typographie",
+    "typeIntro": "Une grotesque large pour les titres, Inter pour l'interface.",
+    "spaceTitle": "Espacement",
+    "radiusTitle": "Rayons",
+    "shadowTitle": "Ombres",
+    "motionTitle": "Mouvement",
+    "componentsTitle": "Aperçus",
+    "priceTitle": "Format des prix",
+    "priceIntro": "Toujours en dirhams, sans décimales.",
+    "sample": "Sneakers et streetwear",
+    "sampleBody": "Ce qui est en stock, dans toutes les pointures, livré le jour même à Ben Guerir."
+  },
+  "collection": {
+    "empty": "Rien dans cette catégorie pour le moment.",
+    "emptyCta": "Voir les nouveautés",
+    "count": "{count, plural, one {# article} other {# articles}}"
+  },
+  "tracking": {
+    "title": "Suivre ma commande",
+    "intro": "Entrez le numéro que vous avez donné en commandant. Pas besoin de compte.",
+    "phoneLabel": "Votre numéro",
+    "submit": "Chercher",
+    "invalid": "Entrez un numéro marocain valide (06 ou 07).",
+    "notFoundTitle": "Aucune commande trouvée pour ce numéro",
+    "notFoundBody": "Le suivi en ligne n'est pas encore branché. Écrivez-nous sur WhatsApp avec votre numéro, on vous répond tout de suite.",
+    "askWhatsapp": "Demander sur WhatsApp"
+  },
+  "pdp": {
+    "chooseSize": "Choisissez une taille",
+    "chooseColor": "Couleur",
+    "addToCart": "Ajouter au panier",
+    "added": "Ajouté au panier",
+    "sizeRequired": "Choisissez d'abord une taille",
+    "soldOut": "Épuisé",
+    "description": "Description",
+    "material": "Matière",
+    "care": "Entretien",
+    "related": "Ça va aussi avec",
+    "sizeGuide": "Guide des tailles",
+    "reference": "Réf."
+  }
+}

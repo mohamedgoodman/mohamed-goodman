@@ -3,6 +3,7 @@ import { ImageResponse } from "next/og";
 export const size = { width: 64, height: 64 };
 export const contentType = "image/png";
 
+/** EH monogram, ink on white. */
 export default function Icon() {
   return new ImageResponse(
     <div
@@ -12,15 +13,14 @@ export default function Icon() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "#4f46e5",
-        borderRadius: 14,
-        color: "white",
-        fontSize: 34,
-        fontWeight: 700,
+        background: "#111111",
+        color: "#FFFFFF",
+        fontSize: 30,
+        letterSpacing: 0,
         fontFamily: "sans-serif",
       }}
     >
-      MD
+      EH
     </div>,
     { ...size },
   );

@@ -40,3 +40,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# The real catalogue is the owner's file, not source code. Drop it here and run
+# `npm run import:catalogue`; the generated TypeScript is what gets committed.
+/data/EDEN-HOUSE-catalogue-produits.xlsx

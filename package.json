@@ -1,5 +1,5 @@
 {
-  "name": "mohamed-dardari-portfolio",
+  "name": "eden-house",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,10 +8,10 @@
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "import:catalogue": "tsx scripts/import-catalogue.ts"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.7.1",
     "@radix-ui/react-dialog": "^1.1.23",
     "@radix-ui/react-label": "^2.1.15",
     "@radix-ui/react-navigation-menu": "^1.2.22",
@@ -20,15 +20,12 @@
     "@radix-ui/react-tabs": "^1.1.21",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "framer-motion": "^13.0.0",
     "lucide-react": "^1.30.0",
     "next": "16.3.0",
+    "next-intl": "^4.13.5",
     "next-themes": "^0.4.6",
     "react": "19.2.8",
     "react-dom": "19.2.8",
-    "react-hook-form": "^7.84.0",
-    "react-icons": "^5.7.0",
-    "resend": "^6.18.1",
     "tailwind-merge": "^3.6.0",
     "tw-animate-css": "^1.4.0",
     "zod": "^4.4.3"
@@ -44,6 +41,9 @@
     "prettier": "^3.9.6",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
-  }
+    "tsx": "^4.23.11",
+    "typescript": "^5",
+    "xlsx": "^0.18.5"
+  },
+  "description": "EDEN HOUSE — men's clothing storefront for the Moroccan market"
 }
