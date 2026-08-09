@@ -14,7 +14,7 @@ export function getDirection(locale: Locale): "ltr" | "rtl" {
 
 export const localeLabels: Record<Locale, { native: string; short: string }> = {
   fr: { native: "Français", short: "FR" },
-  ar: { native: "العربية", short: "ع" },
+  ar: { native: "العربية", short: "AR" },
   en: { native: "English", short: "EN" },
 };
 

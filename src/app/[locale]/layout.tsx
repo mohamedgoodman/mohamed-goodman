@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { AnnouncementBar } from "@/components/layout/announcement-bar";
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { brand } from "@/data/brand";
 import { fontVariables } from "@/lib/fonts";
@@ -88,9 +91,12 @@ export default async function LocaleLayout({
             >
               {t("skipToContent")}
             </a>
+            <AnnouncementBar />
+            <Header />
             <main id="main" className="flex-1">
               {children}
             </main>
+            <Footer />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

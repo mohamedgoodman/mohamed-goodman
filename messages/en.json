@@ -40,5 +40,153 @@
     "priceIntro": "Always dirhams, never decimals.",
     "sample": "A wardrobe for life",
     "sampleBody": "We design few pieces, and we keep them a long time. Each season adds one or two things to the wardrobe, never a whole collection."
+  },
+  "announcement": {
+    "dismiss": "Dismiss announcements",
+    "messages": [
+      "Delivered across Morocco — cash on delivery",
+      "Free delivery over 800 DH",
+      "48h to Casablanca, Rabat and Marrakech"
+    ]
+  },
+  "nav": {
+    "viewAll": "View all",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "items": {
+      "new": "New",
+      "clothing": "Clothing",
+      "tailoring": "Tailoring",
+      "shoes": "Shoes",
+      "accessories": "Accessories",
+      "sale": "Sale"
+    },
+    "groups": {
+      "discover": "Discover",
+      "byCategory": "By category",
+      "tops": "Tops",
+      "bottoms": "Bottoms",
+      "layers": "Layers",
+      "pieces": "The pieces",
+      "finish": "The finish",
+      "styles": "Styles",
+      "leather": "Leather",
+      "finishing": "Details",
+      "sale": "Sale"
+    },
+    "links": {
+      "allNew": "All new arrivals",
+      "bestSellers": "Most worn",
+      "tailoringRoom": "The tailoring room",
+      "shirts": "Shirts",
+      "knitwear": "Knitwear",
+      "shoes": "Shoes",
+      "polos": "Polos",
+      "trousers": "Trousers",
+      "shorts": "Shorts",
+      "outerwear": "Outerwear",
+      "allClothing": "All clothing",
+      "suits": "Suits",
+      "blazers": "Blazers",
+      "tailoredTrousers": "Tailored trousers",
+      "ties": "Ties",
+      "sizeGuide": "Size guide",
+      "loafers": "Loafers",
+      "boots": "Boots",
+      "allShoes": "All shoes",
+      "belts": "Belts",
+      "wallets": "Small leather goods",
+      "scarves": "Scarves",
+      "eyewear": "Eyewear",
+      "allSale": "Everything on sale",
+      "lastSizes": "Last sizes",
+      "accessories": "Accessories",
+      "shipping": "Shipping",
+      "returns": "Returns",
+      "orderTracking": "Track my order",
+      "about": "The house",
+      "stores": "Stockists",
+      "contact": "Contact us"
+    },
+    "tiles": {
+      "newSeason": {
+        "title": "This season",
+        "caption": "Everything added this month"
+      },
+      "linen": {
+        "title": "Linen",
+        "caption": "For the warm months"
+      },
+      "everyday": {
+        "title": "The everyday wardrobe",
+        "caption": "What actually gets worn"
+      },
+      "knit": {
+        "title": "Merino",
+        "caption": "Fine knit, alone or under a jacket"
+      },
+      "tailoringRoom": {
+        "title": "The tailoring room",
+        "caption": "Soft tailoring, never stiff"
+      },
+      "ceremony": {
+        "title": "Occasions",
+        "caption": "Suits and waistcoats"
+      },
+      "leather": {
+        "title": "Leather",
+        "caption": "Built to last"
+      },
+      "summer": {
+        "title": "Unlined",
+        "caption": "Loafers and espadrilles"
+      },
+      "details": {
+        "title": "The details",
+        "caption": "Leather, silk and wool"
+      },
+      "gifts": {
+        "title": "To give",
+        "caption": "Small leather goods"
+      },
+      "endOfSeries": {
+        "title": "Last sizes",
+        "caption": "Up to 30% off"
+      }
+    }
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Shirt, suit, reference…",
+    "submit": "Search",
+    "close": "Close search",
+    "resultsFor": "Results for “{query}”",
+    "empty": "Nothing matches that search.",
+    "count": "{count, plural, =0 {no items} one {# item} other {# items}}"
+  },
+  "cart": {
+    "open": "Open cart",
+    "itemCount": "{count, plural, =0 {Cart empty} one {# item} other {# items}}"
+  },
+  "footer": {
+    "columns": {
+      "wardrobe": "The wardrobe",
+      "shoesAccessories": "Shoes & accessories",
+      "help": "Help",
+      "house": "The house"
+    },
+    "newsletter": {
+      "title": "Stay in touch",
+      "body": "One letter a month: what's new, nothing else.",
+      "placeholder": "Your email",
+      "submit": "Sign up",
+      "submitShort": "OK",
+      "success": "Thank you — you're on the list.",
+      "error": "That email doesn't look right."
+    },
+    "followUs": "Follow us",
+    "payments": "Accepted payment methods",
+    "cod": "Cash on delivery",
+    "rights": "All rights reserved."
   }
 }

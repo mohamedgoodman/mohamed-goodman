@@ -40,5 +40,153 @@
     "priceIntro": "دائماً بالدرهم، دون كسور.",
     "sample": "خزانة تدوم العمر",
     "sampleBody": "نصمّم قطعاً قليلة، ونحتفظ بها طويلاً. كل موسم يضيف قطعة أو اثنتين إلى الخزانة، لا مجموعة كاملة."
+  },
+  "announcement": {
+    "dismiss": "إخفاء الإعلانات",
+    "messages": [
+      "التوصيل إلى كل المغرب — الدفع عند الاستلام",
+      "التوصيل مجاني ابتداءً من 800 درهم",
+      "48 ساعة إلى الدار البيضاء والرباط ومراكش"
+    ]
+  },
+  "nav": {
+    "viewAll": "عرض الكل",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "items": {
+      "new": "الجديد",
+      "clothing": "الملابس",
+      "tailoring": "البدلات",
+      "shoes": "الأحذية",
+      "accessories": "الإكسسوارات",
+      "sale": "تخفيضات"
+    },
+    "groups": {
+      "discover": "اكتشف",
+      "byCategory": "حسب الفئة",
+      "tops": "القمصان والمعاطف",
+      "bottoms": "السراويل",
+      "layers": "الطبقات",
+      "pieces": "القطع",
+      "finish": "اللمسة الأخيرة",
+      "styles": "الموديلات",
+      "leather": "الجلد",
+      "finishing": "التفاصيل",
+      "sale": "تخفيضات"
+    },
+    "links": {
+      "allNew": "كل الجديد",
+      "bestSellers": "الأكثر مبيعاً",
+      "tailoringRoom": "غرفة الخياطة",
+      "shirts": "قمصان",
+      "knitwear": "تريكو",
+      "shoes": "أحذية",
+      "polos": "بولو",
+      "trousers": "سراويل",
+      "shorts": "شورت",
+      "outerwear": "جواكيت",
+      "allClothing": "كل الملابس",
+      "suits": "بدلات",
+      "blazers": "بليزر",
+      "tailoredTrousers": "سراويل بدلة",
+      "ties": "ربطات عنق",
+      "sizeGuide": "دليل المقاسات",
+      "loafers": "موكاسان",
+      "boots": "بوط",
+      "allShoes": "كل الأحذية",
+      "belts": "أحزمة",
+      "wallets": "محافظ",
+      "scarves": "أوشحة",
+      "eyewear": "نظارات",
+      "allSale": "كل التخفيضات",
+      "lastSizes": "آخر المقاسات",
+      "accessories": "إكسسوارات",
+      "shipping": "التوصيل",
+      "returns": "الإرجاع",
+      "orderTracking": "تتبع طلبي",
+      "about": "عن الدار",
+      "stores": "نقاط البيع",
+      "contact": "اتصل بنا"
+    },
+    "tiles": {
+      "newSeason": {
+        "title": "موسم هذا الشهر",
+        "caption": "كل ما أضيف حديثاً"
+      },
+      "linen": {
+        "title": "الكتان",
+        "caption": "لأشهر الحر"
+      },
+      "everyday": {
+        "title": "خزانة كل يوم",
+        "caption": "ما يُلبس فعلاً"
+      },
+      "knit": {
+        "title": "ميرينو",
+        "caption": "تريكو رفيع، وحده أو تحت سترة"
+      },
+      "tailoringRoom": {
+        "title": "غرفة الخياطة",
+        "caption": "بدلات لينة لا متصلبة"
+      },
+      "ceremony": {
+        "title": "المناسبات",
+        "caption": "بدلات وصداري"
+      },
+      "leather": {
+        "title": "الجلد",
+        "caption": "مصنوع ليدوم"
+      },
+      "summer": {
+        "title": "بلا بطانة",
+        "caption": "موكاسان وإسبادريل"
+      },
+      "details": {
+        "title": "التفاصيل",
+        "caption": "جلد وحرير وصوف"
+      },
+      "gifts": {
+        "title": "هدايا",
+        "caption": "محافظ وحقائب صغيرة"
+      },
+      "endOfSeries": {
+        "title": "آخر المقاسات",
+        "caption": "حتى 30% تخفيض"
+      }
+    }
+  },
+  "search": {
+    "title": "بحث",
+    "placeholder": "قميص، بدلة، مرجع…",
+    "submit": "ابحث",
+    "close": "إغلاق البحث",
+    "resultsFor": "نتائج البحث عن «{query}»",
+    "empty": "لا توجد نتائج مطابقة.",
+    "count": "{count, plural, =0 {لا توجد قطع} one {قطعة واحدة} two {قطعتان} few {# قطع} many {# قطعة} other {# قطعة}}"
+  },
+  "cart": {
+    "open": "فتح السلة",
+    "itemCount": "{count, plural, =0 {السلة فارغة} one {قطعة واحدة} two {قطعتان} few {# قطع} many {# قطعة} other {# قطعة}}"
+  },
+  "footer": {
+    "columns": {
+      "wardrobe": "الخزانة",
+      "shoesAccessories": "الأحذية والإكسسوارات",
+      "help": "المساعدة",
+      "house": "الدار"
+    },
+    "newsletter": {
+      "title": "ابقَ على اطلاع",
+      "body": "رسالة واحدة في الشهر: الجديد فقط.",
+      "placeholder": "بريدك الإلكتروني",
+      "submit": "اشترك",
+      "submitShort": "إرسال",
+      "success": "شكراً — تم تسجيلك.",
+      "error": "يبدو أن البريد غير صحيح."
+    },
+    "followUs": "تابعنا",
+    "payments": "وسائل الدفع المقبولة",
+    "cod": "الدفع عند الاستلام",
+    "rights": "جميع الحقوق محفوظة."
   }
 }

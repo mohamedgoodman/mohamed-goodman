@@ -1,5 +1,7 @@
-import { setRequestLocale } from "next-intl/server";
+import Image from "next/image";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
+import { HeaderHeroSentinel } from "@/components/layout/header";
 import { Link } from "@/i18n/navigation";
 import { brand } from "@/data/brand";
 import { routing, type Locale } from "@/i18n/routing";
@@ -9,8 +11,9 @@ export function generateStaticParams() {
 }
 
 /**
- * Placeholder home page — replaced by the real homepage sections in a later
- * step. It exists now so the locale shell, fonts and theme are navigable.
+ * Placeholder home page — the real homepage sections land in the next step.
+ * It carries a full-bleed hero so the header's transparent-over-photography
+ * behaviour and the footer can be reviewed in place.
  */
 export default async function HomePage({
   params,
@@ -19,22 +22,45 @@ export default async function HomePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const t = await getTranslations("nav");
 
   return (
-    <div className="container-narrow flex min-h-[70vh] flex-col justify-center py-(--space-24)">
-      <p className="eyebrow">Étape 1 — fondations</p>
-      <h1 className="text-display tracking-display mt-4">{brand.wordmark}</h1>
-      <p className="text-subtle-foreground mt-6 max-w-prose text-lg">
-        {brand.tagline[locale as Locale] ?? brand.tagline.fr}
-      </p>
-      <p className="mt-(--space-8)">
-        <Link
-          href="/design/tokens"
-          className="bg-brand text-brand-foreground hover:bg-brand-hover inline-flex h-12 items-center rounded-sm px-8 text-sm font-medium transition-colors"
-        >
-          Design tokens →
-        </Link>
-      </p>
-    </div>
+    <>
+      {/* The hero starts behind the header, so pull it up by the header height. */}
+      <section className="relative -mt-(--header-h) lg:-mt-(--header-h-lg)">
+        <HeaderHeroSentinel />
+
+        <div className="relative flex min-h-[86svh] items-end">
+          <Image
+            src="https://picsum.photos/seed/eh-hero-home/1920/1400"
+            alt="Un homme en chemise de lin et pantalon de tailleur, adossé à un mur chaulé."
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+          {/* Scrim: keeps the wordmark and headline legible over any photo. */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/10 to-black/45"
+          />
+
+          <div className="container-editorial text-on-image relative pb-(--space-16)">
+            <p className="eyebrow text-on-image/80">
+              {brand.tagline[locale as Locale] ?? brand.tagline.fr}
+            </p>
+            <h1 className="text-display mt-4 max-w-[14ch]">{brand.wordmark}</h1>
+            <p className="mt-(--space-8)">
+              <Link
+                href="/collections/new"
+                className="bg-background text-foreground inline-flex h-12 items-center rounded-sm px-8 text-sm font-medium transition-opacity hover:opacity-90"
+              >
+                {t("links.allNew")}
+              </Link>
+            </p>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

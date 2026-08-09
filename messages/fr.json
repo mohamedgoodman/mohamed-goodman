@@ -40,5 +40,153 @@
     "priceIntro": "Toujours en dirhams, sans décimales.",
     "sample": "Le vestiaire d'une vie",
     "sampleBody": "Nous dessinons peu de pièces, et nous les gardons longtemps. Chaque saison ajoute une ou deux nouveautés au vestiaire, jamais une collection entière."
+  },
+  "announcement": {
+    "dismiss": "Masquer les annonces",
+    "messages": [
+      "Livraison partout au Maroc — paiement à la livraison",
+      "Livraison offerte dès 800 DH",
+      "48h à Casablanca, Rabat et Marrakech"
+    ]
+  },
+  "nav": {
+    "viewAll": "Tout voir",
+    "openMenu": "Ouvrir le menu",
+    "closeMenu": "Fermer le menu",
+    "items": {
+      "new": "Nouveautés",
+      "clothing": "Vêtements",
+      "tailoring": "Tailleur",
+      "shoes": "Chaussures",
+      "accessories": "Accessoires",
+      "sale": "Soldes"
+    },
+    "groups": {
+      "discover": "Découvrir",
+      "byCategory": "Par catégorie",
+      "tops": "Hauts",
+      "bottoms": "Bas",
+      "layers": "Par-dessus",
+      "pieces": "Les pièces",
+      "finish": "La finition",
+      "styles": "Les modèles",
+      "leather": "Cuir",
+      "finishing": "Détails",
+      "sale": "Fins de séries"
+    },
+    "links": {
+      "allNew": "Toutes les nouveautés",
+      "bestSellers": "Les plus portés",
+      "tailoringRoom": "La salle de coupe",
+      "shirts": "Chemises",
+      "knitwear": "Mailles",
+      "shoes": "Chaussures",
+      "polos": "Polos",
+      "trousers": "Pantalons",
+      "shorts": "Shorts",
+      "outerwear": "Vestes",
+      "allClothing": "Tous les vêtements",
+      "suits": "Costumes",
+      "blazers": "Blazers",
+      "tailoredTrousers": "Pantalons de tailleur",
+      "ties": "Cravates",
+      "sizeGuide": "Guide des tailles",
+      "loafers": "Mocassins",
+      "boots": "Bottes",
+      "allShoes": "Toutes les chaussures",
+      "belts": "Ceintures",
+      "wallets": "Maroquinerie",
+      "scarves": "Écharpes",
+      "eyewear": "Lunettes",
+      "allSale": "Toutes les fins de séries",
+      "lastSizes": "Dernières tailles",
+      "accessories": "Accessoires",
+      "shipping": "Livraison",
+      "returns": "Retours",
+      "orderTracking": "Suivre ma commande",
+      "about": "La maison",
+      "stores": "Nos points de vente",
+      "contact": "Nous écrire"
+    },
+    "tiles": {
+      "newSeason": {
+        "title": "La saison en cours",
+        "caption": "Les pièces entrées ce mois-ci"
+      },
+      "linen": {
+        "title": "Le lin",
+        "caption": "Pour les mois chauds"
+      },
+      "everyday": {
+        "title": "Le vestiaire quotidien",
+        "caption": "Ce qui se porte tous les jours"
+      },
+      "knit": {
+        "title": "Mérinos",
+        "caption": "Maille fine, portée seule ou sous une veste"
+      },
+      "tailoringRoom": {
+        "title": "La salle de coupe",
+        "caption": "Tailleur souple, jamais rigide"
+      },
+      "ceremony": {
+        "title": "Les grandes occasions",
+        "caption": "Costumes et gilets"
+      },
+      "leather": {
+        "title": "Le cuir",
+        "caption": "Montés pour durer"
+      },
+      "summer": {
+        "title": "Sans doublure",
+        "caption": "Mocassins et espadrilles"
+      },
+      "details": {
+        "title": "Les détails",
+        "caption": "Cuir, soie et laine"
+      },
+      "gifts": {
+        "title": "À offrir",
+        "caption": "Petite maroquinerie"
+      },
+      "endOfSeries": {
+        "title": "Dernières tailles",
+        "caption": "Jusqu'à −30%"
+      }
+    }
+  },
+  "search": {
+    "title": "Rechercher",
+    "placeholder": "Chemise, costume, référence…",
+    "submit": "Rechercher",
+    "close": "Fermer la recherche",
+    "resultsFor": "Résultats pour « {query} »",
+    "empty": "Aucun article ne correspond à cette recherche.",
+    "count": "{count, plural, =0 {aucun article} one {# article} other {# articles}}"
+  },
+  "cart": {
+    "open": "Ouvrir le panier",
+    "itemCount": "{count, plural, =0 {Panier vide} one {# article} other {# articles}}"
+  },
+  "footer": {
+    "columns": {
+      "wardrobe": "Le vestiaire",
+      "shoesAccessories": "Chaussures & accessoires",
+      "help": "Aide",
+      "house": "La maison"
+    },
+    "newsletter": {
+      "title": "Rester informé",
+      "body": "Une lettre par mois : les nouveautés, rien d'autre.",
+      "placeholder": "Votre e-mail",
+      "submit": "S'inscrire",
+      "submitShort": "OK",
+      "success": "Merci — c'est noté.",
+      "error": "Cet e-mail ne semble pas valide."
+    },
+    "followUs": "Nous suivre",
+    "payments": "Moyens de paiement acceptés",
+    "cod": "Paiement à la livraison",
+    "rights": "Tous droits réservés."
   }
 }
