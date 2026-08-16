@@ -3,11 +3,5 @@
   "functions": {
     "api/telegram.ts": { "maxDuration": 30 },
     "api/cron/tick.ts": { "maxDuration": 60 }
-  },
-  "crons": [
-    {
-      "path": "/api/cron/tick",
-      "schedule": "* * * * *"
-    }
-  ]
+  }
 }
