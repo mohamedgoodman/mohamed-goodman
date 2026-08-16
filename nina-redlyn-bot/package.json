@@ -1,0 +1,30 @@
+{
+  "name": "nina-redlyn-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Professional Telegram bot for the Nina Redlyn channel — post composer, scheduler, subscriber capture, broadcasts and group moderation.",
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/**/*.test.ts",
+    "dev": "tsx watch scripts/dev-polling.ts",
+    "webhook:set": "tsx scripts/set-webhook.ts",
+    "webhook:info": "tsx scripts/set-webhook.ts --info",
+    "webhook:delete": "tsx scripts/set-webhook.ts --delete",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@grammyjs/auto-retry": "^2.0.2",
+    "@supabase/supabase-js": "^2.60.0",
+    "grammy": "^1.31.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "dotenv": "^16.4.7",
+    "prettier": "^3.9.6",
+    "tsx": "^4.23.11",
+    "typescript": "^5"
+  }
+}

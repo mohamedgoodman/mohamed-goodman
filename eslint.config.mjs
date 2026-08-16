@@ -14,6 +14,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The Telegram bot is a separate project with its own toolchain.
+    "nina-redlyn-bot/**",
   ]),
 ]);
 
