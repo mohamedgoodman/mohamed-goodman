@@ -1,6 +1,6 @@
 import { Composer, InlineKeyboard } from "grammy";
 import type { Context } from "grammy";
-import { config, isAdmin } from "../config.js";
+import { config, isAdmin, publishingEnabled } from "../config.js";
 import { deactivateSubscriber, upsertSubscriber } from "../db.js";
 
 export const start = new Composer<Context>();
@@ -15,23 +15,45 @@ const WELCOME = [
   "collaboration proposal reaches the team directly.",
 ].join("\n");
 
-const ADMIN_HELP = [
-  "<b>Admin panel</b>",
-  "",
-  "<b>/post</b> — compose a post: text, photo or video, buttons, then publish",
-  "or schedule it.",
-  "<b>/scheduled</b> — everything queued, with a cancel button.",
-  "<b>/broadcast</b> — message everyone who has written to the bot.",
-  "<b>/stats</b> — subscribers, published posts, queue.",
-  "<b>/cancel</b> — abandon whatever you are in the middle of.",
-  "",
-  "<i>Tip: write the post exactly as you want it to appear — bold, italics,",
-  "links and emoji are all preserved.</i>",
-].join("\n");
+/**
+ * The panel lists only what this deployment can actually do — a bot with no
+ * channel configured never advertises commands that would fail.
+ */
+function adminHelp(): string {
+  const lines = ["<b>Admin panel</b>", ""];
+
+  if (publishingEnabled()) {
+    lines.push(
+      "<b>/post</b> — compose a post: text, photo or video, buttons, then",
+      "publish or schedule it.",
+      "<b>/scheduled</b> — everything queued, with a cancel button.",
+    );
+  }
+
+  lines.push(
+    "<b>/broadcast</b> — message everyone who has written to the bot.",
+    "<b>/stats</b> — subscribers and reach.",
+    "<b>/cancel</b> — abandon whatever you are in the middle of.",
+    "",
+    "People writing to the bot land here, labelled with their name. Reply to",
+    "one of those messages and your answer goes straight back to them.",
+  );
+
+  if (publishingEnabled()) {
+    lines.push(
+      "",
+      "<i>Tip: write the post exactly as you want it to appear — bold,",
+      "italics, links and emoji are all preserved.</i>",
+    );
+  }
+
+  return lines.join("\n");
+}
 
 function memberMenu(): InlineKeyboard {
   const channel = config().CHANNEL_ID;
-  const link = channel.startsWith("@")
+  // Only a public @handle gives a link a member can actually open.
+  const link = channel?.startsWith("@")
     ? `https://t.me/${channel.slice(1)}`
     : undefined;
   const keyboard = new InlineKeyboard();
@@ -54,7 +76,7 @@ start.command("start", async (ctx) => {
   });
 
   if (isAdmin(from.id)) {
-    await ctx.reply(ADMIN_HELP, { parse_mode: "HTML" });
+    await ctx.reply(adminHelp(), { parse_mode: "HTML" });
     return;
   }
 
@@ -66,7 +88,7 @@ start.command("start", async (ctx) => {
 
 start.command("help", async (ctx) => {
   if (isAdmin(ctx.from?.id)) {
-    await ctx.reply(ADMIN_HELP, { parse_mode: "HTML" });
+    await ctx.reply(adminHelp(), { parse_mode: "HTML" });
     return;
   }
   await ctx.reply(

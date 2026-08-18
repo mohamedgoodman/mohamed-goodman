@@ -7,7 +7,7 @@
  */
 import "dotenv/config";
 import { Bot } from "grammy";
-import { ADMIN_COMMANDS, MEMBER_COMMANDS } from "../src/bot.js";
+import { adminCommands, MEMBER_COMMANDS } from "../src/bot.js";
 import { config } from "../src/config.js";
 
 async function main() {
@@ -54,7 +54,7 @@ async function main() {
   });
   for (const adminId of config().ADMIN_IDS) {
     await bot.api
-      .setMyCommands([...MEMBER_COMMANDS, ...ADMIN_COMMANDS], {
+      .setMyCommands([...MEMBER_COMMANDS, ...adminCommands()], {
         scope: { type: "chat", chat_id: adminId },
       })
       .catch(() => {

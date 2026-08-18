@@ -10,8 +10,15 @@ const schema = z.object({
     .string()
     .min(20, "BOT_TOKEN looks wrong — get it from @BotFather"),
 
-  /** Channel to publish to: `@nina_redlyn` or a numeric id like `-1001234567890`. */
-  CHANNEL_ID: z.string().min(2),
+  /**
+   * Channel to publish to: `@nina_redlyn` or a numeric id like
+   * `-1001234567890`. Optional — left blank, the bot never posts anywhere and
+   * needs no admin rights in any chat; it only answers people who write to it.
+   */
+  CHANNEL_ID: z
+    .string()
+    .optional()
+    .transform((raw) => (raw && raw.trim() ? raw.trim() : undefined)),
 
   /**
    * Optional discussion group linked to the channel — moderation runs there.
@@ -77,4 +84,22 @@ export function config(): Config {
 
 export function isAdmin(userId: number | undefined): boolean {
   return userId !== undefined && config().ADMIN_IDS.includes(userId);
+}
+
+/**
+ * Whether publishing is switched on at all. Every feature that would send a
+ * message into the channel checks this first, so a bot configured without a
+ * channel simply has no publishing commands rather than failing at send time.
+ */
+export function publishingEnabled(): boolean {
+  return config().CHANNEL_ID !== undefined;
+}
+
+/** The channel id, for code that has already checked `publishingEnabled`. */
+export function channelId(): string {
+  const id = config().CHANNEL_ID;
+  if (id === undefined) {
+    throw new Error("publishing is disabled: CHANNEL_ID is not set");
+  }
+  return id;
 }

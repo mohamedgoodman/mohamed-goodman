@@ -1,7 +1,7 @@
 import { Bot, GrammyError, HttpError } from "grammy";
 import type { Context } from "grammy";
 import { autoRetry } from "@grammyjs/auto-retry";
-import { config } from "./config.js";
+import { config, publishingEnabled } from "./config.js";
 import { broadcast } from "./features/broadcast.js";
 import { compose } from "./features/compose.js";
 import { inquiries } from "./features/inquiries.js";
@@ -49,15 +49,28 @@ export function createBot(): Bot<Context> {
 }
 
 /** The command list shown in Telegram's menu. */
-export const ADMIN_COMMANDS = [
-  { command: "post", description: "Compose a post for the channel" },
-  { command: "scheduled", description: "See and cancel queued posts" },
-  { command: "broadcast", description: "Message every subscriber" },
-  { command: "stats", description: "Subscribers, posts, queue" },
-  { command: "cancel", description: "Abandon the current draft" },
-];
-
 export const MEMBER_COMMANDS = [
   { command: "start", description: "Join and see what this bot does" },
   { command: "help", description: "How to reach the team" },
 ];
+
+const PUBLISHING_COMMANDS = [
+  { command: "post", description: "Compose a post for the channel" },
+  { command: "scheduled", description: "See and cancel queued posts" },
+];
+
+const ALWAYS_ON_COMMANDS = [
+  { command: "broadcast", description: "Message every subscriber" },
+  { command: "stats", description: "Subscribers and reach" },
+  { command: "cancel", description: "Abandon the current draft" },
+];
+
+/**
+ * A deployment with no channel configured must not offer /post — a menu entry
+ * that always answers "publishing is switched off" is worse than no entry.
+ */
+export function adminCommands() {
+  return publishingEnabled()
+    ? [...PUBLISHING_COMMANDS, ...ALWAYS_ON_COMMANDS]
+    : ALWAYS_ON_COMMANDS;
+}

@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "tsx --test src/**/*.test.ts",
+    "test": "tsx --test \"src/**/*.test.ts\"",
     "dev": "tsx watch scripts/dev-polling.ts",
     "webhook:set": "tsx scripts/set-webhook.ts",
     "webhook:info": "tsx scripts/set-webhook.ts --info",

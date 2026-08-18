@@ -1,6 +1,6 @@
 import { Composer, InlineKeyboard } from "grammy";
 import type { Context } from "grammy";
-import { config, isAdmin } from "../config.js";
+import { config, isAdmin, publishingEnabled } from "../config.js";
 import {
   countPublished,
   countSubscribers,
@@ -25,6 +25,10 @@ function teaser(html: string, max = 60): string {
 
 schedule.command("scheduled", async (ctx) => {
   if (!isAdmin(ctx.from?.id) || ctx.chat?.type !== "private") return;
+  if (!publishingEnabled()) {
+    await ctx.reply("Publishing is switched off — there is no queue.");
+    return;
+  }
 
   const posts = await upcomingPosts(20);
   if (posts.length === 0) {
@@ -71,27 +75,32 @@ schedule.callbackQuery(/^sched:cancel:(\d+)$/, async (ctx) => {
 schedule.command("stats", async (ctx) => {
   if (!isAdmin(ctx.from?.id) || ctx.chat?.type !== "private") return;
 
-  const [subscribers, published, queued] = await Promise.all([
-    countSubscribers(),
-    countPublished(),
-    upcomingPosts(100),
-  ]);
+  const lines = ["<b>Nina Redlyn — numbers</b>", ""];
+  lines.push(
+    `Subscribers reachable by broadcast: <b>${await countSubscribers()}</b>`,
+  );
 
-  const next = queued[0]?.scheduled_at
-    ? formatInZone(new Date(queued[0].scheduled_at), config().TIMEZONE)
-    : "—";
-
-  await ctx.reply(
-    [
-      "<b>Nina Redlyn — numbers</b>",
-      "",
-      `Subscribers reachable by broadcast: <b>${subscribers}</b>`,
+  if (publishingEnabled()) {
+    const [published, queued] = await Promise.all([
+      countPublished(),
+      upcomingPosts(100),
+    ]);
+    const next = queued[0]?.scheduled_at
+      ? formatInZone(new Date(queued[0].scheduled_at), config().TIMEZONE)
+      : "—";
+    lines.push(
       `Posts published through the bot: <b>${published}</b>`,
       `Queued: <b>${queued.length}</b>`,
       `Next out: <b>${next}</b>`,
       "",
       `<i>Timezone ${config().TIMEZONE}</i>`,
-    ].join("\n"),
-    { parse_mode: "HTML" },
-  );
+    );
+  } else {
+    lines.push(
+      "",
+      "<i>Publishing is off — this bot only answers messages.</i>",
+    );
+  }
+
+  await ctx.reply(lines.join("\n"), { parse_mode: "HTML" });
 });

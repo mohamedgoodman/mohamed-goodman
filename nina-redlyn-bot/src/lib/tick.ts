@@ -1,6 +1,6 @@
 import { GrammyError, type Bot } from "grammy";
 import type { Context } from "grammy";
-import { config } from "../config.js";
+import { channelId, config, publishingEnabled } from "../config.js";
 import {
   deactivateSubscriber,
   duePosts,
@@ -49,6 +49,10 @@ async function notifyAdmins(bot: Bot<Context>, text: string): Promise<void> {
 async function publishDuePosts(
   bot: Bot<Context>,
 ): Promise<{ ok: number; failed: number }> {
+  // Nothing can be published without a channel, and nothing can have been
+  // scheduled either — skip the query entirely.
+  if (!publishingEnabled()) return { ok: 0, failed: 0 };
+
   const posts = await duePosts(10);
   let ok = 0;
   let failed = 0;
@@ -59,7 +63,7 @@ async function publishDuePosts(
     await updatePost(post.id, { status: "draft", attempts: post.attempts + 1 });
 
     try {
-      const sent = await sendComposed(bot.api, config().CHANNEL_ID, {
+      const sent = await sendComposed(bot.api, channelId(), {
         body_html: post.body_html,
         media_type: post.media_type,
         media_file_id: post.media_file_id,

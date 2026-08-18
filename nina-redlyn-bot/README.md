@@ -7,6 +7,12 @@ look, and either publishes it immediately or holds it until the time you set.
 It also greets everyone who opens the bot, keeps them on a list you can message
 later, forwards their questions to you, and keeps the discussion group clean.
 
+**Two modes.** Set `CHANNEL_ID` and the bot publishes to your channel. Leave it
+blank and it never posts anywhere and needs no administrator rights in any
+chat — it just answers the people who write to it, and can still broadcast to
+them. `/post` and `/scheduled` simply do not appear in that mode. Same for
+`GROUP_ID`: blank means no moderation and no group to join.
+
 ---
 
 ## What it does
@@ -43,6 +49,8 @@ channel posts and group admins are never touched.
 | `/cancel`         | you       | Abandon the draft you are writing            |
 | `/start`, `/help` | followers | Join and reach you                           |
 
+`/post` and `/scheduled` exist only when `CHANNEL_ID` is set.
+
 ---
 
 ## Setting it up
@@ -68,9 +76,12 @@ this the bot cannot see group messages, so moderation would do nothing.
   `-100…` number it gives you.
 - **Group** — same method, forward a group message to **@userinfobot**.
 
-Then add the bot to the channel as an **administrator** with _Post messages_
-permission, and to the discussion group as an administrator with _Delete
-messages_ and _Ban users_.
+If you want the bot to publish, add it to the channel as an **administrator**
+with _Post messages_ permission. If you want moderation, add it to the
+discussion group as an administrator with _Delete messages_ and _Ban users_.
+
+Running it as a private assistant only? Skip both — leave `CHANNEL_ID` and
+`GROUP_ID` blank and the bot needs no rights anywhere.
 
 ### 3. Create the database
 
@@ -116,7 +127,7 @@ Send `/start` to your bot. You should get the admin panel. That is everything.
 ## About the schedule
 
 Scheduled posts are published by `/api/cron/tick`, which Vercel calls every
-minute (`vercel.json`). **Minute-level cron needs a Vercel Pro plan** — the Hobby
+minute (`vercel.json`). (Only relevant when publishing is on.) **Minute-level cron needs a Vercel Pro plan** — the Hobby
 plan only allows one run per day, which would make scheduling useless.
 
 If you are staying on Hobby, use a free external scheduler instead — for example
@@ -136,7 +147,7 @@ same post twice.
 ```bash
 npm install
 npm run dev            # long polling — no public URL needed
-npm test               # 19 tests over the formatting and scheduling logic
+npm test               # 24 tests over config, formatting and scheduling
 npm run typecheck
 ```
 

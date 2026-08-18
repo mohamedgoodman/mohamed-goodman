@@ -1,6 +1,6 @@
 import { Composer, InlineKeyboard } from "grammy";
 import type { Context } from "grammy";
-import { config, isAdmin } from "../config.js";
+import { channelId, config, isAdmin, publishingEnabled } from "../config.js";
 import {
   clearState,
   createPost,
@@ -55,7 +55,7 @@ async function showReview(ctx: Context, data: AdminState["data"]) {
   if (post.buttons.length > 0) {
     notes.push(`${post.buttons.length} button(s) attached.`);
   }
-  notes.push(`Channel: <code>${config().CHANNEL_ID}</code>`);
+  notes.push(`Channel: <code>${channelId()}</code>`);
 
   await ctx.reply(notes.join("\n"), {
     parse_mode: "HTML",
@@ -68,6 +68,14 @@ async function showReview(ctx: Context, data: AdminState["data"]) {
 
 compose.command("post", async (ctx) => {
   if (!isAdmin(ctx.from?.id) || ctx.chat?.type !== "private") return;
+  if (!publishingEnabled()) {
+    await ctx.reply(
+      "Publishing is switched off on this bot — no channel is configured, so " +
+        "it has no rights to post anywhere.\n\nTo turn it on, set CHANNEL_ID " +
+        "and make the bot an administrator of that channel.",
+    );
+    return;
+  }
   await setState(ctx.from!.id, "post:content", {});
   await ctx.reply(
     [
@@ -233,7 +241,7 @@ compose.callbackQuery("post:publish", async (ctx) => {
   });
 
   try {
-    const sent = await sendComposed(ctx.api, config().CHANNEL_ID, draft);
+    const sent = await sendComposed(ctx.api, channelId(), draft);
     await updatePost(post.id, {
       status: "published",
       published_at: new Date().toISOString(),
