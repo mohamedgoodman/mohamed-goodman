@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+storage/*.db
+storage/*.db-wal
+storage/*.db-shm
+storage/*.state
+media/*/
+!media/example/
