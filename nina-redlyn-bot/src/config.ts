@@ -13,8 +13,19 @@ const schema = z.object({
   /** Channel to publish to: `@nina_redlyn` or a numeric id like `-1001234567890`. */
   CHANNEL_ID: z.string().min(2),
 
-  /** Optional discussion group linked to the channel — moderation runs there. */
-  GROUP_ID: z.coerce.number().int().optional(),
+  /**
+   * Optional discussion group linked to the channel — moderation runs there.
+   * Hosting dashboards hand back an empty string for a variable left blank,
+   * which must mean "no group" rather than chat id 0.
+   */
+  GROUP_ID: z
+    .string()
+    .optional()
+    .transform((raw) => (raw && raw.trim() ? Number(raw.trim()) : undefined))
+    .refine(
+      (id) => id === undefined || Number.isInteger(id),
+      "GROUP_ID must be a numeric chat id, e.g. -1001234567890",
+    ),
 
   /** Telegram user ids allowed to compose, schedule and broadcast. */
   ADMIN_IDS: z
