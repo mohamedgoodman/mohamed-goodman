@@ -33,6 +33,7 @@ when `NODE_ENV !== "production"`, so `npm run dev` works with no `.env` at all.
 | `npm start`         | Serve the production build         |
 | `npm run lint`      | ESLint (flat config)               |
 | `npm run typecheck` | `tsc --noEmit`, strict             |
+| `npm run test:store` | Storage contract tests            |
 
 ## Stack
 
@@ -101,11 +102,54 @@ src/
 
 ### Data & persistence
 
-`DataStore` (`lib/db/adapter.ts`) is a small document-store interface. The
-shipped implementation writes one JSON file atomically and serialises writes
-through a promise queue — enough for a single node and for local development.
-Swapping in Postgres, SQLite or Mongo means writing one more implementation and
-changing `getStore()`; repositories and routes are untouched.
+`DataStore` (`lib/db/adapter.ts`) is a small document-store interface with two
+implementations. `getStore()` picks one from the environment; repositories and
+routes never know which is active.
+
+| | When it's used | What it's for |
+| --- | --- | --- |
+| `JsonStore` | `DATABASE_URL` unset | Local development — one JSON file, written atomically, writes serialised through a promise queue. Nothing to install. |
+| `PostgresStore` | `DATABASE_URL` set | Every real deployment. Durable, safe with concurrent writers, read-modify-write under a row lock. |
+
+Postgres uses a single table, because the interface is a document store and
+the schema should say so:
+
+```sql
+documents(collection text, id text, data jsonb, updated_at timestamptz,
+          PRIMARY KEY (collection, id))
+```
+
+It's created on first use — no migration step. Predicate reads (`find`,
+`findOne`) load a collection and filter in JavaScript, matching the interface's
+semantics; collections are small and per-user, and if one ever isn't, the fix
+is a purpose-built query on `PostgresStore` rather than a change to every
+caller.
+
+Both implementations are held to the same contract tests
+(`scripts/test-store.ts`), which run against the file store always and against
+a real Postgres when `TEST_DATABASE_URL` is set:
+
+```bash
+npm run test:store
+TEST_DATABASE_URL=postgres://user:pass@localhost:5432/ej_test npm run test:store
+```
+
+### Deploying
+
+The app lives in a sub-directory of this repository, so set the project's
+**Root Directory** to `english-journey`.
+
+Environment variables:
+
+| Variable | Required | Notes |
+| --- | --- | --- |
+| `AUTH_SECRET` | yes | 32+ random characters. The app refuses to start in production without it. |
+| `DATABASE_URL` | on serverless | Use the **pooled** connection string on Neon or Supabase — serverless functions open many short-lived connections. |
+| `AI_PROVIDER`, `AI_API_KEY` | no | Omit to run on the built-in offline engine. |
+
+Without `DATABASE_URL` a serverless deploy will appear to work and then lose
+every account on the next request, because the filesystem is ephemeral. That is
+the one configuration mistake worth being loud about.
 
 Progress is real from the first session: a new account starts empty, and every
 number on the dashboard comes from that user's own completed work.
