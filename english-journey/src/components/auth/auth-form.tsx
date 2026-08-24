@@ -46,11 +46,13 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
   return (
     <div className="mx-auto flex min-h-dvh max-w-md flex-col justify-center px-5 py-12">
       <Link href="/" className="mb-8 flex items-center gap-2 self-start font-semibold">
-        <span className="grid size-8 place-items-center rounded-xl bg-brand text-white">EJ</span>
+        <span className="grid size-9 place-items-center rounded-xl text-white shadow-[0_4px_16px_rgba(124,58,237,0.45),inset_0_1px_0_rgba(255,255,255,0.25)] [background:var(--grad-brand)]">
+          EJ
+        </span>
         English Journey
       </Link>
 
-      <div className="card animate-in-up p-6 sm:p-8">
+      <div className="card card-elevated glow-purple animate-in-up p-6 sm:p-8">
         <h1 className="text-2xl font-semibold">
           {isRegister ? "Create your account" : "Welcome back"}
         </h1>
@@ -108,7 +110,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           </Field>
 
           {error ? (
-            <p role="alert" className="rounded-xl bg-danger-soft px-3.5 py-2.5 text-sm text-danger">
+            <p role="alert" className="rounded-xl border border-danger/30 bg-danger-soft px-3.5 py-2.5 text-sm text-on-danger">
               {error}
             </p>
           ) : null}
@@ -123,14 +125,14 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           {isRegister ? "Already have an account? " : "New here? "}
           <Link
             href={isRegister ? "/login" : "/register"}
-            className="font-medium text-brand hover:underline"
+            className="font-medium text-on-brand hover:underline"
           >
             {isRegister ? "Sign in" : "Create one"}
           </Link>
         </p>
       </div>
 
-      <p className="mt-6 text-center text-xs text-muted">
+      <p className="mt-6 text-center text-xs text-dim">
         Email and password today. The auth layer is provider-shaped, so OAuth can be added without
         touching the rest of the app.
       </p>

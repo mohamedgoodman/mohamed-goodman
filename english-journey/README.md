@@ -40,6 +40,11 @@ when `NODE_ENV !== "production"`, so `npm run dev` works with no `.env` at all.
   (`noUncheckedIndexedAccess` included).
 - **Tailwind CSS v4** with design tokens in `src/app/globals.css`; light/dark
   are token swaps, so no component hardcodes a colour.
+- **Visual identity**: deep navy ground (`#080B18`) with an electric purple →
+  royal blue brand gradient, cyan for interactive/technology, green for success
+  and amber for XP and streaks. Depth comes from CSS only — layered shadows,
+  gradient hairline borders, inner highlights, backdrop blur and a capped 4.5°
+  pointer tilt on desktop. No WebGL, no canvas, no 3D library.
 - **No UI framework dependency** — the primitives in `src/components/ui` are
   small and owned.
 - **Audio** uses the browser's `SpeechSynthesis` for playback and
@@ -161,7 +166,10 @@ conversation and where to find more input.
 
 ## Accessibility & responsiveness
 
-Mobile-first, verified at 390px and 1280px with no horizontal overflow on any
-page. Focus rings everywhere, `aria-current` on navigation, labelled controls,
+Mobile-first, verified at 390px and 1440px with no horizontal overflow on any
+page, and audited for WCAG AA text contrast across every screen. The sidebar
+becomes a floating bottom bar on phones, tap targets stay at 40px+, and the
+heavier effects (drifting blobs, particles, tilt) are desktop-only so mid-range
+Android stays smooth. Focus rings everywhere, `aria-current` on navigation, labelled controls,
 `role="progressbar"` on progress bars, chart summaries in `aria-label`, and
 `prefers-reduced-motion` respected.

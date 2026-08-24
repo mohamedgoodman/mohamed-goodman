@@ -22,12 +22,15 @@ export function LineChart({
   suffix?: string;
   emptyMessage?: string;
 }) {
-  const gradientId = useId();
+  const uid = useId().replace(/:/g, "");
+  const gradientId = `fill-${uid}`;
+  const strokeId = `stroke-${uid}`;
+  const glowId = `glow-${uid}`;
   const hasData = data.some((d) => d.value > 0);
   if (!data.length || !hasData) {
     return (
       <div
-        className="grid place-items-center rounded-xl bg-surface-2 text-sm text-muted"
+        className="grid place-items-center rounded-xl border border-border bg-surface-2/40 text-sm text-dim"
         style={{ height }}
       >
         {emptyMessage}
@@ -56,9 +59,22 @@ export function LineChart({
     >
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="var(--brand)" stopOpacity="0.28" />
-          <stop offset="100%" stopColor="var(--brand)" stopOpacity="0" />
+          <stop offset="0%" stopColor="#7c3aed" stopOpacity="0.42" />
+          <stop offset="60%" stopColor="#2563eb" stopOpacity="0.14" />
+          <stop offset="100%" stopColor="#22d3ee" stopOpacity="0" />
         </linearGradient>
+        <linearGradient id={strokeId} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#a855f7" />
+          <stop offset="55%" stopColor="#2563eb" />
+          <stop offset="100%" stopColor="#22d3ee" />
+        </linearGradient>
+        <filter id={glowId} x="-30%" y="-60%" width="160%" height="220%">
+          <feGaussianBlur stdDeviation="3.5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
       </defs>
 
       {[0, 0.5, 1].map((fraction) => (
@@ -69,13 +85,13 @@ export function LineChart({
             y1={padding.top + innerH * fraction}
             y2={padding.top + innerH * fraction}
             stroke="var(--border)"
-            strokeDasharray="3 4"
+            strokeDasharray="2 6"
           />
           <text
             x={4}
             y={padding.top + innerH * fraction + 4}
             fontSize="10"
-            fill="var(--text-muted)"
+            fill="var(--text-dim)"
           >
             {Math.round(max * (1 - fraction))}
           </text>
@@ -83,11 +99,28 @@ export function LineChart({
       ))}
 
       <path d={area} fill={`url(#${gradientId})`} />
-      <path d={line} fill="none" stroke="var(--brand)" strokeWidth="2.5" strokeLinecap="round" />
+      <path
+        d={line}
+        fill="none"
+        stroke={`url(#${strokeId})`}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        filter={`url(#${glowId})`}
+      />
 
       {data.map((d, i) =>
         d.value > 0 ? (
-          <circle key={d.label + i} cx={x(i)} cy={y(d.value)} r="3" fill="var(--brand)">
+          <circle
+            key={d.label + i}
+            cx={x(i)}
+            cy={y(d.value)}
+            r="3.2"
+            fill="#22d3ee"
+            stroke="var(--surface)"
+            strokeWidth="1.5"
+            filter={`url(#${glowId})`}
+          >
             <title>{`${d.label}: ${d.value}${suffix}`}</title>
           </circle>
         ) : null,
@@ -101,7 +134,7 @@ export function LineChart({
             y={height - 6}
             fontSize="10"
             textAnchor="middle"
-            fill="var(--text-muted)"
+            fill="var(--text-dim)"
           >
             {d.label}
           </text>
@@ -126,7 +159,7 @@ export function BarChart({
   if (!data.length || !hasData) {
     return (
       <div
-        className="grid place-items-center rounded-xl bg-surface-2 text-sm text-muted"
+        className="grid place-items-center rounded-xl border border-border bg-surface-2/40 text-sm text-dim"
         style={{ height }}
       >
         {emptyMessage}
@@ -134,19 +167,31 @@ export function BarChart({
     );
   }
   const max = Math.max(...data.map((d) => d.value), 1);
+  // With 30 or 90 bars there isn't room for every label — show a readable few.
+  const labelEvery = Math.ceil(data.length / 7);
 
   return (
-    <div className="flex items-end gap-1.5" style={{ height }}>
-      {data.map((d) => (
+    <div className="flex items-stretch gap-1 sm:gap-1.5" style={{ height }}>
+      {data.map((d, index) => (
         <div key={d.label} className="flex min-w-0 flex-1 flex-col items-center gap-1.5">
-          <div className="flex w-full flex-1 items-end">
+          {/* The bar is absolutely positioned so its percentage height always
+              resolves against the track, whatever the flex context does. */}
+          <div className="relative w-full flex-1">
             <div
-              className="w-full rounded-t-lg bg-brand transition-[height] duration-500"
-              style={{ height: `${Math.max((d.value / max) * 100, d.value > 0 ? 4 : 0)}%` }}
+              className="absolute inset-x-0 bottom-0 rounded-t-md transition-[height] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{
+                height: `${d.value > 0 ? Math.max((d.value / max) * 100, 6) : 0}%`,
+                background: "linear-gradient(180deg,#22d3ee 0%,#2563eb 45%,#7c3aed 100%)",
+                boxShadow: d.value > 0 ? "0 0 12px rgba(37,99,235,0.45)" : undefined,
+              }}
               title={`${d.label}: ${d.value}${suffix}`}
             />
+            {/* A faint baseline keeps empty days legible as "no practice". */}
+            <div className="absolute inset-x-0 bottom-0 h-px bg-border" />
           </div>
-          <span className="truncate text-[10px] text-muted">{d.label}</span>
+          <span className="h-3 truncate text-[10px] text-dim">
+            {index % labelEvery === 0 ? d.label : ""}
+          </span>
         </div>
       ))}
     </div>

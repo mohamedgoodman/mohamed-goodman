@@ -39,7 +39,7 @@ export function VocabChoiceCard({
   options: string[];
   onAnswer?: (correct: boolean) => void;
 }) {
-  const { speak } = useSpeech();
+  const { speak, speaking } = useSpeech();
   const [chosen, setChosen] = useState<string | null>(null);
   const answered = chosen !== null;
   const correct = chosen === word.definition;
@@ -51,71 +51,218 @@ export function VocabChoiceCard({
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <h3 className="text-xl font-semibold">{word.term}</h3>
-        <button
-          type="button"
+    <div className="space-y-5">
+      {/* The word is the hero of this screen. */}
+      <div className="flex flex-col items-center gap-3 text-center">
+        <h3 className="text-3xl leading-tight font-semibold tracking-tight sm:text-4xl">
+          {word.term}
+        </h3>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <span className="font-mono text-sm text-muted">{word.phonetic}</span>
+          <RegisterBadge register={word.register} />
+        </div>
+        <AudioButton
+          label={`Hear ${word.term}`}
+          active={speaking}
           onClick={() => speak(word.term)}
-          aria-label={`Hear ${word.term}`}
-          className="grid size-8 place-items-center rounded-lg bg-surface-2 text-muted hover:text-brand"
-        >
-          <Volume2 className="size-4" />
-        </button>
-        <RegisterBadge register={word.register} />
-        <span className="font-mono text-sm text-muted">{word.phonetic}</span>
+        />
       </div>
 
-      <p className="text-sm text-muted">What does it mean?</p>
-      <div className="grid gap-2">
-        {options.map((option) => {
+      <p className="text-center text-sm text-muted">What does it mean?</p>
+
+      <div className="grid gap-2.5">
+        {options.map((option, index) => {
           const isAnswer = option === word.definition;
           const selected = chosen === option;
           return (
-            <button
+            <OptionButton
               key={option}
-              type="button"
-              disabled={answered}
+              index={index}
+              label={option}
+              state={
+                !answered
+                  ? "idle"
+                  : isAnswer
+                    ? "correct"
+                    : selected
+                      ? "wrong"
+                      : "dimmed"
+              }
               onClick={() => choose(option)}
-              className={cn(
-                "flex items-start justify-between gap-3 rounded-xl border px-3.5 py-3 text-left text-sm transition-all disabled:cursor-default",
-                answered && isAnswer
-                  ? "border-success bg-success-soft"
-                  : answered && selected
-                    ? "border-danger bg-danger-soft"
-                    : "border-border hover:bg-surface-2",
-              )}
-            >
-              <span>{option}</span>
-              {answered && isAnswer ? <Check className="size-4 shrink-0 text-success" /> : null}
-              {answered && selected && !isAnswer ? <X className="size-4 shrink-0 text-danger" /> : null}
-            </button>
+            />
           );
         })}
       </div>
 
-      {answered ? (
-        <div className="animate-in-up space-y-3 rounded-2xl bg-surface-2 p-4 text-sm">
-          <p className={cn("font-medium", correct ? "text-success" : "text-accent")}>
-            {correct ? "Right — and here's the context." : "Not quite. Here's how it's really used."}
-          </p>
-          <p>
-            <span className="font-medium">Example: </span>
-            <span className="text-muted">{word.example}</span>
-          </p>
-          <p>
-            <span className="font-medium">In real life: </span>
-            <span className="text-muted">{word.realLifeExample}</span>
-          </p>
-          <div className="flex flex-wrap gap-1.5">
-            {word.collocations.map((c) => (
-              <span key={c} className="rounded-lg bg-surface px-2 py-1 text-xs text-muted">
-                {c}
-              </span>
-            ))}
-          </div>
-        </div>
+      {answered ? <AnswerFeedback correct={correct} word={word} /> : null}
+    </div>
+  );
+}
+
+/** A circular, tactile audio control — the main interactive affordance here. */
+export function AudioButton({
+  label,
+  onClick,
+  active,
+  size = "md",
+}: {
+  label: string;
+  onClick: () => void;
+  active?: boolean;
+  size?: "sm" | "md";
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className={cn(
+        "press group relative grid shrink-0 place-items-center rounded-full text-white",
+        "[background:var(--grad-brand)] shadow-[0_6px_20px_rgba(124,58,237,0.4),inset_0_1px_0_rgba(255,255,255,0.28)]",
+        "transition-transform duration-250 hover:scale-105",
+        size === "sm" ? "size-10" : "size-12",
+      )}
+    >
+      {active ? (
+        <span
+          aria-hidden
+          className="absolute inset-0 rounded-full ring-2 ring-cyan/60"
+          style={{ animation: "ring-pulse 1.4s ease-out infinite" }}
+        />
       ) : null}
+      <Volume2 className={size === "sm" ? "size-4" : "size-5"} />
+    </button>
+  );
+}
+
+type OptionState = "idle" | "correct" | "wrong" | "dimmed";
+
+/** Premium 3D answer option: raised while idle, lit green or shaken red after. */
+function OptionButton({
+  label,
+  index,
+  state,
+  onClick,
+}: {
+  label: string;
+  index: number;
+  state: OptionState;
+  onClick: () => void;
+}) {
+  const letter = String.fromCharCode(65 + index);
+  return (
+    <button
+      type="button"
+      disabled={state !== "idle"}
+      onClick={onClick}
+      className={cn(
+        "group relative flex items-center gap-3 rounded-2xl border px-4 py-3.5 text-left text-sm",
+        "transition-[transform,box-shadow,border-color,background] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        "disabled:cursor-default",
+        state === "idle" &&
+          "border-border-strong bg-surface-2/70 shadow-[var(--shadow-sm),var(--inner-highlight)] backdrop-blur hover:-translate-y-0.5 hover:border-purple/50 hover:bg-surface-3/80 hover:shadow-[var(--shadow-md),0_8px_22px_rgba(124,58,237,0.22)] active:scale-[0.99]",
+        state === "correct" && "glow-success animate-correct border-success/60 bg-success-soft",
+        state === "wrong" && "glow-danger animate-shake border-danger/60 bg-danger-soft",
+        state === "dimmed" && "border-border bg-surface-2/40 opacity-55",
+      )}
+    >
+      <span
+        className={cn(
+          "grid size-7 shrink-0 place-items-center rounded-lg text-xs font-semibold transition-colors",
+          state === "correct"
+            ? "bg-success text-white"
+            : state === "wrong"
+              ? "bg-danger text-white"
+              : "bg-surface-3 text-dim group-hover:text-text",
+        )}
+        aria-hidden
+      >
+        {state === "correct" ? (
+          <Check className="size-4" strokeWidth={3} />
+        ) : state === "wrong" ? (
+          <X className="size-4" strokeWidth={3} />
+        ) : (
+          letter
+        )}
+      </span>
+      <span className="min-w-0 flex-1">{label}</span>
+    </button>
+  );
+}
+
+/**
+ * Feedback is a hierarchy, not a paragraph: verdict → why → example →
+ * how it's really used. Each level gets its own weight and colour.
+ */
+function AnswerFeedback({ correct, word }: { correct: boolean; word: VocabularyWord }) {
+  const { speak } = useSpeech();
+  return (
+    <div
+      className={cn(
+        "animate-in-up overflow-hidden rounded-2xl border",
+        correct ? "border-success/35 bg-success-soft/50" : "border-danger/35 bg-danger-soft/40",
+      )}
+    >
+      <div
+        className={cn(
+          "flex items-center gap-2.5 px-4 py-3",
+          correct ? "bg-success/12" : "bg-danger/12",
+        )}
+      >
+        <span
+          className={cn(
+            "grid size-7 shrink-0 place-items-center rounded-full text-white",
+            correct ? "bg-success" : "bg-danger",
+          )}
+        >
+          {correct ? <Check className="size-4" strokeWidth={3} /> : <X className="size-4" strokeWidth={3} />}
+        </span>
+        <span className={cn("font-semibold", correct ? "text-on-success" : "text-on-danger")}>
+          {correct ? "Correct" : "Not quite"}
+        </span>
+        <span className="ml-auto font-mono text-xs text-dim">{word.phonetic}</span>
+      </div>
+
+      <div className="space-y-3.5 p-4">
+        <FeedbackRow label="Why">
+          <p className="text-[15px] text-text">{word.definition}</p>
+        </FeedbackRow>
+
+        <FeedbackRow label="Example">
+          <button
+            onClick={() => speak(word.example)}
+            className="-mx-2 rounded-lg px-2 py-1 text-left text-[15px] text-muted transition-colors hover:bg-surface-2/60 hover:text-on-brand"
+          >
+            “{word.example}”
+          </button>
+        </FeedbackRow>
+
+        <FeedbackRow label="Real life">
+          <p className="text-sm text-muted">{word.realLifeExample}</p>
+        </FeedbackRow>
+
+        <div className="flex flex-wrap gap-1.5 pt-0.5">
+          {word.collocations.map((collocation) => (
+            <span
+              key={collocation}
+              className="rounded-lg bg-surface-2/80 px-2 py-1 text-xs text-dim ring-1 ring-inset ring-border"
+            >
+              {collocation}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FeedbackRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="grid gap-1 sm:grid-cols-[5.5rem_1fr] sm:gap-3">
+      <span className="pt-0.5 text-[11px] font-medium tracking-[0.09em] text-dim uppercase">
+        {label}
+      </span>
+      <div className="min-w-0">{children}</div>
     </div>
   );
 }
@@ -125,27 +272,23 @@ export function VocabDetail({ word }: { word: VocabularyWord }) {
   const { speak } = useSpeech();
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2.5">
+        <AudioButton label={`Hear ${word.term}`} size="sm" onClick={() => speak(word.term)} />
         <h3 className="text-lg font-semibold">{word.term}</h3>
-        <button
-          type="button"
-          onClick={() => speak(word.term)}
-          aria-label={`Hear ${word.term}`}
-          className="grid size-8 place-items-center rounded-lg bg-surface-2 text-muted hover:text-brand"
-        >
-          <Volume2 className="size-4" />
-        </button>
-        <span className="font-mono text-sm text-muted">{word.phonetic}</span>
+        <span className="font-mono text-sm text-dim">{word.phonetic}</span>
         <RegisterBadge register={word.register} />
         <Badge tone="neutral">{word.partOfSpeech}</Badge>
       </div>
 
       <p>{word.definition}</p>
 
-      <div className="space-y-2 rounded-xl bg-surface-2 p-4 text-sm">
+      <div className="space-y-2 rounded-xl border border-border bg-surface-2/60 p-4 text-sm">
         <p>
           <span className="font-medium">Example: </span>
-          <button className="text-left text-muted hover:text-brand" onClick={() => speak(word.example)}>
+          <button
+            className="-mx-2 rounded-lg px-2 py-1 text-left text-muted transition-colors hover:bg-surface-2/60 hover:text-on-brand"
+            onClick={() => speak(word.example)}
+          >
             {word.example}
           </button>
         </p>
@@ -183,25 +326,22 @@ export function PhraseCard({ phrase }: { phrase: RealEnglishPhrase }) {
   const { speak } = useSpeech();
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <h3 className="text-lg font-semibold">“{phrase.phrase}”</h3>
-        <button
-          type="button"
+      <div className="flex flex-wrap items-center gap-2.5">
+        <AudioButton
+          label="Hear the phrase"
+          size="sm"
           onClick={() => speak(phrase.phrase, { accent: phrase.regions[0] ?? "usa" })}
-          aria-label="Hear the phrase"
-          className="grid size-8 place-items-center rounded-lg bg-surface-2 text-muted hover:text-brand"
-        >
-          <Volume2 className="size-4" />
-        </button>
+        />
+        <h3 className="text-lg font-semibold">“{phrase.phrase}”</h3>
         <RegisterBadge register={phrase.register} />
       </div>
 
       <p className="text-muted">{phrase.meaning}</p>
 
-      <div className="rounded-xl bg-surface-2 p-4 text-sm">
-        <p className="font-medium">Natural example</p>
+      <div className="rounded-xl border border-purple/25 bg-brand-soft/40 p-4 text-sm">
+        <p className="text-[11px] font-medium tracking-[0.09em] text-dim uppercase">Natural example</p>
         <button
-          className="mt-1 text-left text-muted hover:text-brand"
+          className="-mx-2 mt-0.5 rounded-lg px-2 py-1.5 text-left text-[15px] transition-colors hover:bg-surface-2/60 hover:text-on-brand"
           onClick={() => speak(phrase.naturalExample, { accent: phrase.regions[0] ?? "usa" })}
         >
           “{phrase.naturalExample}”
@@ -209,22 +349,20 @@ export function PhraseCard({ phrase }: { phrase: RealEnglishPhrase }) {
       </div>
 
       <div className="grid gap-3 text-sm sm:grid-cols-2">
-        <div className="rounded-xl border border-border p-3.5">
-          <p className="font-medium">When to use it</p>
-          <p className="mt-1 text-muted">{phrase.whenToUse}</p>
-        </div>
-        <div className="rounded-xl border border-border p-3.5">
-          <p className="font-medium">Why it sounds native</p>
-          <p className="mt-1 text-muted">{phrase.note}</p>
-        </div>
-        <div className="rounded-xl border border-border p-3.5">
-          <p className="font-medium">More formal</p>
-          <p className="mt-1 text-muted">“{phrase.formalAlternative}”</p>
-        </div>
-        <div className="rounded-xl border border-border p-3.5">
-          <p className="font-medium">More informal</p>
-          <p className="mt-1 text-muted">“{phrase.informalAlternative}”</p>
-        </div>
+        {[
+          ["When to use it", phrase.whenToUse],
+          ["Why it sounds native", phrase.note],
+          ["More formal", `“${phrase.formalAlternative}”`],
+          ["More informal", `“${phrase.informalAlternative}”`],
+        ].map(([label, body]) => (
+          <div
+            key={label}
+            className="rounded-xl border border-border bg-surface-2/50 p-3.5 transition-colors hover:border-border-strong"
+          >
+            <p className="text-[11px] font-medium tracking-[0.09em] text-dim uppercase">{label}</p>
+            <p className="mt-1.5 text-muted">{body}</p>
+          </div>
+        ))}
       </div>
     </div>
   );

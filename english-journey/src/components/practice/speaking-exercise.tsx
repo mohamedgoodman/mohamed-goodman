@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { Lightbulb, Mic, MicOff, Send, Volume2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Lightbulb, Mic, Send, Square, Volume2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/field";
-import { ProgressBar } from "@/components/ui/progress";
+import { ProgressBar, RingProgress } from "@/components/ui/progress";
 import { useSpeech, useSpeechRecognition } from "@/lib/speech";
+import { cn } from "@/lib/utils";
 import type { SpeakingExercise as Scenario } from "@/types";
 
 export interface SpeakingFeedbackShape {
@@ -39,8 +40,20 @@ export function SpeakingExerciseCard({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showModel, setShowModel] = useState(false);
+  const [now, setNow] = useState(0);
+  const startedAt = useRef(0);
 
   const text = recognition.listening ? recognition.transcript : answer;
+  const seconds = recognition.listening ? now : 0;
+
+  // A visible recording timer — people speak longer when they can see the clock.
+  useEffect(() => {
+    if (!recognition.listening) return;
+    const began = Date.now();
+    startedAt.current = began;
+    const id = setInterval(() => setNow(Math.floor((Date.now() - began) / 1000)), 500);
+    return () => clearInterval(id);
+  }, [recognition.listening]);
 
   function toggleMic() {
     if (recognition.listening) {
@@ -93,16 +106,16 @@ export function SpeakingExerciseCard({
         <p className="mt-2 text-sm text-muted">{scenario.context}</p>
       </div>
 
-      <div className="rounded-2xl bg-brand-soft/50 p-4">
-        <p className="flex items-start gap-2 font-medium">
-          <Lightbulb className="mt-0.5 size-4 shrink-0 text-brand" />
+      <div className="rounded-2xl border border-purple/25 bg-brand-soft/40 p-4 backdrop-blur">
+        <p className="flex items-start gap-2.5 font-medium">
+          <Lightbulb className="mt-0.5 size-4 shrink-0 text-on-brand" />
           {scenario.prompt}
         </p>
         <p className="mt-2 text-sm text-muted">Grammar in focus: {scenario.focus}</p>
         <Button
           variant="ghost"
           size="sm"
-          className="mt-2"
+          className="mt-2 -ml-2"
           onClick={() => speak(scenario.prompt)}
           aria-label="Hear the task"
         >
@@ -112,21 +125,71 @@ export function SpeakingExerciseCard({
       </div>
 
       <div className="space-y-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            variant={recognition.listening ? "danger" : "secondary"}
+        {/* The microphone is the centrepiece: a lit ring that pulses while it
+            listens, with a running timer beside it. */}
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-border-strong bg-surface-2/50 p-5 backdrop-blur sm:flex-row sm:items-center sm:gap-5">
+          <button
+            type="button"
             onClick={toggleMic}
-            disabled={!recognition.supported}
+            disabled={!recognition.supported || recognition.failed}
+            aria-label={recognition.listening ? "Stop recording" : "Answer out loud"}
             title={recognition.supported ? undefined : "Speech recognition isn't available in this browser"}
+            className={cn(
+              "press relative grid size-16 shrink-0 place-items-center rounded-full text-white transition-transform duration-250",
+              "hover:scale-105 disabled:opacity-50 disabled:hover:scale-100",
+              recognition.listening
+                ? "[background:linear-gradient(135deg,#f43f5e,#be123c)] shadow-[0_8px_26px_rgba(244,63,94,0.45),inset_0_1px_0_rgba(255,255,255,0.3)]"
+                : "[background:linear-gradient(135deg,#22d3ee,#7c3aed)] shadow-[0_8px_26px_rgba(34,211,238,0.35),inset_0_1px_0_rgba(255,255,255,0.3)]",
+            )}
           >
-            {recognition.listening ? <MicOff className="size-4" /> : <Mic className="size-4" />}
-            {recognition.listening ? "Stop recording" : "Answer out loud"}
-          </Button>
-          <span className="text-sm text-muted">
-            {recognition.supported
-              ? "Speak your answer — or type it below. Say it out loud either way."
-              : "Speech recognition isn't supported here. Say your answer out loud, then type it."}
-          </span>
+            {recognition.listening ? (
+              <>
+                <span
+                  aria-hidden
+                  className="absolute inset-0 rounded-full ring-2 ring-danger/60"
+                  style={{ animation: "ring-pulse 1.5s ease-out infinite" }}
+                />
+                <span
+                  aria-hidden
+                  className="absolute inset-0 rounded-full ring-2 ring-danger/40"
+                  style={{ animation: "ring-pulse 1.5s ease-out 0.6s infinite" }}
+                />
+                <Square className="size-5 fill-current" />
+              </>
+            ) : (
+              <Mic className="size-6" />
+            )}
+          </button>
+
+          <div className="min-w-0 flex-1 text-center sm:text-left">
+            {recognition.listening ? (
+              <>
+                <p className="flex items-center justify-center gap-2 font-semibold sm:justify-start">
+                  <span className="size-2 animate-pulse rounded-full bg-danger" aria-hidden />
+                  Recording
+                  <span className="font-mono text-sm text-muted tabular-nums">
+                    {formatClock(seconds)}
+                  </span>
+                </p>
+                <p className="mt-1 text-sm text-muted">
+                  Speak naturally — press stop when you&apos;ve finished your answer.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="font-semibold">
+                  {recognition.supported ? "Answer out loud" : "Say it out loud, then type it"}
+                </p>
+                <p className="mt-1 text-sm text-muted">
+                  {recognition.failed
+                    ? "The microphone isn't available — type your answer below and you'll still get full feedback."
+                    : recognition.supported
+                      ? "Tap the microphone, or type your answer below. Either way, say it aloud."
+                      : "Speech recognition isn't supported in this browser — typing still gets you full feedback."}
+                </p>
+              </>
+            )}
+          </div>
         </div>
 
         <Textarea
@@ -148,10 +211,10 @@ export function SpeakingExerciseCard({
           </Button>
         </div>
 
-        {error ? <p className="text-sm text-danger">{error}</p> : null}
+        {error ? <p className="text-sm text-on-danger">{error}</p> : null}
 
         {showModel ? (
-          <div className="rounded-xl bg-surface-2 p-4 text-sm">
+          <div className="animate-in-up rounded-xl border border-border bg-surface-2/60 p-4 text-sm">
             <p className="font-medium">One natural way to answer</p>
             <p className="mt-1.5 text-muted">{scenario.modelAnswer}</p>
             <Button
@@ -172,15 +235,28 @@ export function SpeakingExerciseCard({
   );
 }
 
+function formatClock(totalSeconds: number): string {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}:${`${seconds}`.padStart(2, "0")}`;
+}
+
 export function SpeakingFeedbackPanel({ feedback }: { feedback: SpeakingFeedbackShape }) {
   return (
-    <div className="animate-in-up card space-y-5 p-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-sm text-muted">Overall</p>
-          <p className="text-2xl font-semibold tabular-nums">{feedback.score}%</p>
+    <div className="animate-in-up card card-elevated space-y-5 p-5">
+      <div className="flex flex-wrap items-center gap-4">
+        <RingProgress
+          value={feedback.score}
+          size={76}
+          stroke={8}
+          tone={feedback.score >= 80 ? "success" : feedback.score >= 60 ? "brand" : "amber"}
+        >
+          <span className="text-base font-semibold tabular-nums">{feedback.score}%</span>
+        </RingProgress>
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">Overall</p>
+          <p className="mt-1 text-sm text-muted">{feedback.summary}</p>
         </div>
-        <p className="max-w-md text-sm text-muted">{feedback.summary}</p>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
@@ -201,16 +277,20 @@ export function SpeakingFeedbackPanel({ feedback }: { feedback: SpeakingFeedback
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl bg-success-soft p-4">
-          <p className="text-sm font-semibold text-success">What worked</p>
+        <div className="rounded-xl border border-success/30 bg-success-soft/50 p-4">
+          <p className="text-[11px] font-semibold tracking-[0.09em] text-on-success uppercase">
+            What worked
+          </p>
           <ul className="mt-2 space-y-1.5 text-sm">
             {feedback.strengths.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
         </div>
-        <div className="rounded-xl bg-accent-soft p-4">
-          <p className="text-sm font-semibold text-accent">What to change next time</p>
+        <div className="rounded-xl border border-accent/30 bg-accent-soft/40 p-4">
+          <p className="text-[11px] font-semibold tracking-[0.09em] text-on-accent uppercase">
+            What to change next time
+          </p>
           <ul className="mt-2 space-y-1.5 text-sm">
             {feedback.improvements.map((item) => (
               <li key={item}>{item}</li>
@@ -221,7 +301,9 @@ export function SpeakingFeedbackPanel({ feedback }: { feedback: SpeakingFeedback
 
       {feedback.suggestedPhrases.length ? (
         <div>
-          <p className="text-sm font-medium">Try folding these in</p>
+          <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">
+            Try folding these in
+          </p>
           <div className="mt-2 flex flex-wrap gap-2">
             {feedback.suggestedPhrases.map((phrase) => (
               <Badge key={phrase} tone="brand">

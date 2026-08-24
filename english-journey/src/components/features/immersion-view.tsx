@@ -11,6 +11,15 @@ import { useSpeech } from "@/lib/speech";
 import { cn } from "@/lib/utils";
 import type { DestinationId } from "@/types";
 
+/** Ambient accent per destination — brand-family colours only. */
+const DESTINATION_LIGHT: Record<DestinationId, string> = {
+  usa: "rgba(37,99,235,0.4)",
+  uk: "rgba(124,58,237,0.4)",
+  canada: "rgba(244,63,94,0.28)",
+  australia: "rgba(16,185,129,0.32)",
+  ireland: "rgba(34,211,238,0.32)",
+};
+
 export function ImmersionView() {
   const { state, refresh } = useAppState();
   const [destination, setDestination] = useState<DestinationId>(state.profile.destination ?? "usa");
@@ -44,29 +53,51 @@ export function ImmersionView() {
         </p>
       </div>
 
-      <div className="scrollbar-none flex gap-2 overflow-x-auto pb-1">
-        {IMMERSION_LIST.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => {
-              cancel();
-              setDestination(item.id);
-            }}
-            className={cn(
-              "flex shrink-0 items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all",
-              destination === item.id
-                ? "border-brand bg-brand-soft text-brand-strong"
-                : "border-border bg-surface hover:bg-surface-2",
-            )}
-          >
-            <span className="text-lg">{item.flag}</span>
-            {item.country}
-          </button>
-        ))}
+      {/* Destinations as places, not tabs. */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        {IMMERSION_LIST.map((item) => {
+          const active = destination === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => {
+                cancel();
+                setDestination(item.id);
+              }}
+              aria-pressed={active}
+              className={cn(
+                "group relative flex min-h-28 flex-col items-center justify-center gap-2 overflow-hidden rounded-2xl border p-3",
+                "transition-[transform,box-shadow,border-color] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1",
+                active
+                  ? "border-purple/55 bg-brand-soft shadow-[0_12px_30px_rgba(124,58,237,0.32)]"
+                  : "border-border-strong bg-surface/60 shadow-[var(--shadow-sm)] backdrop-blur hover:border-purple/40",
+              )}
+            >
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 -bottom-10 h-24 opacity-80 blur-2xl transition-opacity duration-300 group-hover:opacity-100"
+                style={{
+                  background: `radial-gradient(60% 100% at 50% 100%, ${DESTINATION_LIGHT[item.id]}, rgba(0,0,0,0) 70%)`,
+                }}
+              />
+              <span className="relative text-3xl transition-transform duration-300 group-hover:scale-110 [text-shadow:0_8px_18px_rgba(0,0,0,0.5)]">
+                {item.flag}
+              </span>
+              <span className="relative text-center text-sm font-medium">{item.country}</span>
+            </button>
+          );
+        })}
       </div>
 
-      <Card>
-        <div className="flex flex-wrap items-start justify-between gap-3">
+      <Card elevated glow className="relative overflow-hidden">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 -right-16 size-64 rounded-full blur-3xl"
+          style={{
+            background: `radial-gradient(circle, ${DESTINATION_LIGHT[pack.id]}, rgba(0,0,0,0) 70%)`,
+          }}
+        />
+        <div className="relative flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 className="text-xl font-semibold">
               {pack.flag} {pack.country}
@@ -88,7 +119,7 @@ export function ImmersionView() {
               <li key={item.phrase} className="text-sm">
                 <button
                   onClick={() => speak(item.phrase, { accent: pack.id })}
-                  className="font-medium text-brand hover:underline"
+                  className="-my-1 inline-block py-1 font-medium text-on-brand hover:underline"
                 >
                   “{item.phrase}”
                 </button>
@@ -118,7 +149,7 @@ export function ImmersionView() {
           <ul className="space-y-2 text-sm text-muted">
             {pack.accentNotes.map((note) => (
               <li key={note} className="flex gap-2.5">
-                <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-brand" aria-hidden />
+                <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-purple shadow-[0_0_8px_rgba(124,58,237,0.7)]" aria-hidden />
                 {note}
               </li>
             ))}
@@ -130,7 +161,7 @@ export function ImmersionView() {
           <ul className="space-y-2 text-sm text-muted">
             {pack.culture.map((note) => (
               <li key={note} className="flex gap-2.5">
-                <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
+                <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-accent shadow-[0_0_8px_rgba(245,158,11,0.6)]" aria-hidden />
                 {note}
               </li>
             ))}
@@ -161,7 +192,7 @@ export function ImmersionView() {
               <button
                 onClick={() => speak(line.text, { accent: pack.id, rate: line.rate })}
                 aria-label="Replay line"
-                className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg bg-surface-2 text-muted hover:text-brand"
+                className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg bg-surface-2 text-muted hover:text-on-brand"
               >
                 <Volume2 className="size-3.5" />
               </button>
@@ -178,7 +209,10 @@ export function ImmersionView() {
         <CardHeader title="Where to get more input" subtitle="Real content made for locals, not for learners." />
         <div className="grid gap-3 sm:grid-cols-3">
           {pack.creators.map((creator) => (
-            <div key={creator.name} className="rounded-xl bg-surface-2 p-4">
+            <div
+              key={creator.name}
+              className="rounded-xl border border-border bg-surface-2/60 p-4 transition-colors hover:border-purple/35"
+            >
               <Badge tone="neutral">{creator.kind}</Badge>
               <p className="mt-2 font-medium">{creator.name}</p>
               <p className="mt-1 text-sm text-muted">{creator.why}</p>

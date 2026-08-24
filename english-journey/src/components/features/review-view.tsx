@@ -6,6 +6,8 @@ import { useAppState } from "@/components/app-state-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
+import { ProgressBar } from "@/components/ui/progress";
+import { AnimatedNumber } from "@/components/visual/animated-number";
 import { TabBar } from "@/components/ui/tabs";
 import { GRAMMAR_BY_ID, LISTENING_BY_ID, PRONUNCIATION_BY_ID, VOCABULARY_BY_ID } from "@/content";
 import { useSpeech } from "@/lib/speech";
@@ -80,16 +82,61 @@ export function ReviewView({ initialData }: { initialData: ReviewData }) {
         </p>
       </div>
 
-      <Card className="flex flex-wrap items-center justify-between gap-4">
+      <Card elevated glow className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-sm text-muted">Due right now</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums">{due.length}</p>
+          <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">
+            Due right now
+          </p>
+          <p className="mt-1 text-3xl font-semibold">
+            <AnimatedNumber value={due.length} />
+          </p>
         </div>
         <Button size="lg" disabled={due.length === 0} onClick={() => setSession(due.slice(0, 12))}>
           <RotateCcw className="size-4" />
           {due.length ? `Review ${Math.min(due.length, 12)} items` : "Nothing due"}
         </Button>
       </Card>
+
+      {/* Priority strip: what you struggle with most, ordered by weight. */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {(
+          [
+            ["vocabulary", "Words to review", forgot.length + countKind(open, "vocabulary")],
+            ["pronunciation", "Pronunciation", countKind(open, "pronunciation")],
+            ["listening", "Listening", countKind(open, "listening")],
+            ["grammar", "Grammar", countKind(open, "grammar")],
+          ] as [ReviewItemKind, string, number][]
+        )
+          .sort((a, b) => b[2] - a[2])
+          .map(([kind, label, count]) => (
+            <button
+              key={kind}
+              onClick={() => setTab(kind === "vocabulary" ? "forgot" : kind)}
+              className={cn(
+                "card lift p-4 text-left",
+                count > 0 && "border-purple/30",
+              )}
+            >
+              <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">
+                {label}
+              </p>
+              <p
+                className={cn(
+                  "mt-2 text-2xl font-semibold",
+                  count > 0 ? "text-on-brand" : "text-dim",
+                )}
+              >
+                <AnimatedNumber value={count} />
+              </p>
+              <ProgressBar
+                className="mt-2.5"
+                size="sm"
+                value={count === 0 ? 0 : Math.min(count * 12, 100)}
+                tone={count >= 5 ? "danger" : count > 0 ? "accent" : "brand"}
+              />
+            </button>
+          ))}
+      </div>
 
       <TabBar
         tabs={[
@@ -146,12 +193,12 @@ function ItemList({ items, emptyMessage }: { items: ReviewItem[]; emptyMessage: 
   return (
     <div className="grid gap-3">
       {items.map((item) => (
-        <Card key={item.id} className="flex items-start justify-between gap-4">
+        <Card key={item.id} interactive className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <button
                 onClick={() => speak(item.label)}
-                className="flex items-center gap-1.5 font-medium hover:text-brand"
+                className="flex items-center gap-1.5 font-medium hover:text-on-brand"
               >
                 <Volume2 className="size-3.5" />
                 {item.label}
@@ -192,9 +239,9 @@ function WordList({
           ? Math.round((entry.correct / (entry.correct + entry.incorrect)) * 100)
           : 0;
         return (
-          <Card key={entry.wordId}>
+          <Card key={entry.wordId} interactive tilt>
             <div className="flex items-start justify-between gap-3">
-              <button onClick={() => speak(word.term)} className="text-left font-medium hover:text-brand">
+              <button onClick={() => speak(word.term)} className="text-left font-medium hover:text-on-brand">
                 {word.term}
               </button>
               <Badge
@@ -272,7 +319,7 @@ function ReviewSession({ items, onDone }: { items: ReviewItem[]; onDone: () => v
           </Button>
           {revealed ? (
             <div className="animate-in-up mt-6 space-y-3 text-left">
-              <p className="rounded-xl bg-surface-2 p-4 text-sm">{item.detail}</p>
+              <p className="rounded-xl bg-surface-2/60 p-4 text-sm">{item.detail}</p>
               <Context refId={item.refId} kind={item.kind} />
             </div>
           ) : (
@@ -327,7 +374,7 @@ function Context({ refId, kind }: { refId: string; kind: ReviewItemKind }) {
         <div className="rounded-xl border border-border p-4 text-sm">
           <p className="text-muted">{point.explanation}</p>
           <p className="mt-2">
-            <span className="font-medium text-success">Natural: </span>
+            <span className="font-medium text-on-success">Natural: </span>
             {point.natural}
           </p>
         </div>

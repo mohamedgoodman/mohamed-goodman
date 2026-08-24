@@ -216,8 +216,8 @@ function CoachPanel() {
         </Button>
       </form>
       {answer ? (
-        <div className="animate-in-up mt-4 flex gap-3 rounded-xl bg-surface-2 p-4">
-          <MessageCircleQuestion className="mt-0.5 size-4 shrink-0 text-brand" />
+        <div className="animate-in-up mt-4 flex gap-3 rounded-xl bg-surface-2/60 p-4">
+          <MessageCircleQuestion className="mt-0.5 size-4 shrink-0 text-on-brand" />
           <p className="text-sm whitespace-pre-line">{answer}</p>
         </div>
       ) : null}

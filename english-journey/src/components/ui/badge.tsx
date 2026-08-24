@@ -1,14 +1,16 @@
 import { cn } from "@/lib/utils";
 
-type Tone = "brand" | "neutral" | "success" | "warning" | "danger" | "accent";
+type Tone = "brand" | "neutral" | "success" | "warning" | "danger" | "accent" | "cyan";
 
+/** Tinted glass pills: a translucent fill, a matching hairline, no hard blocks. */
 const TONES: Record<Tone, string> = {
-  brand: "bg-brand-soft text-brand-strong",
-  neutral: "bg-surface-2 text-muted",
-  success: "bg-success-soft text-success",
-  warning: "bg-accent-soft text-accent",
-  danger: "bg-danger-soft text-danger",
-  accent: "bg-accent-soft text-accent",
+  brand: "bg-brand-soft text-on-brand ring-1 ring-inset ring-purple/30",
+  neutral: "bg-surface-2/80 text-muted ring-1 ring-inset ring-border-strong",
+  success: "bg-success-soft text-on-success ring-1 ring-inset ring-success/30",
+  warning: "bg-accent-soft text-on-accent ring-1 ring-inset ring-accent/30",
+  danger: "bg-danger-soft text-on-danger ring-1 ring-inset ring-danger/30",
+  accent: "bg-accent-soft text-on-accent ring-1 ring-inset ring-accent/30",
+  cyan: "bg-cyan-soft text-on-cyan ring-1 ring-inset ring-cyan/30",
 };
 
 export function Badge({
@@ -23,7 +25,7 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium whitespace-nowrap",
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium whitespace-nowrap backdrop-blur",
         TONES[tone],
         className,
       )}

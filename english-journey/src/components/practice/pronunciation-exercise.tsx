@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Mic, MicOff, RotateCcw, Volume2 } from "lucide-react";
+import { ArrowDown, Check, Mic, RotateCcw, Square, Volume2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { RingProgress } from "@/components/ui/progress";
 import { useSpeech, useSpeechRecognition } from "@/lib/speech";
 import { cn } from "@/lib/utils";
 import type { PronunciationExercise as Drill } from "@/types";
@@ -65,61 +66,103 @@ export function PronunciationExerciseCard({
         <Badge tone="brand">{KIND_LABEL[drill.kind]}</Badge>
       </div>
 
-      <div className="rounded-2xl bg-surface-2 p-5">
-        <p className="text-lg font-medium">{drill.target}</p>
-        <p className="mt-1 font-mono text-sm text-muted">{drill.phonetic}</p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Button onClick={() => speak(drill.target, { accent, rate: 0.85 })} disabled={speaking}>
-            <Volume2 className="size-4" />
-            Listen slowly
-          </Button>
-          <Button variant="secondary" onClick={() => speak(drill.target, { accent, rate: 1 })} disabled={speaking}>
-            <Volume2 className="size-4" />
-            Normal speed
-          </Button>
-          <Button
-            variant={recognition.listening ? "danger" : "outline"}
-            onClick={record}
-            disabled={!recognition.supported}
-            title={recognition.supported ? undefined : "Speech recognition isn't available in this browser"}
-          >
-            {recognition.listening ? <MicOff className="size-4" /> : <Mic className="size-4" />}
-            {recognition.listening ? "Stop & compare" : "Repeat it"}
-          </Button>
+      <div className="relative overflow-hidden rounded-2xl border border-border-strong bg-surface-2/50 p-5 backdrop-blur">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 -top-24 h-48 opacity-60"
+          style={{
+            background:
+              "radial-gradient(55% 100% at 50% 100%, rgba(124,58,237,0.22), rgba(124,58,237,0) 70%)",
+          }}
+        />
+        <div className="relative text-center">
+          <span className="text-[11px] font-semibold tracking-[0.14em] text-dim uppercase">Word</span>
+          <p className="mt-1.5 text-2xl leading-snug font-semibold sm:text-3xl">{drill.target}</p>
+          <p className="mt-1.5 font-mono text-sm text-muted">{drill.phonetic}</p>
+          <SoundWave active={speaking || recognition.listening} tone={recognition.listening ? "cyan" : "purple"} />
         </div>
-        {recognition.listening ? (
-          <p className="mt-3 text-sm text-muted">Listening… say the sentence, then press stop.</p>
-        ) : null}
+
+        {/* The three-step loop the method is built on. */}
+        <div className="relative mt-4 grid gap-2.5 sm:grid-cols-[1fr_auto_1fr_auto_1fr] sm:items-center">
+          <StepButton
+            label="Listen"
+            hint="0.85× speed"
+            icon={<Volume2 className="size-4" />}
+            onClick={() => speak(drill.target, { accent, rate: 0.85 })}
+            disabled={speaking}
+          />
+          <StepArrow />
+          <StepButton
+            label={recognition.listening ? "Stop" : "Repeat"}
+            hint={recognition.listening ? "Recording…" : "Say it out loud"}
+            icon={recognition.listening ? <Square className="size-4 fill-current" /> : <Mic className="size-4" />}
+            onClick={record}
+            disabled={!recognition.supported || recognition.failed}
+            tone={recognition.listening ? "danger" : "cyan"}
+            title={recognition.supported ? undefined : "Speech recognition isn't available in this browser"}
+          />
+          <StepArrow />
+          <StepButton
+            label="Compare"
+            hint="Normal speed"
+            icon={<Volume2 className="size-4" />}
+            onClick={() => speak(drill.target, { accent, rate: 1 })}
+            disabled={speaking}
+          />
+        </div>
       </div>
 
       {attempt ? (
         <div
           className={cn(
-            "animate-in-up rounded-2xl p-4",
-            attempt.score >= 75 ? "bg-success-soft" : attempt.score >= 50 ? "bg-accent-soft" : "bg-danger-soft",
+            "animate-in-up flex items-center gap-4 rounded-2xl border p-4",
+            attempt.score >= 75
+              ? "border-success/35 bg-success-soft/50"
+              : attempt.score >= 50
+                ? "border-accent/35 bg-accent-soft/40"
+                : "border-danger/35 bg-danger-soft/40",
           )}
         >
-          <p className="font-medium">
-            {attempt.score >= 75
-              ? "Clear — a listener would have no trouble."
-              : attempt.score >= 50
-                ? "Understandable. Tighten the highlighted sounds."
-                : "Hard to catch. Slow down and exaggerate the target sound."}
-          </p>
-          {attempt.heard ? (
-            <p className="mt-1.5 text-sm text-muted">
-              We heard: <span className="italic">“{attempt.heard}”</span> · match {attempt.score}%
+          <RingProgress
+            value={attempt.score}
+            size={68}
+            stroke={7}
+            tone={attempt.score >= 75 ? "success" : attempt.score >= 50 ? "amber" : "brand"}
+          >
+            <span className="text-sm font-semibold tabular-nums">{attempt.score}%</span>
+          </RingProgress>
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold">
+              {attempt.score >= 75
+                ? "Clear — a listener would have no trouble."
+                : attempt.score >= 50
+                  ? "Understandable. Tighten the highlighted sounds."
+                  : "Hard to catch. Slow down and exaggerate the target sound."}
             </p>
-          ) : null}
-          <Button variant="ghost" size="sm" className="mt-2" onClick={() => setAttempt(null)}>
-            <RotateCcw className="size-4" />
-            Try again
-          </Button>
+            {attempt.heard ? (
+              <p className="mt-1 text-sm text-muted">
+                We heard <span className="italic">“{attempt.heard}”</span>
+              </p>
+            ) : null}
+            <Button variant="ghost" size="sm" className="mt-1.5 -ml-2" onClick={() => setAttempt(null)}>
+              <RotateCcw className="size-4" />
+              Try again
+            </Button>
+          </div>
         </div>
-      ) : !recognition.supported ? (
-        <div className="rounded-2xl bg-surface-2 p-4">
-          <p className="text-sm font-medium">How close were you?</p>
-          <div className="mt-2 flex flex-wrap gap-2">
+      ) : (
+        <div className="rounded-2xl border border-border bg-surface-2/50 p-4">
+          <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">
+            How close were you?
+          </p>
+          <p className="mt-1 text-sm text-muted">
+            {recognition.failed
+              ? "The microphone isn't available, so rate your own attempt — it still counts."
+              : recognition.supported
+                ? "Prefer not to use the microphone? Judge your own attempt instead."
+                : "Speech recognition isn't supported here, so rate your own attempt."}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
             <Button size="sm" variant="outline" onClick={() => selfRate(40)}>
               Not close
             </Button>
@@ -132,18 +175,20 @@ export function PronunciationExerciseCard({
             </Button>
           </div>
         </div>
-      ) : null}
+      )}
 
       {drill.minimalPairs.length ? (
         <div>
-          <p className="text-sm font-medium">Where it changes the meaning</p>
+          <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">
+            Where it changes the meaning
+          </p>
           <ul className="mt-2 space-y-2">
             {drill.minimalPairs.map((pair) => (
               <li key={`${pair.a}-${pair.b}`} className="flex flex-wrap items-center gap-2 text-sm">
                 <button
                   type="button"
                   onClick={() => speak(pair.a, { accent, rate: 0.9 })}
-                  className="rounded-lg bg-surface-2 px-2.5 py-1 font-medium hover:text-brand"
+                  className="press rounded-lg border border-border bg-surface-2/70 px-2.5 py-1 font-medium transition-colors hover:border-purple/40 hover:text-on-brand"
                 >
                   {pair.a}
                 </button>
@@ -151,7 +196,7 @@ export function PronunciationExerciseCard({
                 <button
                   type="button"
                   onClick={() => speak(pair.b, { accent, rate: 0.9 })}
-                  className="rounded-lg bg-surface-2 px-2.5 py-1 font-medium hover:text-brand"
+                  className="press rounded-lg border border-border bg-surface-2/70 px-2.5 py-1 font-medium transition-colors hover:border-cyan/40 hover:text-on-cyan"
                 >
                   {pair.b}
                 </button>
@@ -162,10 +207,94 @@ export function PronunciationExerciseCard({
         </div>
       ) : null}
 
-      <p className="rounded-xl bg-brand-soft/50 p-4 text-sm">
-        <strong className="font-medium">Tip:</strong> {drill.tip}
+      <p className="rounded-xl border border-purple/25 bg-brand-soft/35 p-4 text-sm">
+        <strong className="font-medium text-on-brand">Tip:</strong> {drill.tip}
       </p>
     </div>
+  );
+}
+
+/** Animated sound wave — the visual anchor for listen and repeat. */
+function SoundWave({ active, tone }: { active: boolean; tone: "purple" | "cyan" }) {
+  const colour = tone === "cyan" ? "var(--cyan)" : "var(--purple-bright)";
+  return (
+    <div className="mt-4 flex h-8 items-center justify-center gap-1" aria-hidden>
+      {Array.from({ length: 22 }).map((_, index) => (
+        <span
+          key={index}
+          className="w-1 rounded-full transition-all duration-300"
+          style={{
+            height: `${20 + Math.abs(Math.sin(index * 0.7)) * 70}%`,
+            background: active ? colour : "var(--surface-3)",
+            boxShadow: active ? `0 0 8px ${colour}` : undefined,
+            animation: active
+              ? `wave ${620 + (index % 4) * 140}ms ease-in-out ${index * 30}ms infinite`
+              : undefined,
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function StepButton({
+  label,
+  hint,
+  icon,
+  onClick,
+  disabled,
+  tone = "neutral",
+  title,
+}: {
+  label: string;
+  hint: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+  disabled?: boolean;
+  tone?: "neutral" | "cyan" | "danger";
+  title?: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      title={title}
+      className={cn(
+        "press flex min-h-14 w-full items-center gap-3 rounded-xl border px-3.5 py-2.5 text-left transition-all duration-250",
+        "hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0",
+        tone === "danger"
+          ? "border-danger/50 bg-danger-soft"
+          : tone === "cyan"
+            ? "border-cyan/40 bg-cyan-soft hover:border-cyan/60"
+            : "border-border-strong bg-surface/60 hover:border-purple/45",
+      )}
+    >
+      <span
+        className={cn(
+          "grid size-9 shrink-0 place-items-center rounded-lg text-white",
+          tone === "danger"
+            ? "bg-danger"
+            : tone === "cyan"
+              ? "[background:linear-gradient(135deg,#22d3ee,#2563eb)]"
+              : "[background:var(--grad-brand)]",
+        )}
+      >
+        {icon}
+      </span>
+      <span className="min-w-0">
+        <span className="block text-sm font-semibold">{label}</span>
+        <span className="block truncate text-xs text-dim">{hint}</span>
+      </span>
+    </button>
+  );
+}
+
+function StepArrow() {
+  return (
+    <span className="hidden justify-center text-dim sm:flex" aria-hidden>
+      <ArrowDown className="size-4 -rotate-90" />
+    </span>
   );
 }
 

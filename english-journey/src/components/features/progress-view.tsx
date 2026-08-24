@@ -56,14 +56,14 @@ export function ProgressView() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat icon={<Clock className="size-4 text-brand" />} label="Total practice" value={formatMinutes(progress.totalMinutes)} />
-        <Stat icon={<Flame className="size-4 text-accent" />} label="Current streak" value={`${streak.current} days`} hint={`Longest ${streak.longest}`} />
-        <Stat icon={<Target className="size-4 text-success" />} label="Days practised" value={`${progress.daysPracticed}`} />
-        <Stat icon={<Zap className="size-4 text-brand" />} label="Total XP" value={`${progress.xpTotal}`} hint={`XP level ${xp.level}`} />
-        <Stat icon={<Headphones className="size-4 text-brand" />} label="Listening" value={formatMinutes(progress.listeningMinutes)} />
-        <Stat icon={<Mic className="size-4 text-brand" />} label="Speaking answers" value={`${progress.speakingSessions}`} />
-        <Stat icon={<TrendingUp className="size-4 text-success" />} label="Words mastered" value={`${progress.wordsMastered}`} hint={`${progress.wordsLearning} in progress`} />
-        <Stat icon={<Award className="size-4 text-accent" />} label="Pronunciation" value={progress.pronunciationScore ? `${progress.pronunciationScore}%` : "—"} />
+        <Stat icon={<Clock className="size-4 text-on-brand" />} label="Total practice" value={formatMinutes(progress.totalMinutes)} />
+        <Stat icon={<Flame className="size-4 text-on-accent" />} label="Current streak" value={`${streak.current} days`} hint={`Longest ${streak.longest}`} />
+        <Stat icon={<Target className="size-4 text-on-success" />} label="Days practised" value={`${progress.daysPracticed}`} />
+        <Stat icon={<Zap className="size-4 text-on-accent" />} label="Total XP" value={`${progress.xpTotal}`} hint={`XP level ${xp.level}`} />
+        <Stat icon={<Headphones className="size-4 text-on-cyan" />} label="Listening" value={formatMinutes(progress.listeningMinutes)} />
+        <Stat icon={<Mic className="size-4 text-on-cyan" />} label="Speaking answers" value={`${progress.speakingSessions}`} />
+        <Stat icon={<TrendingUp className="size-4 text-on-success" />} label="Words mastered" value={`${progress.wordsMastered}`} hint={`${progress.wordsLearning} in progress`} />
+        <Stat icon={<Award className="size-4 text-on-accent" />} label="Pronunciation" value={progress.pronunciationScore ? `${progress.pronunciationScore}%` : "—"} />
       </div>
 
       <Card>
@@ -77,7 +77,7 @@ export function ProgressView() {
           label={`Towards ${LEVEL_META[nextLevelLabel(progress)].label}`}
           tone="success"
         />
-        <div className="mt-4 rounded-xl bg-surface-2 p-4 text-sm">
+        <div className="mt-4 rounded-xl bg-surface-2/60 p-4 text-sm">
           <p className="font-medium">
             Challenge level {progress.challengeLevel} — {CHALLENGE_META[progress.challengeLevel].label}
           </p>
@@ -135,12 +135,12 @@ export function ProgressView() {
                 key={date}
                 title={`${date}${stat ? ` · ${stat.minutes} min · ${stat.accuracy}%` : " · no practice"}`}
                 className={[
-                  "size-4 rounded-[5px] transition-colors",
+                  "size-4 rounded-[5px] transition-all duration-300",
                   practised
                     ? stat && stat.minutes >= 30
-                      ? "bg-brand"
-                      : "bg-brand/60"
-                    : "bg-surface-2",
+                      ? "[background:var(--grad-brand)] shadow-[0_0_10px_rgba(124,58,237,0.5)]"
+                      : "bg-purple/55"
+                    : "bg-surface-3",
                 ].join(" ")}
               />
             );
@@ -158,8 +158,10 @@ export function ProgressView() {
             <div
               key={achievement.id}
               className={[
-                "flex items-start gap-3 rounded-xl p-3.5 transition-opacity",
-                unlockedAt ? "bg-surface-2" : "bg-surface-2/50 opacity-55",
+                "flex items-start gap-3 rounded-xl border p-3.5 transition-all duration-300",
+                unlockedAt
+                  ? "border-purple/25 bg-brand-soft/30"
+                  : "border-border bg-surface-2/40 opacity-50 grayscale",
               ].join(" ")}
             >
               <span className="text-2xl">{achievement.icon}</span>
@@ -192,13 +194,15 @@ function Stat({
   hint?: string;
 }) {
   return (
-    <div className="card p-4">
-      <div className="flex items-center gap-2 text-sm text-muted">
-        {icon}
-        {label}
+    <div className="card lift p-4">
+      <div className="flex items-center gap-2">
+        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-surface-2 ring-1 ring-inset ring-border-strong">
+          {icon}
+        </span>
+        <span className="text-[11px] font-medium tracking-[0.09em] text-dim uppercase">{label}</span>
       </div>
-      <p className="mt-2 text-xl font-semibold tabular-nums">{value}</p>
-      {hint ? <p className="mt-0.5 text-xs text-muted">{hint}</p> : null}
+      <p className="mt-2.5 text-xl font-semibold tabular-nums">{value}</p>
+      {hint ? <p className="mt-0.5 text-xs text-dim">{hint}</p> : null}
     </div>
   );
 }

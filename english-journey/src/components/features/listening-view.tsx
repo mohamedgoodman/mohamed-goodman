@@ -88,7 +88,7 @@ export function ListeningView() {
 
       {tierIndex > currentIndex + 1 ? (
         <div className="flex items-start gap-3 rounded-xl bg-accent-soft p-4 text-sm">
-          <Lock className="mt-0.5 size-4 shrink-0 text-accent" />
+          <Lock className="mt-0.5 size-4 shrink-0 text-on-accent" />
           <p>
             This is well above your current tier. You can absolutely try it — expect to catch fragments,
             and treat that as normal rather than as failure.

@@ -25,7 +25,7 @@ export function LearnView({ session }: { session: DailySession }) {
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-sm font-medium text-brand">Today&apos;s plan</p>
+        <p className="text-sm font-medium text-on-brand">Today&apos;s plan</p>
         <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">{session.mission}</h1>
         <p className="mt-2 text-muted">
           Built from your goal ({goal.label.toLowerCase()}), your level and the {formatMinutes(state.profile.dailyMinutes)} you
@@ -52,7 +52,7 @@ export function LearnView({ session }: { session: DailySession }) {
         <ol className="space-y-3">
           {session.blocks.map((block, index) => (
             <li key={block.id} className="flex gap-3">
-              <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-brand-soft text-sm font-medium text-brand-strong">
+              <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-brand-soft text-sm font-medium text-on-brand">
                 {index + 1}
               </span>
               <div className="min-w-0 flex-1">

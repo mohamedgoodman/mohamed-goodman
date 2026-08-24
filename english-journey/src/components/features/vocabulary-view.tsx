@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Search, Sparkles } from "lucide-react";
 import { VocabDetail } from "@/components/practice/vocab-card";
 import { Badge } from "@/components/ui/badge";
+import { AnimatedNumber } from "@/components/visual/animated-number";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/field";
@@ -101,10 +102,14 @@ export function VocabularyView({ initialData }: { initialData: VocabularyData })
         </p>
       </div>
 
-      <Card className="flex flex-wrap items-center justify-between gap-4">
+      <Card elevated glow className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <p className="text-sm text-muted">Due for review today</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums">{due.length}</p>
+          <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">
+            Due for review today
+          </p>
+          <p className="mt-1 text-3xl font-semibold">
+            <AnimatedNumber value={due.length} />
+          </p>
         </div>
         <Button size="lg" onClick={() => setStudying(true)} disabled={due.length === 0}>
           <Sparkles className="size-4" />
@@ -153,14 +158,27 @@ export function VocabularyView({ initialData }: { initialData: VocabularyData })
             const p = progressByWord.get(word.id);
             const open = openId === word.id;
             return (
-              <Card key={word.id} className={cn("min-w-0 transition-all", open ? "ring-1 ring-brand/30" : "")}>
+              <Card
+                key={word.id}
+                interactive={!open}
+                tilt={!open}
+                className={cn("min-w-0", open && "card-elevated ring-1 ring-purple/30")}
+              >
                 <button
                   className="flex w-full items-start justify-between gap-3 text-left"
                   onClick={() => setOpenId(open ? null : word.id)}
                   aria-expanded={open}
                 >
                   <span className="min-w-0 flex-1">
-                    <span className="block font-medium">{word.term}</span>
+                    <span
+                      className={cn(
+                        "block font-medium",
+                        p?.stage === "forgotten" && "text-on-danger",
+                        p?.stage === "mastered" && "text-on-success",
+                      )}
+                    >
+                      {word.term}
+                    </span>
                     <span className="mt-0.5 block truncate text-sm text-muted">{word.definition}</span>
                   </span>
                   <Badge tone={STAGE_TONE[p?.stage ?? "new"]}>{p?.stage ?? "new"}</Badge>
@@ -232,15 +250,20 @@ function StudySession({ words, onDone }: { words: VocabularyWord[]; onDone: () =
         </span>
       </div>
 
-      <Card>
+      <Card elevated className="relative overflow-hidden">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 left-1/2 size-64 -translate-x-1/2 rounded-full blur-3xl"
+          style={{ background: "radial-gradient(circle, rgba(124,58,237,0.25), rgba(124,58,237,0) 70%)" }}
+        />
         {revealed ? (
           <VocabDetail word={word} />
         ) : (
-          <div className="py-10 text-center">
-            <p className="text-2xl font-semibold">{word.term}</p>
+          <div className="relative py-12 text-center">
+            <p className="text-3xl font-semibold tracking-tight">{word.term}</p>
             <p className="mt-2 font-mono text-sm text-muted">{word.phonetic}</p>
-            <p className="mt-6 text-sm text-muted">Say the meaning out loud, then reveal.</p>
-            <Button className="mt-4" onClick={() => setRevealed(true)}>
+            <p className="mt-7 text-sm text-dim">Say the meaning out loud, then reveal.</p>
+            <Button size="lg" className="mt-4" onClick={() => setRevealed(true)}>
               Reveal
             </Button>
           </div>

@@ -46,7 +46,7 @@ export function PronunciationView() {
 
       <Card className="border-brand/30 bg-brand-soft/30">
         <p className="flex items-start gap-2.5 text-sm">
-          <Info className="mt-0.5 size-4 shrink-0 text-brand" />
+          <Info className="mt-0.5 size-4 shrink-0 text-on-brand" />
           <span>
             <strong className="font-medium">A perfect accent is not the goal.</strong> Your accent is part
             of who you are, and native speakers have dozens of their own. The target is

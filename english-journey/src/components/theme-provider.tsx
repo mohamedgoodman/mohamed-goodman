@@ -22,7 +22,7 @@ const STORAGE_KEY = "ej-theme";
 const CHANGE_EVENT = "ej-theme-change";
 
 /** Applied before paint by the inline script in the root layout. */
-export const themeScript = `(function(){try{var t=localStorage.getItem("${STORAGE_KEY}")||"system";var d=t==="dark"||(t==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.classList.toggle("dark",d);document.documentElement.style.colorScheme=d?"dark":"light";}catch(e){}})();`;
+export const themeScript = `(function(){try{var t=localStorage.getItem("${STORAGE_KEY}")||"system";var d=t!=="light";var r=document.documentElement;r.classList.toggle("dark",d);r.classList.toggle("light",!d);r.style.colorScheme=d?"dark":"light";}catch(e){}})();`;
 
 /**
  * The preference lives in localStorage and the OS setting lives in a media
@@ -30,7 +30,7 @@ export const themeScript = `(function(){try{var t=localStorage.getItem("${STORAG
  * mirrored into React state.
  */
 function subscribeToTheme(onChange: () => void): () => void {
-  const media = window.matchMedia("(prefers-color-scheme: dark)");
+  const media = window.matchMedia("(prefers-color-scheme: light)");
   media.addEventListener("change", onChange);
   window.addEventListener("storage", onChange);
   window.addEventListener(CHANGE_EVENT, onChange);
@@ -50,9 +50,9 @@ function readTheme(): Theme {
 }
 
 function readResolved(): "light" | "dark" {
-  const theme = readTheme();
-  if (theme !== "system") return theme;
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  // Dark is the product's identity, so "system" resolves to it; light is an
+  // explicit opt-out rather than something a device setting triggers.
+  return readTheme() === "light" ? "light" : "dark";
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -60,13 +60,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const resolved = useSyncExternalStore(
     subscribeToTheme,
     readResolved,
-    () => "light" as const,
+    () => "dark" as const,
   );
 
   // Keep the document in sync with the resolved preference.
   useEffect(() => {
-    document.documentElement.classList.toggle("dark", resolved === "dark");
-    document.documentElement.style.colorScheme = resolved;
+    const root = document.documentElement;
+    root.classList.toggle("dark", resolved === "dark");
+    root.classList.toggle("light", resolved === "light");
+    root.style.colorScheme = resolved;
   }, [resolved]);
 
   const setTheme = useCallback((next: Theme) => {

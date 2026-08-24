@@ -142,8 +142,10 @@ export function OnboardingWizard({ name }: { name: string }) {
             <span
               key={s}
               className={cn(
-                "h-1.5 flex-1 rounded-full transition-colors",
-                index <= position ? "bg-brand" : "bg-surface-2",
+                "h-1.5 flex-1 rounded-full transition-all duration-500",
+                index <= position
+                  ? "[background:var(--grad-progress)] shadow-[0_0_10px_rgba(124,58,237,0.5)]"
+                  : "bg-surface-3",
               )}
             />
           ))}
@@ -220,10 +222,10 @@ export function OnboardingWizard({ name }: { name: string }) {
                           )
                         }
                         className={cn(
-                          "rounded-xl border px-3.5 py-2.5 text-left text-sm transition-all",
+                          "rounded-xl border px-3.5 py-3 text-left text-sm transition-all duration-250",
                           answers[index] === optionIndex
-                            ? "border-brand bg-brand-soft/60"
-                            : "border-border hover:bg-surface-2",
+                            ? "border-purple/60 bg-brand-soft shadow-[0_4px_16px_rgba(124,58,237,0.25)]"
+                            : "border-border-strong bg-surface-2/50 hover:-translate-y-0.5 hover:border-purple/40",
                         )}
                       >
                         {option}
@@ -277,7 +279,7 @@ export function OnboardingWizard({ name }: { name: string }) {
       </div>
 
       {error ? (
-        <p role="alert" className="mt-6 rounded-xl bg-danger-soft px-3.5 py-2.5 text-sm text-danger">
+        <p role="alert" className="mt-6 rounded-xl border border-danger/30 bg-danger-soft px-3.5 py-2.5 text-sm text-on-danger">
           {error}
         </p>
       ) : null}
@@ -316,7 +318,7 @@ function StepShell({
 }) {
   return (
     <div>
-      {title ? <p className="text-sm font-medium text-brand">{title}</p> : null}
+      {title ? <p className="text-sm font-medium text-on-brand">{title}</p> : null}
       <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">{question}</h1>
       <p className="mt-2 mb-6 text-muted">{hint}</p>
       {children}

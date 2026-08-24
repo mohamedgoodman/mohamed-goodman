@@ -76,20 +76,22 @@ const SESSION_STEPS: [string, string][] = [
 
 export function Landing() {
   return (
-    <div className="min-h-dvh bg-bg">
-      <header className="sticky top-0 z-40 border-b border-border/70 bg-bg/85 backdrop-blur">
+    <div className="min-h-dvh">
+      <header className="sticky top-0 z-40 border-b border-border bg-bg/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
           <Link href="/" className="flex items-center gap-2 font-semibold">
-            <span className="grid size-8 place-items-center rounded-xl bg-brand text-white">EJ</span>
+            <span className="grid size-9 place-items-center rounded-xl text-white shadow-[0_4px_16px_rgba(124,58,237,0.45),inset_0_1px_0_rgba(255,255,255,0.25)] [background:var(--grad-brand)]">
+              EJ
+            </span>
             <span>English Journey</span>
           </Link>
           <nav className="flex items-center gap-2">
-            <Link href="/login">
+            <Link href="/login" className="inline-flex">
               <Button variant="ghost" size="sm">
                 Sign in
               </Button>
             </Link>
-            <Link href="/register">
+            <Link href="/register" className="inline-flex">
               <Button size="sm">Start free</Button>
             </Link>
           </nav>
@@ -99,13 +101,13 @@ export function Landing() {
       <main>
         <section className="mx-auto max-w-6xl px-5 pt-14 pb-16 sm:pt-20 sm:pb-24">
           <div className="animate-in-up max-w-3xl">
-            <span className="inline-flex items-center gap-2 rounded-full bg-brand-soft px-3 py-1.5 text-sm font-medium text-brand-strong">
+            <span className="inline-flex items-center gap-2 rounded-full border border-purple/30 bg-brand-soft px-3.5 py-1.5 text-sm font-medium text-on-brand backdrop-blur">
               <Sparkles className="size-4" />
               A coach, not a dictionary
             </span>
             <h1 className="mt-6 text-4xl leading-[1.08] font-bold sm:text-6xl">
               Build the English you
-              <span className="text-brand"> actually need.</span>
+              <span className="brand-text"> actually need.</span>
             </h1>
             <p className="mt-5 max-w-2xl text-lg text-muted sm:text-xl">
               English Journey trains English like a muscle: a structured session every day, real-world
@@ -113,20 +115,20 @@ export function Landing() {
               built from your own mistakes.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Link href="/register">
+              <Link href="/register" className="inline-flex">
                 <Button size="xl" className="w-full sm:w-auto">
                   Start your journey
                   <ArrowRight className="size-5" />
                 </Button>
               </Link>
-              <Link href="/login">
+              <Link href="/login" className="inline-flex">
                 <Button size="xl" variant="outline" className="w-full sm:w-auto">
                   I already have an account
                 </Button>
               </Link>
             </div>
             <p className="mt-4 flex items-center gap-2 text-sm text-muted">
-              <Flame className="size-4 text-accent" />
+              <Flame className="size-4 animate-flame text-on-accent" />
               10 minutes a day is enough to start. Consistency beats intensity.
             </p>
           </div>
@@ -134,7 +136,7 @@ export function Landing() {
           <div className="scrollbar-none mt-14 flex gap-2 overflow-x-auto pb-2">
             {FLOW.map((step, index) => (
               <div key={step} className="flex items-center gap-2">
-                <span className="rounded-full border border-border bg-surface px-3.5 py-2 text-sm whitespace-nowrap">
+                <span className="rounded-full border border-border-strong bg-surface/60 px-3.5 py-2 text-sm whitespace-nowrap backdrop-blur">
                   {step}
                 </span>
                 {index < FLOW.length - 1 ? (
@@ -145,7 +147,7 @@ export function Landing() {
           </div>
         </section>
 
-        <section className="border-y border-border bg-bg-subtle py-16 sm:py-20">
+        <section className="border-y border-border bg-bg-subtle/60 py-16 backdrop-blur sm:py-20">
           <div className="mx-auto max-w-6xl px-5">
             <h2 className="text-2xl font-semibold sm:text-3xl">How it works</h2>
             <p className="mt-2 max-w-2xl text-muted">
@@ -153,8 +155,8 @@ export function Landing() {
             </p>
             <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {PILLARS.map(({ icon: Icon, title, body }) => (
-                <div key={title} className="card p-6">
-                  <span className="grid size-11 place-items-center rounded-xl bg-brand-soft text-brand-strong">
+                <div key={title} className="card lift group p-6">
+                  <span className="grid size-12 place-items-center rounded-xl text-white shadow-[0_6px_18px_rgba(124,58,237,0.35),inset_0_1px_0_rgba(255,255,255,0.25)] transition-transform duration-300 group-hover:scale-105 [background:var(--grad-brand)]">
                     <Icon className="size-5" />
                   </span>
                   <h3 className="mt-4 font-semibold">{title}</h3>
@@ -176,7 +178,7 @@ export function Landing() {
               <ul className="mt-6 space-y-3">
                 {SESSION_STEPS.map(([title, body]) => (
                   <li key={title} className="flex gap-3">
-                    <span className="mt-2 size-1.5 shrink-0 rounded-full bg-brand" aria-hidden />
+                    <span className="mt-2 size-1.5 shrink-0 rounded-full bg-purple shadow-[0_0_8px_rgba(124,58,237,0.8)]" aria-hidden />
                     <span>
                       <strong className="font-medium">{title}</strong>
                       <span className="text-muted"> — {body}</span>
@@ -185,13 +187,13 @@ export function Landing() {
                 ))}
               </ul>
             </div>
-            <div className="card space-y-4 p-6">
+            <div className="card card-elevated glow-purple space-y-4 p-6">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-sm text-muted">Today&apos;s mission</p>
                   <p className="mt-1 font-medium">Understand 5 minutes of natural English.</p>
                 </div>
-                <span className="rounded-full bg-accent-soft px-3 py-1.5 text-xs font-medium whitespace-nowrap text-accent">
+                <span className="rounded-full border border-accent/30 bg-accent-soft px-3 py-1.5 text-xs font-medium whitespace-nowrap text-on-accent">
                   Level 3 · Real English
                 </span>
               </div>
@@ -199,8 +201,11 @@ export function Landing() {
                 {BLOCKS.map(([label, minutes]) => (
                   <div key={label} className="flex items-center gap-3">
                     <span className="w-24 shrink-0 text-sm sm:w-28">{label}</span>
-                    <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-2">
-                      <div className="h-full rounded-full bg-brand" style={{ width: `${(minutes / 7) * 100}%` }} />
+                    <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-3">
+                      <div
+                        className="h-full rounded-full [background:var(--grad-progress)] shadow-[0_0_10px_rgba(124,58,237,0.5)]"
+                        style={{ width: `${(minutes / 7) * 100}%` }}
+                      />
                     </div>
                     <span className="w-12 shrink-0 text-right text-sm text-muted tabular-nums">
                       {minutes} min
@@ -215,7 +220,7 @@ export function Landing() {
           </div>
         </section>
 
-        <section className="border-t border-border bg-bg-subtle py-16">
+        <section className="border-t border-border bg-bg-subtle/60 py-16 backdrop-blur">
           <div className="mx-auto max-w-3xl px-5 text-center">
             <h2 className="text-2xl font-semibold sm:text-3xl">Six days a week beats one perfect day</h2>
             <p className="mt-3 text-muted">

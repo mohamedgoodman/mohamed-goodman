@@ -168,6 +168,7 @@ export function useSpeechRecognition(locale = "en-US") {
   );
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState("");
+  const [failed, setFailed] = useState(false);
   const recognitionRef = useRef<RecognitionLike | null>(null);
 
   useEffect(() => () => recognitionRef.current?.stop(), []);
@@ -186,12 +187,23 @@ export function useSpeechRecognition(locale = "en-US") {
       }
       setTranscript(text.trim());
     };
-    recognition.onerror = () => setListening(false);
+    recognition.onerror = () => {
+      // Permission denied, no microphone, or an engine error — either way the
+      // caller needs to offer a path that doesn't depend on the mic.
+      setFailed(true);
+      setListening(false);
+    };
     recognition.onend = () => setListening(false);
     recognitionRef.current = recognition;
     setTranscript("");
+    setFailed(false);
     setListening(true);
-    recognition.start();
+    try {
+      recognition.start();
+    } catch {
+      setFailed(true);
+      setListening(false);
+    }
   }, [locale]);
 
   const stop = useCallback(() => {
@@ -199,5 +211,5 @@ export function useSpeechRecognition(locale = "en-US") {
     setListening(false);
   }, []);
 
-  return { supported, listening, transcript, start, stop, setTranscript };
+  return { supported, listening, transcript, failed, start, stop, setTranscript };
 }

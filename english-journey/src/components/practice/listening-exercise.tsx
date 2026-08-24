@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, Eye, Headphones, Pause, Play, RotateCcw, X } from "lucide-react";
+import { Check, Headphones, RotateCcw, Volume2, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { RingProgress } from "@/components/ui/progress";
 import { useSpeech } from "@/lib/speech";
+import { AudioPlayer } from "./audio-player";
 import { cn } from "@/lib/utils";
 import type { ListeningExercise as Exercise } from "@/types";
 
@@ -31,7 +33,7 @@ export function ListeningExerciseCard({
   onComplete?: (result: { score: number; correct: boolean; missed: string[] }) => void;
   showTierBadge?: boolean;
 }) {
-  const { supported, speaking, speakSequence, speak, cancel } = useSpeech();
+  const { speak } = useSpeech();
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
   const [plays, setPlays] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(exercise.questions.map(() => null));
@@ -44,21 +46,6 @@ export function ListeningExerciseCard({
   }, [answers, exercise.questions]);
 
   const allAnswered = answers.every((a) => a !== null);
-
-  function play() {
-    if (speaking) {
-      cancel();
-      setPlayingIndex(null);
-      return;
-    }
-    setPlays((n) => n + 1);
-    speakSequence(exercise.lines, {
-      accent: exercise.accent,
-      rate: speed,
-      onLine: setPlayingIndex,
-      onEnd: () => setPlayingIndex(null),
-    });
-  }
 
   function submit() {
     setSubmitted(true);
@@ -83,25 +70,21 @@ export function ListeningExerciseCard({
         ) : null}
       </div>
 
-      <div className="rounded-2xl bg-surface-2 p-5 text-center">
-        <Button size="lg" onClick={play} className="w-full sm:w-auto">
-          {speaking ? <Pause className="size-5" /> : <Play className="size-5" />}
-          {speaking ? "Stop" : plays === 0 ? "Play audio" : "Play again"}
-        </Button>
-        <p className="mt-3 text-sm text-muted">
-          {supported
-            ? plays === 0
-              ? "Listen before you look at anything else."
-              : `Played ${plays} time${plays === 1 ? "" : "s"}. Replaying is not cheating — replaying instead of thinking is.`
-            : "Your browser can't play speech. The transcript is available below."}
+      <AudioPlayer
+        lines={exercise.lines}
+        accent={exercise.accent}
+        baseRate={speed}
+        transcriptOpen={showTranscript}
+        onToggleTranscript={submitted ? () => setShowTranscript((v) => !v) : undefined}
+        onPlay={() => setPlays((n) => n + 1)}
+        onLineChange={setPlayingIndex}
+      />
+      {plays > 0 && !submitted ? (
+        <p className="text-xs text-dim">
+          Played {plays} time{plays === 1 ? "" : "s"}. Replaying isn&apos;t cheating — replaying
+          instead of thinking is.
         </p>
-        {!supported ? (
-          <Button variant="ghost" size="sm" className="mt-2" onClick={() => setShowTranscript(true)}>
-            <Eye className="size-4" />
-            Show transcript
-          </Button>
-        ) : null}
-      </div>
+      ) : null}
 
       {/* Questions ---------------------------------------------------------- */}
       <div className="space-y-4">
@@ -109,8 +92,16 @@ export function ListeningExerciseCard({
           const chosen = answers[qIndex];
           const isCorrect = chosen === question.answerIndex;
           return (
-            <div key={question.id} className="card p-4 sm:p-5">
-              <p className="font-medium">{question.prompt}</p>
+            <div
+              key={question.id}
+              className="rounded-2xl border border-border bg-surface-2/40 p-4 backdrop-blur sm:p-5"
+            >
+              <p className="flex items-start gap-2 font-medium">
+                <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-md bg-surface-3 text-[11px] font-semibold text-dim">
+                  {qIndex + 1}
+                </span>
+                {question.prompt}
+              </p>
               <div className="mt-3 grid gap-2">
                 {question.options.map((option, oIndex) => {
                   const selected = chosen === oIndex;
@@ -125,28 +116,30 @@ export function ListeningExerciseCard({
                         setAnswers((prev) => prev.map((a, i) => (i === qIndex ? oIndex : a)))
                       }
                       className={cn(
-                        "flex items-center justify-between gap-3 rounded-xl border px-3.5 py-2.5 text-left text-sm transition-all",
+                        "flex items-center justify-between gap-3 rounded-xl border px-3.5 py-3 text-left text-sm",
+                        "transition-[transform,box-shadow,border-color,background] duration-250",
                         "disabled:cursor-default",
                         revealCorrect
-                          ? "border-success bg-success-soft"
+                          ? "glow-success animate-correct border-success/60 bg-success-soft"
                           : revealWrong
-                            ? "border-danger bg-danger-soft"
+                            ? "glow-danger animate-shake border-danger/60 bg-danger-soft"
                             : selected
-                              ? "border-brand bg-brand-soft/60"
-                              : "border-border hover:bg-surface-2",
+                              ? "border-purple/60 bg-brand-soft shadow-[0_4px_16px_rgba(124,58,237,0.25)]"
+                              : "border-border-strong bg-surface-2/60 hover:-translate-y-0.5 hover:border-purple/40 hover:bg-surface-3/70",
                       )}
                     >
                       <span>{option}</span>
-                      {revealCorrect ? <Check className="size-4 shrink-0 text-success" /> : null}
-                      {revealWrong ? <X className="size-4 shrink-0 text-danger" /> : null}
+                      {revealCorrect ? <Check className="size-4 shrink-0 text-on-success" /> : null}
+                      {revealWrong ? <X className="size-4 shrink-0 text-on-danger" /> : null}
                     </button>
                   );
                 })}
               </div>
               {submitted ? (
-                <p className="mt-3 rounded-xl bg-surface-2 px-3.5 py-2.5 text-sm text-muted">
-                  {question.explanation}
-                </p>
+                <div className="mt-3 rounded-xl border border-border bg-surface-3/50 px-3.5 py-2.5">
+                  <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">Why</p>
+                  <p className="mt-1 text-sm text-muted">{question.explanation}</p>
+                </div>
               ) : null}
             </div>
           );
@@ -162,25 +155,39 @@ export function ListeningExerciseCard({
         <div className="space-y-4">
           <div
             className={cn(
-              "rounded-2xl p-4",
-              score >= 80 ? "bg-success-soft" : score >= 50 ? "bg-accent-soft" : "bg-danger-soft",
+              "flex items-center gap-4 rounded-2xl border p-4",
+              score >= 80
+                ? "border-success/35 bg-success-soft/50"
+                : score >= 50
+                  ? "border-accent/35 bg-accent-soft/40"
+                  : "border-danger/35 bg-danger-soft/40",
             )}
           >
-            <p className="font-medium">
-              Listening score: {score}%
-              {score >= 80
-                ? " — you're ready for a faster tier."
-                : score >= 50
-                  ? " — solid. Replay the lines you missed."
-                  : " — this one was hard. That's information, not failure."}
-            </p>
+            <RingProgress
+              value={score}
+              size={64}
+              stroke={7}
+              tone={score >= 80 ? "success" : score >= 50 ? "amber" : "brand"}
+            >
+              <span className="text-sm font-semibold tabular-nums">{score}%</span>
+            </RingProgress>
+            <div className="min-w-0">
+              <p className="font-semibold">Listening score</p>
+              <p className="mt-0.5 text-sm text-muted">
+                {score >= 80
+                  ? "You're ready for a faster tier."
+                  : score >= 50
+                    ? "Solid. Replay the lines you missed."
+                    : "This one was hard. That's information, not failure."}
+              </p>
+            </div>
           </div>
 
           {/* Transcript + replay by line ------------------------------------ */}
-          <div className="card p-4 sm:p-5">
+          <div className="rounded-2xl border border-border bg-surface-2/40 p-4 backdrop-blur sm:p-5">
             <div className="mb-3 flex items-center justify-between gap-3">
               <h4 className="flex items-center gap-2 font-semibold">
-                <Headphones className="size-4" />
+                <Headphones className="size-4 text-on-cyan" />
                 Transcript
               </h4>
               <Button variant="ghost" size="sm" onClick={() => setShowTranscript((v) => !v)}>
@@ -194,7 +201,9 @@ export function ListeningExerciseCard({
                     key={`${line.speaker}-${index}`}
                     className={cn(
                       "flex items-start gap-3 rounded-xl px-3 py-2 transition-colors",
-                      playingIndex === index ? "bg-brand-soft" : "",
+                      playingIndex === index
+                        ? "bg-brand-soft ring-1 ring-purple/30"
+                        : "hover:bg-surface-3/40",
                     )}
                   >
                     <button
@@ -203,7 +212,7 @@ export function ListeningExerciseCard({
                       onClick={() =>
                         speak(line.text, { accent: exercise.accent, rate: (line.rate ?? 1) * speed })
                       }
-                      className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg bg-surface-2 text-muted transition-colors hover:text-brand"
+                      className="press mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg bg-surface-3 text-dim transition-colors hover:text-on-cyan"
                     >
                       <RotateCcw className="size-3.5" />
                     </button>
@@ -218,19 +227,25 @@ export function ListeningExerciseCard({
           </div>
 
           {exercise.hardExpressions.length ? (
-            <div className="card p-4 sm:p-5">
-              <h4 className="font-semibold">Expressions worth keeping</h4>
+            <div className="rounded-2xl border border-purple/25 bg-brand-soft/30 p-4 backdrop-blur sm:p-5">
+              <h4 className="text-[11px] font-semibold tracking-[0.09em] text-on-brand uppercase">
+                Real English worth keeping
+              </h4>
               <ul className="mt-3 space-y-2.5">
                 {exercise.hardExpressions.map((item) => (
-                  <li key={item.phrase} className="text-sm">
+                  <li key={item.phrase} className="flex items-start gap-2.5 text-sm">
                     <button
                       type="button"
+                      aria-label={`Hear ${item.phrase}`}
                       onClick={() => speak(item.phrase, { accent: exercise.accent })}
-                      className="font-medium text-brand hover:underline"
+                      className="press mt-0.5 grid size-6 shrink-0 place-items-center rounded-md bg-surface-2 text-dim transition-colors hover:text-on-brand"
                     >
-                      {item.phrase}
+                      <Volume2 className="size-3" />
                     </button>
-                    <span className="text-muted"> — {item.meaning}</span>
+                    <span>
+                      <span className="font-medium">{item.phrase}</span>
+                      <span className="text-muted"> — {item.meaning}</span>
+                    </span>
                   </li>
                 ))}
               </ul>
