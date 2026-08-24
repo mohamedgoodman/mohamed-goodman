@@ -1,0 +1,217 @@
+import type { DestinationId, ImmersionPack } from "@/types";
+
+/** Immersion packs: how people actually communicate in one environment. */
+export const IMMERSION: Record<DestinationId, ImmersionPack> = {
+  usa: {
+    id: "usa",
+    country: "United States",
+    flag: "🇺🇸",
+    blurb: "Direct, warm, fast. Small talk opens almost every interaction, and enthusiasm is the default register.",
+    expressions: [
+      { phrase: "How's it going?", meaning: "Hello — no real answer expected." },
+      { phrase: "Sounds good.", meaning: "I agree / that works." },
+      { phrase: "I'll shoot you an email.", meaning: "I'll send you an email." },
+      { phrase: "Let's touch base.", meaning: "Let's talk briefly soon." },
+      { phrase: "You're all set.", meaning: "Everything is done — you can go." },
+      { phrase: "Have a good one!", meaning: "Goodbye, have a nice day." },
+    ],
+    vocabulary: [
+      { local: "elevator", neutral: "lift (UK)", note: "Also: apartment (flat), sidewalk (pavement)." },
+      { local: "check (restaurant)", neutral: "bill (UK)", note: "'Can we get the check?'" },
+      { local: "line", neutral: "queue (UK)", note: "'Wait in line', not 'in the queue'." },
+      { local: "gas", neutral: "petrol (UK)", note: "Gas station, not petrol station." },
+      { local: "restroom", neutral: "toilet", note: "Asking for 'the toilet' sounds blunt in the US." },
+    ],
+    accentNotes: [
+      "Rhotic: the /r/ is pronounced everywhere — 'car', 'water', 'better'.",
+      "T between vowels becomes a soft d: 'water' → 'wader', 'better' → 'bedder'.",
+      "Heavy reduction: 'What are you going to do?' → 'Whaddaya gonna do?'",
+      "Rising intonation on statements is common among younger speakers.",
+    ],
+    culture: [
+      "Small talk with strangers — cashiers, drivers, neighbours — is normal and friendly, not intrusive.",
+      "Enthusiastic praise is standard: 'That's awesome' can mean 'that's fine'.",
+      "Tipping is expected: 18–20% in restaurants.",
+      "Work culture rewards speaking up early in meetings; silence can read as disengagement.",
+    ],
+    conversation: [
+      { speaker: "Cashier", text: "Hey, how's it going today?", rate: 1.1 },
+      { speaker: "You", text: "Good, thanks — how about you?", rate: 1.05 },
+      { speaker: "Cashier", text: "Can't complain. Debit or credit?", rate: 1.15 },
+      { speaker: "You", text: "Credit, please.", rate: 1.05 },
+      { speaker: "Cashier", text: "You're all set. Have a good one!", rate: 1.15 },
+    ],
+    creators: [
+      { name: "NPR — Up First", kind: "News podcast", why: "Clear standard American at moderate speed, 12 minutes a day." },
+      { name: "Late-night talk shows", kind: "TV", why: "Fast, idiom-dense monologue English with visual support." },
+      { name: "Rachel's English", kind: "YouTube", why: "Detailed American pronunciation, especially reductions." },
+    ],
+  },
+  uk: {
+    id: "uk",
+    country: "United Kingdom",
+    flag: "🇬🇧",
+    blurb: "Indirect, understated, ironic. What is said and what is meant are often one notch apart.",
+    expressions: [
+      { phrase: "You alright?", meaning: "Hello, how are you?" },
+      { phrase: "I'm not being funny, but…", meaning: "I'm about to say something critical." },
+      { phrase: "That's not ideal.", meaning: "This is a serious problem." },
+      { phrase: "With the greatest respect…", meaning: "I strongly disagree." },
+      { phrase: "Sorry, sorry…", meaning: "Excuse me / coming through / it wasn't my fault." },
+      { phrase: "Fancy a brew?", meaning: "Would you like a cup of tea?" },
+    ],
+    vocabulary: [
+      { local: "queue", neutral: "line (US)", note: "Queueing is a social contract. Do not jump it." },
+      { local: "cheers", neutral: "thanks / bye", note: "Works as thanks, goodbye, and a toast." },
+      { local: "knackered", neutral: "exhausted", note: "Informal but extremely common." },
+      { local: "fortnight", neutral: "two weeks", note: "Used constantly in scheduling." },
+      { local: "chemist", neutral: "pharmacy", note: "'Boots' is the chain people name instead." },
+    ],
+    accentNotes: [
+      "Non-rhotic: 'car' has no /r/ — but a linking /r/ appears before vowels ('car alarm').",
+      "Glottal stop replaces t in many accents: 'water' → 'wa'er', 'bottle' → 'bo'le'.",
+      "Regional variety is enormous: Glasgow, Newcastle, Liverpool and Birmingham differ sharply.",
+      "Statements often fall at the end; a rise can sound sarcastic.",
+    ],
+    culture: [
+      "Understatement is the norm: 'a bit of a nightmare' can describe a disaster.",
+      "'Sorry' is used dozens of times a day and rarely means an apology.",
+      "Criticism arrives wrapped: 'I wonder whether we might reconsider' means 'no'.",
+      "Pub culture is where a lot of informal work relationships are built.",
+    ],
+    conversation: [
+      { speaker: "Colleague", text: "You alright? How was the weekend?", rate: 1.05 },
+      { speaker: "You", text: "Yeah, not bad. Bit quiet, to be honest.", rate: 1.05 },
+      { speaker: "Colleague", text: "Sounds lovely, actually. Fancy a brew?", rate: 1.1 },
+      { speaker: "You", text: "Go on then, cheers.", rate: 1.05 },
+    ],
+    creators: [
+      { name: "BBC 6 Minute English", kind: "Podcast", why: "Short, graded, with vocabulary explained." },
+      { name: "The Rest Is Politics / History", kind: "Podcast", why: "Educated conversational British at natural speed." },
+      { name: "British sitcoms with subtitles off", kind: "TV", why: "Irony and understatement in context." },
+    ],
+  },
+  canada: {
+    id: "canada",
+    country: "Canada",
+    flag: "🇨🇦",
+    blurb: "American in sound, British in some spelling, politer than both. Apologising is a national reflex.",
+    expressions: [
+      { phrase: "Sorry, just squeezing past.", meaning: "Excuse me." },
+      { phrase: "For sure.", meaning: "Definitely / yes." },
+      { phrase: "It's all good.", meaning: "No problem." },
+      { phrase: "Give it a shot.", meaning: "Try it." },
+      { phrase: "Double-double", meaning: "Coffee with two creams and two sugars (Tim Hortons)." },
+    ],
+    vocabulary: [
+      { local: "washroom", neutral: "toilet / restroom", note: "The standard Canadian word." },
+      { local: "toque", neutral: "winter hat", note: "Pronounced 'tuke'." },
+      { local: "loonie / toonie", neutral: "1$ / 2$ coin", note: "Everyday money words." },
+      { local: "eh?", neutral: "right? / isn't it?", note: "A tag that invites agreement — real, though exaggerated in jokes." },
+    ],
+    accentNotes: [
+      "Rhotic like the US, but 'about' and 'house' have a raised vowel ('a-boat' to foreign ears).",
+      "'Sorry' rhymes closer to 'sore-y' than the American 'sahr-y'.",
+      "Spelling follows the UK for -our (colour) and the US for -ize (organize).",
+    ],
+    culture: [
+      "Politeness runs high: 'sorry' opens most interruptions.",
+      "Multiculturalism means many accents; nobody expects a single 'correct' one.",
+      "French appears on packaging and in Quebec becomes the working language.",
+      "Small talk about weather is genuinely functional for half the year.",
+    ],
+    conversation: [
+      { speaker: "Barista", text: "Hi there, what can I get started for you?", rate: 1.1 },
+      { speaker: "You", text: "Just a medium double-double, please.", rate: 1.05 },
+      { speaker: "Barista", text: "For sure. Anything to eat?", rate: 1.1 },
+      { speaker: "You", text: "No, I'm good, thanks.", rate: 1.05 },
+    ],
+    creators: [
+      { name: "CBC Front Burner", kind: "News podcast", why: "Clear Canadian English, one topic per episode." },
+      { name: "Canadian YouTubers on daily life", kind: "YouTube", why: "Practical vocabulary for settling in." },
+    ],
+  },
+  australia: {
+    id: "australia",
+    country: "Australia",
+    flag: "🇦🇺",
+    blurb: "Relaxed, informal, abbreviation-obsessed. Formality is often read as distance.",
+    expressions: [
+      { phrase: "No worries.", meaning: "It's fine / you're welcome / no problem." },
+      { phrase: "How ya going?", meaning: "How are you? (not 'how are you travelling')" },
+      { phrase: "Heaps good.", meaning: "Very good." },
+      { phrase: "Reckon?", meaning: "Do you think so?" },
+      { phrase: "Flat out.", meaning: "Extremely busy." },
+    ],
+    vocabulary: [
+      { local: "arvo", neutral: "afternoon", note: "Australians shorten everything." },
+      { local: "brekkie", neutral: "breakfast", note: "Also: servo (petrol station), bottle-o (off-licence)." },
+      { local: "mate", neutral: "friend", note: "Used with almost anyone — tone decides warmth." },
+      { local: "thongs", neutral: "flip-flops", note: "A famously confusing one for visitors." },
+    ],
+    accentNotes: [
+      "Non-rhotic, like British English.",
+      "Rising intonation on statements is common and doesn't signal a question.",
+      "Vowels shift: 'day' can sound close to 'die' to a new listener.",
+      "Words shorten aggressively: 'afternoon' → 'arvo', 'university' → 'uni'.",
+    ],
+    culture: [
+      "Informality is respect: first names everywhere, including with senior people.",
+      "Self-deprecation is liked; boasting is not.",
+      "Friendly teasing between colleagues is a sign of acceptance.",
+      "'How ya going?' is a greeting — 'Good, you?' is the whole answer.",
+    ],
+    conversation: [
+      { speaker: "Neighbour", text: "How ya going? Settling in alright?", rate: 1.1 },
+      { speaker: "You", text: "Yeah, getting there. Still figuring out the buses.", rate: 1.05 },
+      { speaker: "Neighbour", text: "No worries, they're shocking. Give us a yell if you need a hand.", rate: 1.15 },
+    ],
+    creators: [
+      { name: "ABC News Daily", kind: "Podcast", why: "Standard Australian at natural speed." },
+      { name: "Aussie English (podcast)", kind: "Podcast", why: "Built for learners, focused on slang and accent." },
+    ],
+  },
+  ireland: {
+    id: "ireland",
+    country: "Ireland",
+    flag: "🇮🇪",
+    blurb: "Warm, story-driven, quick. Conversation is entertainment, and silence gets filled.",
+    expressions: [
+      { phrase: "What's the craic?", meaning: "What's happening? / any news?" },
+      { phrase: "You're grand.", meaning: "You're fine / no problem." },
+      { phrase: "Sound.", meaning: "Good / thanks / that person is decent." },
+      { phrase: "Now we're sucking diesel.", meaning: "Now we're making real progress." },
+      { phrase: "Come here to me.", meaning: "Listen — I'm about to tell you something." },
+    ],
+    vocabulary: [
+      { local: "grand", neutral: "fine", note: "Not 'magnificent' — just fine." },
+      { local: "craic", neutral: "fun / news", note: "'It was great craic' = it was a great time." },
+      { local: "yer man", neutral: "that guy", note: "Used for someone whose name isn't needed." },
+      { local: "press", neutral: "cupboard", note: "'It's in the hot press' = airing cupboard." },
+    ],
+    accentNotes: [
+      "Rhotic, unlike most of England — the /r/ is pronounced.",
+      "'th' often becomes t/d: 'think' → 'tink', 'that' → 'dat'.",
+      "Melody rises and falls more than in England; speech is quick.",
+      "Sentences often end with a tag: '…so', '…like', '…at all'.",
+    ],
+    culture: [
+      "Storytelling is a social skill — a good answer is a short story, not a fact.",
+      "Slagging (friendly mockery) signals affection between friends.",
+      "Directness is softened by humour rather than by formality.",
+      "'How are you?' can genuinely start a five-minute conversation.",
+    ],
+    conversation: [
+      { speaker: "Friend", text: "Well! What's the craic?", rate: 1.15 },
+      { speaker: "You", text: "Not much, just back from work. You?", rate: 1.05 },
+      { speaker: "Friend", text: "Ah sure look, same as always. Fancy a coffee?", rate: 1.15 },
+      { speaker: "You", text: "Go on, sound.", rate: 1.05 },
+    ],
+    creators: [
+      { name: "RTÉ Radio 1 documentaries", kind: "Radio", why: "Irish English across regions and registers." },
+      { name: "Irish stand-up comedy", kind: "Video", why: "Fast, idiomatic, culture-heavy listening." },
+    ],
+  },
+};
+
+export const IMMERSION_LIST = Object.values(IMMERSION);
