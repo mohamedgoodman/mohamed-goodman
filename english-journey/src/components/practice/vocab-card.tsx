@@ -9,7 +9,7 @@ import { useI18n, useT } from "@/i18n/provider";
 import { En } from "@/components/ui/en";
 import { cn } from "@/lib/utils";
 import type { RealEnglishPhrase, VocabularyWord } from "@/types";
-import type { VocabOption } from "./session-runner";
+import type { VocabOption } from "@/lib/learning/hydrate";
 
 const REGISTER_TONE = {
   formal: "brand",

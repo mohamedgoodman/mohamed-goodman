@@ -14,15 +14,16 @@ import {
   Zap,
 } from "lucide-react";
 import { useAppState } from "@/components/app-state-provider";
-import { useDays, useI18n, useInsightText, useT } from "@/i18n/provider";
+import { useDays, useDuration, useI18n, useInsightText, useT } from "@/i18n/provider";
 import { En } from "@/components/ui/en";
+import { hydratePayload, missionIndexFor } from "@/lib/learning/hydrate";
 import { AnimatedNumber } from "@/components/visual/animated-number";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ProgressBar, RingProgress } from "@/components/ui/progress";
 
-import { cn, formatMinutes } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import type {
   DailySession,
   Exercise,
@@ -41,21 +42,6 @@ import { PronunciationExerciseCard } from "./pronunciation-exercise";
 import { SpeakingExerciseCard } from "./speaking-exercise";
 import { PhraseCard, VocabChoiceCard } from "./vocab-card";
 
-/** Payload shapes produced by the planner, narrowed on the client. */
-type Payload =
-  | { type: "vocab-choice"; word: VocabularyWord; options: VocabOption[] }
-  | { type: "listening"; exercise: ListeningExercise; speed: number }
-  | { type: "phrase-context"; phrase: RealEnglishPhrase }
-  | { type: "grammar-point"; point: GrammarPoint }
-  | { type: "speaking"; scenario: SpeakingExercise }
-  | { type: "pronunciation"; drill: PronunciationExercise };
-
-export interface VocabOption {
-  id: string;
-  definition: string;
-  darija: string;
-}
-
 interface Step {
   block: SessionBlock;
   exercise: Exercise;
@@ -66,6 +52,7 @@ interface Step {
 export function SessionRunner({ session }: { session: DailySession }) {
   const { refresh } = useAppState();
   const { t } = useI18n();
+  const duration = useDuration();
   const steps = useMemo<Step[]>(
     () =>
       session.blocks.flatMap((block) =>
@@ -143,7 +130,11 @@ export function SessionRunner({ session }: { session: DailySession }) {
   if (summary) return <SessionSummaryView summary={summary} />;
   if (!step) return null;
 
-  const payload = step.exercise.payload as Payload;
+  // Stored payloads are references, not data: resolve them against the
+  // content library so sessions planned by an older build still render.
+  const payload = hydratePayload(step.exercise.payload);
+  if (!payload) return null;
+
   const informational = payload.type === "phrase-context" || payload.type === "grammar-point";
 
   return (
@@ -190,7 +181,7 @@ export function SessionRunner({ session }: { session: DailySession }) {
         />
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <Badge tone="brand">{t.content.blocks[step.block.kind].title}</Badge>
-          <Badge tone="neutral">{formatMinutes(step.block.minutes, t)}</Badge>
+          <Badge tone="neutral">{duration(step.block.minutes)}</Badge>
           {step.block.kind === "challenge" ? <Badge tone="accent">{t.session.aboveLevel}</Badge> : null}
         </div>
         <p className="mb-5 text-sm text-muted">{t.content.blocks[step.block.kind].description}</p>
@@ -304,6 +295,7 @@ function GrammarPointCard({ point }: { point: GrammarPoint }) {
 export function SessionSummaryView({ summary }: { summary: SessionSummary }) {
   const t = useT();
   const days = useDays();
+  const duration = useDuration();
   const insightText = useInsightText();
 
   return (
@@ -329,7 +321,7 @@ export function SessionSummaryView({ summary }: { summary: SessionSummary }) {
         </RingProgress>
         <h1 className="mt-4 text-2xl font-semibold">{t.session.complete}</h1>
         <p className="mt-1 text-muted">
-          {formatMinutes(summary.minutes, t)} {t.session.ofPractice} · {days(summary.streak)}
+          {duration(summary.minutes)} {t.session.ofPractice} · {days(summary.streak)}
         </p>
         <div className="mt-5 flex flex-wrap justify-center gap-2">
           <Badge tone="accent">

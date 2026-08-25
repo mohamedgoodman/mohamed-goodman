@@ -6,6 +6,7 @@ import { en } from "./dictionaries/en";
 import { ar } from "./dictionaries/ar";
 import type { Dictionary } from "./dictionaries/en";
 import type { Insight } from "@/types";
+import { formatMinutes } from "@/lib/utils";
 
 const DICTIONARIES: Record<Locale, Dictionary> = { en, ar };
 
@@ -61,6 +62,34 @@ export function useI18n(): I18nContextValue {
 /** Shorthand for the common case. */
 export function useT(): Dictionary {
   return useI18n().t;
+}
+
+/**
+ * Durations, counted the way Arabic actually counts: one, two, a few (3–10)
+ * and many each take a different form. Same rule as `useDays`.
+ */
+export function useDuration(): (minutes: number) => string {
+  const { t, locale } = useI18n();
+  return useCallback(
+    (minutes: number) => {
+      if (locale !== "ar") return formatMinutes(minutes, t);
+
+      const arabic = (count: number, one: string, two: string, few: string, many: string) => {
+        if (count === 1) return one;
+        if (count === 2) return two;
+        if (count <= 10) return `${count} ${few}`;
+        return `${count} ${many}`;
+      };
+
+      if (minutes < 60) return arabic(minutes, "دقيقة", "دقيقتين", "دقايق", "دقيقة");
+      const hours = Math.floor(minutes / 60);
+      const rest = minutes % 60;
+      const head = arabic(hours, "ساعة", "ساعتين", "سوايع", "ساعة");
+      if (!rest) return head;
+      return `${head} و${arabic(rest, "دقيقة", "دقيقتين", "دقايق", "دقيقة")}`;
+    },
+    [t, locale],
+  );
 }
 
 /**
