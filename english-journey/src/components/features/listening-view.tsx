@@ -11,14 +11,15 @@ import { ProgressBar } from "@/components/ui/progress";
 import { TabBar } from "@/components/ui/tabs";
 import { LISTENING } from "@/content";
 import { speedForChallenge, tierForChallenge } from "@/lib/learning/difficulty";
-import { formatMinutes } from "@/lib/utils";
-import { useI18n } from "@/i18n/provider";
+
+import { useDuration, useI18n } from "@/i18n/provider";
 import { LISTENING_TIERS, type ListeningTier } from "@/types";
 
 /** Standalone listening lab. The tier ladder mirrors the daily session. */
 export function ListeningView() {
   const { state, refresh } = useAppState();
   const { t, fmt } = useI18n();
+  const duration = useDuration();
   const currentTier = tierForChallenge(state.profile.challengeLevel);
   const [tier, setTier] = useState<ListeningTier>(currentTier);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -56,7 +57,7 @@ export function ListeningView() {
             />
             <p className="mt-2 text-sm text-muted">
               {fmt(t.listening.loggedMinutes, {
-                minutes: formatMinutes(state.progress.listeningMinutes, t),
+                minutes: duration(state.progress.listeningMinutes),
               })}
             </p>
           </div>

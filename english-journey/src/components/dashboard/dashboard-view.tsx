@@ -21,11 +21,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardLabel } from "@/components/ui/card";
 import { ProgressBar, RingProgress } from "@/components/ui/progress";
-import { useDays, useI18n, useInsightText } from "@/i18n/provider";
+import { useDays, useDuration, useI18n, useInsightText } from "@/i18n/provider";
+import { missionIndexFor } from "@/lib/learning/hydrate";
 import { LEVEL_META, xpLevel } from "@/lib/learning/levels";
 import type { Dictionary } from "@/i18n/dictionaries/en";
 import { lastNDays, todayISO, formatDayLabel } from "@/lib/learning/dates";
-import { cn, formatMinutes } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import type { SkillId } from "@/types";
 
 const SKILL_ICONS: Record<SkillId, typeof Ear> = {
@@ -41,6 +42,7 @@ export function DashboardView() {
   const { t, locale, fmt } = useI18n();
   const insightText = useInsightText();
   const days = useDays();
+  const duration = useDuration();
   const { profile, progress, streak, today, insights } = state;
   const goal = t.content.goals[profile.goal];
   const xp = xpLevel(progress.xpTotal);
@@ -95,11 +97,13 @@ export function DashboardView() {
           <div className="min-w-0">
             <CardLabel>{t.dashboard.todayMission}</CardLabel>
             <h2 className="mt-1.5 text-xl leading-snug font-semibold sm:text-2xl">
-              {today ? (t.content.missions[today.goal][today.missionIndex] ?? today.mission) : t.dashboard.preparing}
+              {today
+                ? (t.content.missions[today.goal][missionIndexFor(today)] ?? today.mission)
+                : t.dashboard.preparing}
             </h2>
             <p className="mt-2 text-sm text-muted">
               {today
-                ? `${today.blocks.length} ${t.dashboard.blocks} · ${formatMinutes(today.totalMinutes, t)} · ${t.dashboard.challengeLevel} ${today.challengeLevel} — ${t.content.challenge[today.challengeLevel].label}`
+                ? `${today.blocks.length} ${t.dashboard.blocks} · ${duration(today.totalMinutes)} · ${t.dashboard.challengeLevel} ${today.challengeLevel} — ${t.content.challenge[today.challengeLevel].label}`
                 : t.dashboard.comeBack}
             </p>
             <div className="mt-5">
@@ -118,7 +122,7 @@ export function DashboardView() {
             tone={doneToday ? "success" : "brand"}
           >
             <span className="text-xl font-semibold tabular-nums">
-              {doneToday ? "✓" : formatMinutes(today?.totalMinutes ?? 0, t)}
+              {doneToday ? "✓" : duration(today?.totalMinutes ?? 0)}
             </span>
             <span className="text-[11px] text-dim">
               {doneToday ? t.dashboard.doneToday : t.dashboard.today}
@@ -155,7 +159,7 @@ export function DashboardView() {
           tone="cyan"
           label={t.dashboard.daysPractised}
           value={progress.daysPracticed}
-          hint={formatMinutes(progress.totalMinutes, t)}
+          hint={duration(progress.totalMinutes)}
         />
       </div>
 
@@ -265,7 +269,7 @@ export function DashboardView() {
           href="/listening"
           icon={<Ear className="size-5" />}
           title={t.dashboard.listeningLab}
-          subtitle={`${formatMinutes(progress.listeningMinutes, t)} ${t.dashboard.logged}`}
+          subtitle={`${duration(progress.listeningMinutes)} ${t.dashboard.logged}`}
         />
         <QuickLink
           href="/speaking"

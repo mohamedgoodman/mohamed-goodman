@@ -39,7 +39,9 @@ when `NODE_ENV !== "production"`, so `npm run dev` works with no `.env` at all.
 | `npm start`         | Serve the production build         |
 | `npm run lint`      | ESLint (flat config)               |
 | `npm run typecheck` | `tsc --noEmit`, strict             |
+| `npm test`          | All test suites                    |
 | `npm run test:store` | Storage contract tests            |
+| `npm run test:hydrate` | Stored-session hydration tests  |
 
 ## Stack
 
@@ -85,6 +87,21 @@ src/
     api/                 REST endpoints, all zod-validated
   components/            ui · shell · practice · features · charts
 ```
+
+### Stored sessions are references, not snapshots
+
+A planned session is persisted with the content it points at. That snapshot
+goes stale — when the library gains a field or an exercise changes shape,
+sessions already in the database still carry the old form. This shipped as a
+bug once: answer options rendered blank in production because the payload shape
+had changed underneath them, and local testing never caught it because the dev
+data file was wiped between runs while production data is not.
+
+`lib/learning/hydrate.ts` now re-resolves every payload against the content
+library by id at render time, falling back to the stored copy. Content fixes
+reach already-planned sessions instead of waiting for the next day, and both
+payload shapes render correctly. `scripts/test-hydrate.ts` covers the legacy
+shapes explicitly.
 
 ### Language
 

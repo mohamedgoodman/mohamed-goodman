@@ -10,8 +10,8 @@ import { ProgressBar } from "@/components/ui/progress";
 import { TabBar } from "@/components/ui/tabs";
 import { formatDayLabel, lastNDays } from "@/lib/learning/dates";
 import { LEVEL_META, xpLevel } from "@/lib/learning/levels";
-import { formatMinutes } from "@/lib/utils";
-import { useDays, useI18n } from "@/i18n/provider";
+
+import { useDays, useDuration, useI18n } from "@/i18n/provider";
 import type { DailyStat, Streak, UserProgress } from "@/types";
 
 type Range = 7 | 30 | 90;
@@ -20,6 +20,7 @@ export function ProgressView() {
   const { state } = useAppState();
   const { t, fmt, locale } = useI18n();
   const dayCount = useDays();
+  const duration = useDuration();
   const [range, setRange] = useState<Range>(30);
   const [data, setData] = useState<{ progress: UserProgress; streak: Streak } | null>(null);
 
@@ -56,11 +57,11 @@ export function ProgressView() {
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat icon={<Clock className="size-4 text-on-brand" />} label={t.progress.totalPractice} value={formatMinutes(progress.totalMinutes, t)} />
+        <Stat icon={<Clock className="size-4 text-on-brand" />} label={t.progress.totalPractice} value={duration(progress.totalMinutes)} />
         <Stat icon={<Flame className="size-4 text-on-accent" />} label={t.progress.currentStreak} value={dayCount(streak.current)} hint={`${t.dashboard.longest} ${streak.longest}`} />
         <Stat icon={<Target className="size-4 text-on-success" />} label={t.progress.daysPractised} value={`${progress.daysPracticed}`} />
         <Stat icon={<Zap className="size-4 text-on-accent" />} label={t.progress.totalXp} value={`${progress.xpTotal}`} hint={fmt(t.progress.xpLevel, { level: xp.level })} />
-        <Stat icon={<Headphones className="size-4 text-on-cyan" />} label={t.progress.listening} value={formatMinutes(progress.listeningMinutes, t)} />
+        <Stat icon={<Headphones className="size-4 text-on-cyan" />} label={t.progress.listening} value={duration(progress.listeningMinutes)} />
         <Stat icon={<Mic className="size-4 text-on-cyan" />} label={t.progress.speakingAnswers} value={`${progress.speakingSessions}`} />
         <Stat icon={<TrendingUp className="size-4 text-on-success" />} label={t.progress.wordsMastered} value={`${progress.wordsMastered}`} hint={`${progress.wordsLearning} ${t.progress.inProgress}`} />
         <Stat icon={<Award className="size-4 text-on-accent" />} label={t.progress.pronunciation} value={progress.pronunciationScore ? `${progress.pronunciationScore}%` : "—"} />

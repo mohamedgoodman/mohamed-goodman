@@ -9,7 +9,9 @@
     "start": "next start -p 3100",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:store": "tsx --test scripts/test-store.ts"
+    "test:store": "tsx --test scripts/test-store.ts",
+    "test:hydrate": "tsx --test scripts/test-hydrate.ts",
+    "test": "npm run test:store && npm run test:hydrate"
   },
   "dependencies": {
     "clsx": "^2.1.1",
