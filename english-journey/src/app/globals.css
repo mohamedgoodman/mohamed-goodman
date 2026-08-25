@@ -140,7 +140,9 @@
   --color-on-danger: var(--on-danger);
   --color-on-cyan: var(--on-cyan);
   --radius-card: var(--radius);
-  --font-sans: var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* Latin first, Arabic second: each script is served by the face that has
+     it, so Darija text and the English being taught both look right. */
+  --font-sans: var(--font-latin), var(--font-arabic), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 @layer base {
@@ -173,6 +175,24 @@
   h1, h2, h3, h4 {
     letter-spacing: -0.022em;
     font-weight: 640;
+  }
+  /* Arabic script sits lower and needs more room than Latin at the same size. */
+  [dir="rtl"] body {
+    line-height: 1.75;
+  }
+  [dir="rtl"] h1,
+  [dir="rtl"] h2,
+  [dir="rtl"] h3,
+  [dir="rtl"] h4 {
+    letter-spacing: 0;
+    line-height: 1.45;
+  }
+  /* English words inside Darija text keep their own direction. */
+  [dir="rtl"] .ltr,
+  [dir="rtl"] code,
+  [dir="rtl"] .font-mono {
+    direction: ltr;
+    unicode-bidi: isolate;
   }
   /* Thin, dark scrollbars so panels don't get a bright system gutter. */
   * {

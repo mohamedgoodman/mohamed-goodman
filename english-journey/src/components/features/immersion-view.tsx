@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
 import { IMMERSION, IMMERSION_LIST } from "@/content";
 import { useSpeech } from "@/lib/speech";
+import { useT } from "@/i18n/provider";
 import { cn } from "@/lib/utils";
 import type { DestinationId } from "@/types";
 
@@ -22,6 +23,7 @@ const DESTINATION_LIGHT: Record<DestinationId, string> = {
 
 export function ImmersionView() {
   const { state, refresh } = useAppState();
+  const t = useT();
   const [destination, setDestination] = useState<DestinationId>(state.profile.destination ?? "usa");
   const [saving, setSaving] = useState(false);
   const { speak, speakSequence, speaking, cancel } = useSpeech();
@@ -46,11 +48,8 @@ export function ImmersionView() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-semibold sm:text-3xl">Immersion Mode</h1>
-        <p className="mt-2 max-w-2xl text-muted">
-          Pick an environment and the content adapts to it: local expressions, vocabulary differences,
-          accent notes, cultural context and a real conversation.
-        </p>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{t.immersion.title}</h1>
+        <p className="mt-2 max-w-2xl text-muted">{t.immersion.subtitle}</p>
       </div>
 
       {/* Destinations as places, not tabs. */}
@@ -83,7 +82,9 @@ export function ImmersionView() {
               <span className="relative text-3xl transition-transform duration-300 group-hover:scale-110 [text-shadow:0_8px_18px_rgba(0,0,0,0.5)]">
                 {item.flag}
               </span>
-              <span className="relative text-center text-sm font-medium">{item.country}</span>
+              <span className="relative text-center text-sm font-medium">
+                {t.content.destinations[item.id]}
+              </span>
             </button>
           );
         })}
@@ -100,20 +101,20 @@ export function ImmersionView() {
         <div className="relative flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 className="text-xl font-semibold">
-              {pack.flag} {pack.country}
+              {pack.flag} {t.content.destinations[pack.id]}
             </h2>
             <p className="mt-1 max-w-xl text-muted">{pack.blurb}</p>
           </div>
           <Button variant={isMine ? "secondary" : "primary"} onClick={setAsMine} loading={saving} disabled={isMine}>
             {isMine ? <Check className="size-4" /> : null}
-            {isMine ? "Your destination" : "Make this my destination"}
+            {isMine ? t.immersion.yourDestination : t.immersion.makeMine}
           </Button>
         </div>
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
-          <CardHeader title="Local expressions" subtitle="Tap any phrase to hear it in the local accent." />
+          <CardHeader title={t.immersion.localExpressions} subtitle={t.immersion.localExpressionsHint} />
           <ul className="space-y-2.5">
             {pack.expressions.map((item) => (
               <li key={item.phrase} className="text-sm">
@@ -130,7 +131,7 @@ export function ImmersionView() {
         </Card>
 
         <Card>
-          <CardHeader title="Vocabulary that differs" subtitle="Same idea, different word." />
+          <CardHeader title={t.immersion.vocabDiffers} subtitle={t.immersion.vocabDiffersHint} />
           <ul className="space-y-3">
             {pack.vocabulary.map((item) => (
               <li key={item.local} className="text-sm">
@@ -145,7 +146,7 @@ export function ImmersionView() {
         </Card>
 
         <Card>
-          <CardHeader title="Accent notes" subtitle="What to expect when you hear it." />
+          <CardHeader title={t.immersion.accentNotes} subtitle={t.immersion.accentNotesHint} />
           <ul className="space-y-2 text-sm text-muted">
             {pack.accentNotes.map((note) => (
               <li key={note} className="flex gap-2.5">
@@ -157,7 +158,7 @@ export function ImmersionView() {
         </Card>
 
         <Card>
-          <CardHeader title="Cultural context" subtitle="How communication actually works there." />
+          <CardHeader title={t.immersion.culture} subtitle={t.immersion.cultureHint} />
           <ul className="space-y-2 text-sm text-muted">
             {pack.culture.map((note) => (
               <li key={note} className="flex gap-2.5">
@@ -171,8 +172,8 @@ export function ImmersionView() {
 
       <Card>
         <CardHeader
-          title="A real conversation"
-          subtitle="An ordinary exchange you'd have in your first week."
+          title={t.immersion.conversation}
+          subtitle={t.immersion.conversationHint}
           action={
             <Button
               size="sm"
@@ -182,7 +183,7 @@ export function ImmersionView() {
               }
             >
               {speaking ? <Volume2 className="size-4" /> : <Play className="size-4" />}
-              {speaking ? "Stop" : "Play"}
+              {speaking ? t.immersion.stop : t.immersion.play}
             </Button>
           }
         />
@@ -191,7 +192,7 @@ export function ImmersionView() {
             <li key={index} className="flex items-start gap-3 text-sm">
               <button
                 onClick={() => speak(line.text, { accent: pack.id, rate: line.rate })}
-                aria-label="Replay line"
+                aria-label={t.common.replay}
                 className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-lg bg-surface-2 text-muted hover:text-on-brand"
               >
                 <Volume2 className="size-3.5" />
@@ -206,7 +207,7 @@ export function ImmersionView() {
       </Card>
 
       <Card>
-        <CardHeader title="Where to get more input" subtitle="Real content made for locals, not for learners." />
+        <CardHeader title={t.immersion.creators} subtitle={t.immersion.creatorsHint} />
         <div className="grid gap-3 sm:grid-cols-3">
           {pack.creators.map((creator) => (
             <div

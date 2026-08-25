@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Lock } from "lucide-react";
+import { ArrowLeft, Lock } from "lucide-react";
 import { useAppState } from "@/components/app-state-provider";
 import { ListeningExerciseCard } from "@/components/practice/listening-exercise";
 import { Badge } from "@/components/ui/badge";
@@ -12,18 +12,13 @@ import { TabBar } from "@/components/ui/tabs";
 import { LISTENING } from "@/content";
 import { speedForChallenge, tierForChallenge } from "@/lib/learning/difficulty";
 import { formatMinutes } from "@/lib/utils";
+import { useI18n } from "@/i18n/provider";
 import { LISTENING_TIERS, type ListeningTier } from "@/types";
-
-const TIER_COPY: Record<ListeningTier, string> = {
-  easy: "Slow, clear speech. Short sentences, no idioms.",
-  normal: "Everyday speed with contractions and common expressions.",
-  challenging: "Fast, idiomatic speech with fewer repetitions.",
-  native: "Unmodified native speed — slang, reductions, overlapping ideas.",
-};
 
 /** Standalone listening lab. The tier ladder mirrors the daily session. */
 export function ListeningView() {
   const { state, refresh } = useAppState();
+  const { t, fmt } = useI18n();
   const currentTier = tierForChallenge(state.profile.challengeLevel);
   const [tier, setTier] = useState<ListeningTier>(currentTier);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -42,32 +37,31 @@ export function ListeningView() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-semibold sm:text-3xl">Listening</h1>
-        <p className="mt-2 max-w-2xl text-muted">
-          Listen, answer, then read the transcript. Difficulty is a ladder — once a tier stops
-          challenging you, move up. Staying comfortable is the one thing that doesn&apos;t work.
-        </p>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{t.listening.title}</h1>
+        <p className="mt-2 max-w-2xl text-muted">{t.listening.subtitle}</p>
       </div>
 
       <Card>
         <CardHeader
-          title="Where you are"
-          subtitle={`Your daily sessions currently use the "${currentTier}" tier.`}
+          title={t.listening.whereYouAre}
+          subtitle={fmt(t.listening.currentTier, { tier: t.listening.tiers[currentTier] })}
         />
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
             <ProgressBar
-              label="Listening skill"
+              label={t.listening.skill}
               value={state.progress.skills.listening}
               showValue
               tone={state.progress.skills.listening >= 75 ? "success" : "brand"}
             />
             <p className="mt-2 text-sm text-muted">
-              {formatMinutes(state.progress.listeningMinutes)} of listening logged.
+              {fmt(t.listening.loggedMinutes, {
+                minutes: formatMinutes(state.progress.listeningMinutes, t),
+              })}
             </p>
           </div>
           <div className="rounded-xl bg-surface-2 p-3.5 text-sm text-muted">
-            Score 80%+ twice in a row and the daily session moves you up a tier automatically.
+            {t.listening.tierRule}
           </div>
         </div>
       </Card>
@@ -75,7 +69,7 @@ export function ListeningView() {
       <TabBar
         tabs={LISTENING_TIERS.map((id) => ({
           id,
-          label: id === "native" ? "Native speed" : id[0]!.toUpperCase() + id.slice(1),
+          label: t.listening.tiers[id],
           count: LISTENING.filter((l) => l.tier === id).length,
         }))}
         value={tier}
@@ -84,14 +78,13 @@ export function ListeningView() {
           setActiveId(null);
         }}
       />
-      <p className="text-sm text-muted">{TIER_COPY[tier]}</p>
+      <p className="text-sm text-muted">{t.listening.tierCopy[tier]}</p>
 
       {tierIndex > currentIndex + 1 ? (
         <div className="flex items-start gap-3 rounded-xl bg-accent-soft p-4 text-sm">
           <Lock className="mt-0.5 size-4 shrink-0 text-on-accent" />
           <p>
-            This is well above your current tier. You can absolutely try it — expect to catch fragments,
-            and treat that as normal rather than as failure.
+            {t.listening.aboveTier}
           </p>
         </div>
       ) : null}
@@ -99,7 +92,7 @@ export function ListeningView() {
       {active ? (
         <Card>
           <Button variant="ghost" size="sm" className="mb-4" onClick={() => setActiveId(null)}>
-            ← All {tier} exercises
+            <ArrowLeft className="size-4 rtl:rotate-180" /> {fmt(t.listening.allExercises, { tier: t.listening.tiers[tier] })}
           </Button>
           <ListeningExerciseCard
             exercise={active}
@@ -113,7 +106,7 @@ export function ListeningView() {
             <button
               key={exercise.id}
               onClick={() => setActiveId(exercise.id)}
-              className="card p-5 text-left transition-all hover:-translate-y-0.5 hover:shadow-md"
+              className="card p-5 text-start transition-all hover:-translate-y-0.5 hover:shadow-md"
             >
               <div className="flex items-start justify-between gap-3">
                 <h3 className="font-semibold">{exercise.title}</h3>
@@ -124,7 +117,8 @@ export function ListeningView() {
                 ) : null}
               </div>
               <p className="mt-1 text-sm text-muted">
-                ~{exercise.seconds}s · {exercise.questions.length} questions · {exercise.accent.toUpperCase()}
+                ~{exercise.seconds}s · {exercise.questions.length} {t.listening.questions} ·{" "}
+                {t.content.destinations[exercise.accent]}
               </p>
               <p className="mt-3 text-sm text-muted">
                 {exercise.hardExpressions

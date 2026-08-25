@@ -1,8 +1,14 @@
 # English Journey
 
-A personal English coach: goal-driven daily practice, real-world expressions,
-listening that speeds up as you do, speaking with coaching instead of red
-crosses, pronunciation drills, and review generated from your own mistakes.
+A personal English coach for Moroccan learners: goal-driven daily practice,
+real-world expressions, listening that speeds up as you do, speaking with
+coaching instead of red crosses, pronunciation drills, and review generated
+from your own mistakes.
+
+**The interface is in Moroccan Darija (الدارجة المغربية), the content being
+learned is English.** Every explanation, instruction and piece of coaching is
+in the language the learner thinks in; every word, phrase and dialogue being
+taught stays in English. English is also available as an interface language.
 
 The product philosophy, top to bottom:
 
@@ -71,6 +77,7 @@ src/
                          compatible provider.
     services/            Orchestration (a completed session → XP, streak,
                          difficulty change, review items, achievements).
+  i18n/                  Locales, dictionaries (ar · en) and the client provider
   app/
     (auth)/              login · register
     onboarding/          Goal → level (+ optional placement) → destination → time
@@ -78,6 +85,30 @@ src/
     api/                 REST endpoints, all zod-validated
   components/            ui · shell · practice · features · charts
 ```
+
+### Language
+
+`src/i18n` holds two dictionaries. `en.ts` defines the shape; `ar.ts` is typed
+against it, so a missing key is a build error rather than an English string
+leaking into a Darija screen. The active locale lives in a cookie, is read on
+the server, and sets `lang` and `dir` on `<html>` — so the first paint is
+already in the right script and direction, with no flash.
+
+Three details that decide whether this feels native or translated:
+
+- **Generated coaching is not generated English.** The engine returns insight
+  ids plus parameters (`{ id: "weakestSkill", params: { skill, score } }`), and
+  the interface renders them per locale. The server never builds a sentence.
+- **The English being taught is direction-isolated.** An English sentence inside
+  an RTL paragraph otherwise has its full stop flipped to the front; the `<En>`
+  wrapper (`unicode-bidi: isolate`) keeps it reading correctly.
+- **Darija glosses live in the content, not the dictionary.** Every vocabulary
+  word and real-English phrase carries a `darija` field — the meaning as a
+  Moroccan would explain it to a friend — and warm-up answer options are built
+  from it, so the learner chooses the meaning in the language they think in.
+
+Arabic day counts are handled properly (نهار / نهارين / أيام), because getting
+that wrong is the first thing a Moroccan reader notices.
 
 ### The learning engine
 
@@ -210,8 +241,11 @@ conversation and where to find more input.
 
 ## Accessibility & responsiveness
 
-Mobile-first, verified at 390px and 1440px with no horizontal overflow on any
-page, and audited for WCAG AA text contrast across every screen. The sidebar
+Mobile-first, verified at 390px and 1440px **in both languages and both
+writing directions**, with no horizontal overflow on any page and WCAG AA text
+contrast audited across every screen. Layout uses logical properties
+(`ms`/`me`, `ps`/`pe`, `start`/`end`) so RTL mirrors correctly, and directional
+icons flip with `rtl:rotate-180`. The sidebar
 becomes a floating bottom bar on phones, tap targets stay at 40px+, and the
 heavier effects (drifting blobs, particles, tilt) are desktop-only so mid-range
 Android stays smooth. Focus rings everywhere, `aria-current` on navigation, labelled controls,

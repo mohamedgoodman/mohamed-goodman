@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { StreakChip, XpChip } from "@/components/visual/stat-chips";
 import { CHALLENGE_META } from "@/lib/learning/levels";
+import { useT } from "@/i18n/provider";
 import { cn } from "@/lib/utils";
 import { NAV_ITEMS } from "./nav-items";
 
@@ -16,6 +17,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const { state } = useAppState();
+  const t = useT();
   const [menuOpen, setMenuOpen] = useState(false);
   const primary = NAV_ITEMS.filter((item) => item.primary);
   const dueCount = state.reviewCounts.dueNow;
@@ -38,7 +40,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* ---------------------------------------------------------------- */}
       {/* Desktop: a floating glass panel, not a wall attached to the edge   */}
       {/* ---------------------------------------------------------------- */}
-      <aside className="fixed inset-y-4 left-4 z-40 hidden w-60 flex-col rounded-3xl border border-border-strong bg-surface/70 shadow-[var(--shadow-lg)] backdrop-blur-2xl lg:flex">
+      <aside className="fixed inset-y-4 start-4 z-40 hidden w-60 flex-col rounded-3xl border border-border-strong bg-surface/70 shadow-[var(--shadow-lg)] backdrop-blur-2xl lg:flex">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 rounded-3xl opacity-70"
@@ -55,6 +57,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <NavLink
               key={item.href}
               item={item}
+              label={t.nav[item.labelKey]}
               active={isActive(pathname, item.href)}
               badge={item.href === "/review" && dueCount > 0 ? dueCount : undefined}
             />
@@ -67,7 +70,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </div>
           <div className="flex items-center justify-between gap-2">
             <ThemeToggle />
-            <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sign out" title="Sign out">
+            <Button variant="ghost" size="icon" onClick={signOut} aria-label={t.nav.signOut} title={t.nav.signOut}>
               <LogOut className="size-4" />
             </Button>
           </div>
@@ -87,7 +90,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <XpChip xp={state.progress.xpTotal} compact />
             <button
               onClick={() => setMenuOpen(true)}
-              aria-label="Open menu"
+              aria-label={t.nav.openMenu}
               className="press grid size-9 place-items-center rounded-xl border border-border-strong bg-surface-2/70 text-muted"
             >
               <Menu className="size-5" />
@@ -100,28 +103,30 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* ---------------------------------------------------------------- */}
       {/* Desktop header                                                    */}
       {/* ---------------------------------------------------------------- */}
-      <header className="sticky top-0 z-30 hidden bg-bg/85 backdrop-blur-xl lg:block lg:pl-[17.5rem]">
+      <header className="sticky top-0 z-30 hidden bg-bg/85 backdrop-blur-xl lg:block lg:ps-[17.5rem]">
         <div className="mx-auto flex h-16 max-w-5xl items-center justify-between gap-4 px-6">
           <p className="text-sm text-muted">
-            Challenge level {state.profile.challengeLevel} ·{" "}
-            <span className="text-text">{CHALLENGE_META[state.profile.challengeLevel].label}</span>
+            {t.dashboard.challengeLevel} {state.profile.challengeLevel} ·{" "}
+            <span className="text-text">
+              {t.content.challenge[state.profile.challengeLevel].label}
+            </span>
           </p>
           <div className="flex items-center gap-2.5">
             <StreakChip days={state.streak.current} />
             <XpChip xp={state.progress.xpTotal} />
             <Link
               href="/review"
-              aria-label={dueCount > 0 ? `${dueCount} items due for review` : "Review centre"}
+              aria-label={dueCount > 0 ? `${dueCount} · ${t.nav.notifications}` : t.nav.notifications}
               className="press relative grid size-10 place-items-center rounded-xl border border-border-strong bg-surface-2/70 text-muted transition-colors hover:text-text"
             >
               <Bell className="size-4" />
               {dueCount > 0 ? (
-                <span className="absolute -top-1 -right-1 grid min-w-5 place-items-center rounded-full bg-danger px-1 text-[10px] font-semibold text-white shadow-[0_0_10px_rgba(244,63,94,0.6)]">
+                <span className="absolute -top-1 -end-1 grid min-w-5 place-items-center rounded-full bg-danger px-1 text-[10px] font-semibold text-white shadow-[0_0_10px_rgba(244,63,94,0.6)]">
                   {dueCount > 9 ? "9+" : dueCount}
                 </span>
               ) : null}
             </Link>
-            <Link href="/settings" aria-label="Settings" title={state.user.name}>
+            <Link href="/settings" aria-label={t.nav.settings} title={state.user.name}>
               <Avatar initials={initials} />
             </Link>
           </div>
@@ -132,7 +137,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {/* ---------------------------------------------------------------- */}
       {/* Content                                                           */}
       {/* ---------------------------------------------------------------- */}
-      <main className="scene pb-28 lg:pb-12 lg:pl-[17.5rem]">
+      <main className="scene pb-28 lg:pb-12 lg:ps-[17.5rem]">
         <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 sm:py-7">{children}</div>
       </main>
 
@@ -144,9 +149,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <button
             className="animate-fade absolute inset-0 bg-[#04060f]/70 backdrop-blur-sm"
             onClick={() => setMenuOpen(false)}
-            aria-label="Close menu"
+            aria-label={t.common.close}
           />
-          <div className="animate-in-up absolute inset-y-0 right-0 flex w-[17rem] flex-col border-l border-border-strong bg-surface/90 shadow-[var(--shadow-lg)] backdrop-blur-2xl">
+          <div className="animate-in-up absolute inset-y-0 end-0 flex w-[17rem] flex-col border-s border-border-strong bg-surface/90 shadow-[var(--shadow-lg)] backdrop-blur-2xl">
             <div className="flex h-14 items-center justify-between px-4">
               <Avatar initials={initials} size="sm" />
               <span className="min-w-0 flex-1 truncate px-3 text-sm font-medium">
@@ -154,7 +159,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </span>
               <button
                 onClick={() => setMenuOpen(false)}
-                aria-label="Close menu"
+                aria-label={t.common.close}
                 className="press grid size-9 place-items-center rounded-xl border border-border-strong bg-surface-2/70 text-muted"
               >
                 <X className="size-5" />
@@ -165,6 +170,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 <NavLink
                   key={item.href}
                   item={item}
+                  label={t.nav[item.labelKey]}
                   active={isActive(pathname, item.href)}
                   onClick={() => setMenuOpen(false)}
                   badge={item.href === "/review" && dueCount > 0 ? dueCount : undefined}
@@ -175,7 +181,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <ThemeToggle />
               <Button variant="ghost" size="sm" onClick={signOut}>
                 <LogOut className="size-4" />
-                Sign out
+                {t.nav.signOut}
               </Button>
             </div>
           </div>
@@ -209,10 +215,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   ) : null}
                   <span className="relative flex flex-col items-center gap-1">
                     <Icon className="size-[18px]" />
-                    {item.label}
+                    {t.nav[item.labelKey]}
                   </span>
                   {item.href === "/review" && dueCount > 0 ? (
-                    <span className="absolute top-0.5 right-1/4 size-1.5 rounded-full bg-danger shadow-[0_0_8px_rgba(244,63,94,0.8)]" />
+                    <span className="absolute top-0.5 end-1/4 size-1.5 rounded-full bg-danger shadow-[0_0_8px_rgba(244,63,94,0.8)]" />
                   ) : null}
                 </Link>
               );
@@ -273,11 +279,13 @@ function GradientRule() {
 
 function NavLink({
   item,
+  label,
   active,
   onClick,
   badge,
 }: {
   item: (typeof NAV_ITEMS)[number];
+  label: string;
   active: boolean;
   onClick?: () => void;
   badge?: number;
@@ -302,7 +310,7 @@ function NavLink({
           active && "drop-shadow-[0_0_6px_rgba(255,255,255,0.65)]",
         )}
       />
-      <span className="min-w-0 flex-1 truncate">{item.label}</span>
+      <span className="min-w-0 flex-1 truncate">{label}</span>
       {badge ? (
         <span
           className={cn(

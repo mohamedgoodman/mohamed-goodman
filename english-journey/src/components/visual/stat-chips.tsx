@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Flame, Zap } from "lucide-react";
 import { AnimatedNumber } from "./animated-number";
 import { cn } from "@/lib/utils";
+import { useT } from "@/i18n/provider";
 
 /**
  * XP chip. When the number goes up it pulses and throws a few sparks — small
@@ -18,6 +19,7 @@ export function XpChip({
   className?: string;
   compact?: boolean;
 }) {
+  const t = useT();
   const [sparks, setSparks] = useState(0);
   const previous = useRef(xp);
 
@@ -35,11 +37,11 @@ export function XpChip({
         sparks > 0 && "animate-pop",
         className,
       )}
-      title={`${xp.toLocaleString()} XP`}
+      title={`${xp.toLocaleString()} ${t.progress.totalXp}`}
     >
       <Zap className="size-3.5" />
       <AnimatedNumber value={xp} />
-      {compact ? null : <span className="text-[11px] font-medium opacity-80">XP</span>}
+      {compact ? null : <span className="text-[11px] font-medium opacity-80">{t.progress.totalXp}</span>}
       {sparks > 0 ? (
         <span aria-hidden className="pointer-events-none absolute inset-0">
           {[
@@ -75,6 +77,7 @@ export function StreakChip({
   className?: string;
   compact?: boolean;
 }) {
+  const t = useT();
   return (
     <span
       className={cn(
@@ -82,12 +85,14 @@ export function StreakChip({
         "bg-[rgba(249,115,22,0.14)] text-on-accent ring-1 ring-inset ring-accent/30 backdrop-blur",
         className,
       )}
-      title={`${days} day${days === 1 ? "" : "s"} streak`}
+      title={`${days} ${days === 1 ? t.common.day : t.common.days}`}
     >
       <Flame className={cn("size-3.5", days > 0 && "animate-flame")} />
       <AnimatedNumber value={days} />
       {compact ? null : (
-        <span className="text-[11px] font-medium opacity-80">{days === 1 ? "day" : "days"}</span>
+        <span className="text-[11px] font-medium opacity-80">
+          {days === 1 ? t.common.day : t.common.days}
+        </span>
       )}
     </span>
   );

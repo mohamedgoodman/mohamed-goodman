@@ -22,6 +22,7 @@ import { weekKey } from "@/lib/learning/dates";
 import type {
   AppState,
   DailySession,
+  Insight,
   PublicUser,
   ReviewItemKind,
   SessionResult,
@@ -213,22 +214,35 @@ export async function completeSession(
   const unlocked = await evaluateAchievements(userId, nextProgress, nextStreak);
 
   // --- Summary --------------------------------------------------------------
-  const improved: string[] = [];
-  const struggled: string[] = [];
+  const improved: Insight[] = [];
+  const struggled: Insight[] = [];
   for (const [skill, value] of Object.entries(sessionSkills) as [SkillId, number][]) {
     const before = progress.skills[skill];
-    if (value >= 80) improved.push(`${label(skill)} — ${value}% this session`);
-    else if (value < 60) struggled.push(`${label(skill)} — ${value}% this session`);
-    if (before > 0 && value - before >= 10) improved.push(`${label(skill)} up ${value - before} points`);
+    if (value >= 80) improved.push({ id: "skillThisSession", params: { skill, score: value } });
+    else if (value < 60) struggled.push({ id: "skillThisSession", params: { skill, score: value } });
+    if (before > 0 && value - before >= 10) {
+      improved.push({ id: "skillImproved", params: { skill, points: value - before } });
+    }
   }
+
+  // De-duplicate by id+skill: a skill can qualify twice (high score and a jump).
+  const unique = (items: Insight[]) => {
+    const seen = new Set<string>();
+    return items.filter((item) => {
+      const key = `${item.id}:${item.params?.skill ?? ""}:${item.params?.score ?? item.params?.points ?? ""}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  };
 
   return {
     score,
     xpEarned,
     streak: nextStreak.current,
     minutes: session.totalMinutes,
-    improved: improved.length ? [...new Set(improved)].slice(0, 3) : ["You finished the whole session."],
-    struggled: [...new Set(struggled)].slice(0, 3),
+    improved: improved.length ? unique(improved).slice(0, 3) : [{ id: "finishedWholeSession" }],
+    struggled: unique(struggled).slice(0, 3),
     tomorrow: tomorrowFocus(sessionSkills, blendedSkills),
     challengeLevel: decision.challengeLevel,
     challengeChanged: decision.direction,
@@ -299,6 +313,3 @@ function labelFor(result: SessionResult): string {
   return result.refId ?? "Practice item";
 }
 
-function label(skill: SkillId): string {
-  return skill.charAt(0).toUpperCase() + skill.slice(1);
-}

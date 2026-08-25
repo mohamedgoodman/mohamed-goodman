@@ -21,24 +21,28 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardLabel } from "@/components/ui/card";
 import { ProgressBar, RingProgress } from "@/components/ui/progress";
-import { GOALS } from "@/content/goals";
-import { CHALLENGE_META, LEVEL_META, xpLevel } from "@/lib/learning/levels";
+import { useDays, useI18n, useInsightText } from "@/i18n/provider";
+import { LEVEL_META, xpLevel } from "@/lib/learning/levels";
+import type { Dictionary } from "@/i18n/dictionaries/en";
 import { lastNDays, todayISO, formatDayLabel } from "@/lib/learning/dates";
 import { cn, formatMinutes } from "@/lib/utils";
 import type { SkillId } from "@/types";
 
-const SKILL_META: Record<SkillId, { label: string; icon: typeof Ear }> = {
-  listening: { label: "Listening", icon: Ear },
-  vocabulary: { label: "Vocabulary", icon: BookOpen },
-  speaking: { label: "Speaking", icon: Mic },
-  pronunciation: { label: "Pronunciation", icon: Volume2 },
-  grammar: { label: "Grammar", icon: Sparkles },
+const SKILL_ICONS: Record<SkillId, typeof Ear> = {
+  listening: Ear,
+  vocabulary: BookOpen,
+  speaking: Mic,
+  pronunciation: Volume2,
+  grammar: Sparkles,
 };
 
 export function DashboardView() {
   const { state } = useAppState();
+  const { t, locale, fmt } = useI18n();
+  const insightText = useInsightText();
+  const days = useDays();
   const { profile, progress, streak, today, insights } = state;
-  const goal = GOALS[profile.goal];
+  const goal = t.content.goals[profile.goal];
   const xp = xpLevel(progress.xpTotal);
   const week = lastNDays(7);
   const weeklyXp = progress.daily
@@ -52,20 +56,24 @@ export function DashboardView() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm text-muted">
-            {new Date().toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" })}
+            {new Date().toLocaleDateString(locale === "ar" ? "ar-MA" : "en-GB", {
+              weekday: "long",
+              day: "numeric",
+              month: "long",
+            })}
           </p>
           <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">
-            {greeting()}, {state.user.name.split(" ")[0]}.
+            {greeting(t)}، {state.user.name.split(" ")[0]}
           </h1>
         </div>
         <div className="flex flex-wrap gap-2">
           <Badge tone="brand">
             <Target className="size-3.5" />
-            Goal: {goal.label}
+            {t.dashboard.goal}: {goal.label}
           </Badge>
           <Badge tone="accent">
             <Flame className="size-3.5" />
-            {streak.current} day streak
+            {days(streak.current)} {t.dashboard.streak}
           </Badge>
         </div>
       </div>
@@ -85,20 +93,20 @@ export function DashboardView() {
         />
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
-            <CardLabel>Today&apos;s mission</CardLabel>
+            <CardLabel>{t.dashboard.todayMission}</CardLabel>
             <h2 className="mt-1.5 text-xl leading-snug font-semibold sm:text-2xl">
-              {today?.mission ?? "Your session is being prepared."}
+              {today ? (t.content.missions[today.goal][today.missionIndex] ?? today.mission) : t.dashboard.preparing}
             </h2>
             <p className="mt-2 text-sm text-muted">
               {today
-                ? `${today.blocks.length} blocks · ${formatMinutes(today.totalMinutes)} · Challenge level ${today.challengeLevel} — ${CHALLENGE_META[today.challengeLevel].label}`
-                : "Come back in a moment."}
+                ? `${today.blocks.length} ${t.dashboard.blocks} · ${formatMinutes(today.totalMinutes, t)} · ${t.dashboard.challengeLevel} ${today.challengeLevel} — ${t.content.challenge[today.challengeLevel].label}`
+                : t.dashboard.comeBack}
             </p>
             <div className="mt-5">
               <Link href="/learn" className="inline-flex">
                 <Button size="xl" variant={doneToday ? "secondary" : "primary"}>
-                  {doneToday ? "Practise again" : "Start today's practice"}
-                  <ArrowRight className="size-5" />
+                  {doneToday ? t.dashboard.practiseAgain : t.dashboard.startPractice}
+                  <ArrowRight className="size-5 rtl:rotate-180" />
                 </Button>
               </Link>
             </div>
@@ -110,9 +118,11 @@ export function DashboardView() {
             tone={doneToday ? "success" : "brand"}
           >
             <span className="text-xl font-semibold tabular-nums">
-              {doneToday ? "✓" : formatMinutes(today?.totalMinutes ?? 0)}
+              {doneToday ? "✓" : formatMinutes(today?.totalMinutes ?? 0, t)}
             </span>
-            <span className="text-[11px] text-dim">{doneToday ? "done today" : "today"}</span>
+            <span className="text-[11px] text-dim">
+              {doneToday ? t.dashboard.doneToday : t.dashboard.today}
+            </span>
           </RingProgress>
         </div>
       </Card>
@@ -122,50 +132,47 @@ export function DashboardView() {
         <StatTile
           icon={<Flame className={streak.current > 0 ? "size-4 animate-flame" : "size-4"} />}
           tone="amber"
-          label="Daily streak"
+          label={t.dashboard.dailyStreak}
           value={streak.current}
-          hint={`Longest ${streak.longest}`}
+          hint={`${t.dashboard.longest} ${days(streak.longest)}`}
         />
         <StatTile
           icon={<Zap className="size-4" />}
           tone="amber"
-          label="Weekly XP"
+          label={t.dashboard.weeklyXp}
           value={weeklyXp}
-          hint={`${progress.xpTotal.toLocaleString()} total`}
+          hint={`${progress.xpTotal.toLocaleString()} ${t.dashboard.total}`}
         />
         <StatTile
           icon={<TrendingUp className="size-4" />}
           tone="success"
-          label="Level"
-          text={LEVEL_META[progress.level].label}
-          hint={`${LEVEL_META[progress.level].cefr} · XP level ${xp.level}`}
+          label={t.dashboard.level}
+          text={t.content.levels[progress.level].label}
+          hint={`${LEVEL_META[progress.level].cefr} · ${fmt(t.progress.xpLevel, { level: xp.level })}`}
         />
         <StatTile
           icon={<CalendarCheck className="size-4" />}
           tone="cyan"
-          label="Days practised"
+          label={t.dashboard.daysPractised}
           value={progress.daysPracticed}
-          hint={formatMinutes(progress.totalMinutes)}
+          hint={formatMinutes(progress.totalMinutes, t)}
         />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-5">
         {/* Skills ---------------------------------------------------------- */}
         <Card className="lg:col-span-3">
-          <CardHeader
-            title="Your skills"
-            subtitle="Rolling averages from your own sessions — nothing is simulated."
-          />
+          <CardHeader title={t.dashboard.skillsTitle} subtitle={t.dashboard.skillsSubtitle} />
           <div className="space-y-4">
-            {(Object.keys(SKILL_META) as SkillId[]).map((skill) => {
-              const Icon = SKILL_META[skill].icon;
+            {(Object.keys(SKILL_ICONS) as SkillId[]).map((skill) => {
+              const Icon = SKILL_ICONS[skill];
               const value = progress.skills[skill];
               return (
                 <div key={skill}>
                   <div className="mb-1.5 flex items-center justify-between gap-2 text-sm">
                     <span className="flex items-center gap-2">
                       <Icon className="size-4 text-muted" />
-                      {SKILL_META[skill].label}
+                      {t.content.skills[skill]}
                     </span>
                     <span className="font-medium tabular-nums">
                       {value > 0 ? `${value}%` : "—"}
@@ -181,9 +188,12 @@ export function DashboardView() {
           </div>
           <div className="mt-5 rounded-xl bg-surface-2/60 p-4">
             <p className="text-sm font-medium">
-              Challenge level {progress.challengeLevel} — {CHALLENGE_META[progress.challengeLevel].label}
+              {t.dashboard.challengeLevel} {progress.challengeLevel} —{" "}
+              {t.content.challenge[progress.challengeLevel].label}
             </p>
-            <p className="mt-1 text-sm text-muted">{CHALLENGE_META[progress.challengeLevel].blurb}</p>
+            <p className="mt-1 text-sm text-muted">
+              {t.content.challenge[progress.challengeLevel].blurb}
+            </p>
             <ProgressBar className="mt-3" value={(progress.challengeLevel / 5) * 100} tone="accent" />
           </div>
         </Card>
@@ -191,19 +201,25 @@ export function DashboardView() {
         {/* Insights + week -------------------------------------------------- */}
         <div className="space-y-4 lg:col-span-2">
           <Card>
-            <CardHeader title="What's actually happening" subtitle="Feedback from your numbers." />
+            <CardHeader title={t.dashboard.insightsTitle} subtitle={t.dashboard.insightsSubtitle} />
             <ul className="space-y-3">
-              {insights.map((line) => (
-                <li key={line} className="flex gap-2.5 text-sm">
-                  <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-purple shadow-[0_0_8px_rgba(124,58,237,0.7)]" aria-hidden />
-                  <span className="text-muted">{line}</span>
+              {insights.map((insight, index) => (
+                <li key={`${insight.id}-${index}`} className="flex gap-2.5 text-sm">
+                  <span
+                    className="mt-1.5 size-1.5 shrink-0 rounded-full bg-purple shadow-[0_0_8px_rgba(124,58,237,0.7)]"
+                    aria-hidden
+                  />
+                  <span className="text-muted">{insightText(insight)}</span>
                 </li>
               ))}
             </ul>
           </Card>
 
           <Card>
-            <CardHeader title="This week" subtitle={`Goal: ${progress.weeklyGoalDays} days`} />
+            <CardHeader
+              title={t.dashboard.weekTitle}
+              subtitle={`${t.dashboard.weekGoal}: ${progress.weeklyGoalDays} ${t.common.days}`}
+            />
             <div className="flex justify-between gap-1">
               {week.map((day) => {
                 const practised = streak.history.includes(day);
@@ -237,31 +253,31 @@ export function DashboardView() {
         <QuickLink
           href="/review"
           icon={<Repeat2 className="size-5" />}
-          title="Review centre"
+          title={t.dashboard.reviewCentre}
           subtitle={
             state.reviewCounts.dueNow > 0
-              ? `${state.reviewCounts.dueNow} item${state.reviewCounts.dueNow === 1 ? "" : "s"} due now`
-              : "Nothing due — good place to be"
+              ? `${state.reviewCounts.dueNow} ${state.reviewCounts.dueNow === 1 ? t.dashboard.itemDue : t.dashboard.itemsDue}`
+              : t.dashboard.nothingDue
           }
           highlight={state.reviewCounts.dueNow > 0}
         />
         <QuickLink
           href="/listening"
           icon={<Ear className="size-5" />}
-          title="Listening lab"
-          subtitle={`${formatMinutes(progress.listeningMinutes)} logged`}
+          title={t.dashboard.listeningLab}
+          subtitle={`${formatMinutes(progress.listeningMinutes, t)} ${t.dashboard.logged}`}
         />
         <QuickLink
           href="/speaking"
           icon={<Mic className="size-5" />}
-          title="Speaking scenarios"
-          subtitle={`${progress.speakingSessions} answers given`}
+          title={t.dashboard.speakingScenarios}
+          subtitle={`${progress.speakingSessions} ${t.dashboard.answersGiven}`}
         />
         <QuickLink
           href="/real-english"
           icon={<Sparkles className="size-5" />}
-          title="Real English"
-          subtitle="How people actually talk"
+          title={t.dashboard.realEnglishTitle}
+          subtitle={t.dashboard.realEnglishSubtitle}
         />
       </div>
     </div>
@@ -351,9 +367,9 @@ function QuickLink({
   );
 }
 
-function greeting(): string {
+function greeting(t: Dictionary): string {
   const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
-  return "Good evening";
+  if (hour < 12) return t.dashboard.morning;
+  if (hour < 18) return t.dashboard.afternoon;
+  return t.dashboard.evening;
 }

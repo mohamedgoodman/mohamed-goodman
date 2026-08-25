@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/field";
 import { TabBar } from "@/components/ui/tabs";
 import { REAL_ENGLISH, REAL_ENGLISH_CATEGORY_META } from "@/content";
+import { useI18n } from "@/i18n/provider";
 import { REAL_ENGLISH_CATEGORIES, type RealEnglishCategoryId } from "@/types";
 
 type Tab = RealEnglishCategoryId | "all";
@@ -25,6 +26,7 @@ const CATEGORY_LIGHT: Record<RealEnglishCategoryId, string> = {
 };
 
 export function RealEnglishView() {
+  const { t, fmt } = useI18n();
   const [tab, setTab] = useState<Tab>("all");
   const [query, setQuery] = useState("");
 
@@ -42,10 +44,10 @@ export function RealEnglishView() {
   }, [tab, query]);
 
   const tabs = [
-    { id: "all" as Tab, label: "All", count: REAL_ENGLISH.length },
+    { id: "all" as Tab, label: t.common.all, count: REAL_ENGLISH.length },
     ...REAL_ENGLISH_CATEGORIES.map((id) => ({
       id: id as Tab,
-      label: REAL_ENGLISH_CATEGORY_META[id].label,
+      label: t.content.categories[id].label,
       count: REAL_ENGLISH.filter((p) => p.category === id).length,
     })),
   ];
@@ -53,17 +55,15 @@ export function RealEnglishView() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-semibold sm:text-3xl">Real English</h1>
-        <p className="mt-2 max-w-2xl text-muted">
-          The English people actually use — with the part textbooks leave out: when it&apos;s appropriate,
-          and what to say instead when it isn&apos;t. Slang is labelled, never taught blind.
-        </p>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{t.realEnglish.title}</h1>
+        <p className="mt-2 max-w-2xl text-muted">{t.realEnglish.subtitle}</p>
       </div>
 
       {/* Category grid — the way into the section, before the flat list. */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {REAL_ENGLISH_CATEGORIES.map((id) => {
           const meta = REAL_ENGLISH_CATEGORY_META[id];
+          const label = t.content.categories[id];
           const active = tab === id;
           return (
             <button
@@ -71,7 +71,7 @@ export function RealEnglishView() {
               onClick={() => setTab(active ? "all" : id)}
               aria-pressed={active}
               className={cn(
-                "group relative flex min-h-24 flex-col items-start justify-between overflow-hidden rounded-2xl border p-3.5 text-left",
+                "group relative flex min-h-24 flex-col items-start justify-between overflow-hidden rounded-2xl border p-3.5 text-start",
                 "transition-[transform,box-shadow,border-color] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-1",
                 active
                   ? "border-purple/55 bg-brand-soft shadow-[0_10px_28px_rgba(124,58,237,0.3)]"
@@ -89,9 +89,9 @@ export function RealEnglishView() {
                 {meta.icon}
               </span>
               <span className="relative mt-2">
-                <span className="block text-sm font-semibold">{meta.label}</span>
+                <span className="block text-sm font-semibold">{label.label}</span>
                 <span className="block text-xs text-dim">
-                  {REAL_ENGLISH.filter((p) => p.category === id).length} expressions
+                  {REAL_ENGLISH.filter((p) => p.category === id).length} {t.realEnglish.expressions}
                 </span>
               </span>
             </button>
@@ -102,25 +102,25 @@ export function RealEnglishView() {
       <div className="space-y-3">
         <TabBar tabs={tabs} value={tab} onChange={setTab} />
         <div className="relative">
-          <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted" />
+          <Search className="pointer-events-none absolute top-1/2 start-3.5 size-4 -translate-y-1/2 text-muted" />
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search expressions, meanings, situations…"
-            className="pl-10"
-            aria-label="Search expressions"
+            placeholder={t.realEnglish.searchPlaceholder}
+            className="ps-10"
+            aria-label={t.common.search}
           />
         </div>
       </div>
 
       {tab !== "all" ? (
-        <p className="text-sm text-muted">{REAL_ENGLISH_CATEGORY_META[tab].blurb}</p>
+        <p className="text-sm text-muted">{t.content.categories[tab].blurb}</p>
       ) : null}
 
       {phrases.length === 0 ? (
         <Card>
           <p className="text-muted">
-            No expressions match “{query}”. Try a shorter search — or browse a category.
+            {fmt(t.realEnglish.noResults, { query })}
           </p>
         </Card>
       ) : (

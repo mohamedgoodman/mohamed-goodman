@@ -7,15 +7,9 @@ import { Button } from "@/components/ui/button";
 import { RingProgress } from "@/components/ui/progress";
 import { useSpeech, useSpeechRecognition } from "@/lib/speech";
 import { cn } from "@/lib/utils";
+import { useT } from "@/i18n/provider";
+import { En } from "@/components/ui/en";
 import type { PronunciationExercise as Drill } from "@/types";
-
-const KIND_LABEL: Record<Drill["kind"], string> = {
-  sound: "Sound",
-  stress: "Word stress",
-  rhythm: "Rhythm",
-  "connected-speech": "Connected speech",
-  "common-mistake": "Common mistake",
-};
 
 /**
  * Listen → repeat → compare → try again.
@@ -35,6 +29,7 @@ export function PronunciationExerciseCard({
   onComplete?: (result: { score: number; correct: boolean; answer?: string }) => void;
 }) {
   const { speak, speaking } = useSpeech();
+  const t = useT();
   const recognition = useSpeechRecognition(accent === "uk" ? "en-GB" : "en-US");
   const [attempt, setAttempt] = useState<{ heard: string; score: number } | null>(null);
 
@@ -60,10 +55,14 @@ export function PronunciationExerciseCard({
     <div className="space-y-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="text-lg font-semibold">{drill.focus}</h3>
-          <p className="mt-1 text-sm text-muted">{drill.explanation}</p>
+          <En as="h3" className="text-lg font-semibold">
+            {drill.focus}
+          </En>
+          <En as="p" className="mt-1 text-sm text-muted">
+            {drill.explanation}
+          </En>
         </div>
-        <Badge tone="brand">{KIND_LABEL[drill.kind]}</Badge>
+        <Badge tone="brand">{t.pronunciation.kinds[drill.kind]}</Badge>
       </div>
 
       <div className="relative overflow-hidden rounded-2xl border border-border-strong bg-surface-2/50 p-5 backdrop-blur">
@@ -76,8 +75,12 @@ export function PronunciationExerciseCard({
           }}
         />
         <div className="relative text-center">
-          <span className="text-[11px] font-semibold tracking-[0.14em] text-dim uppercase">Word</span>
-          <p className="mt-1.5 text-2xl leading-snug font-semibold sm:text-3xl">{drill.target}</p>
+          <span className="text-[11px] font-semibold tracking-[0.14em] text-dim uppercase">
+            {t.pronunciation.word}
+          </span>
+          <En as="p" className="mt-1.5 text-2xl leading-snug font-semibold sm:text-3xl">
+            {drill.target}
+          </En>
           <p className="mt-1.5 font-mono text-sm text-muted">{drill.phonetic}</p>
           <SoundWave active={speaking || recognition.listening} tone={recognition.listening ? "cyan" : "purple"} />
         </div>
@@ -85,16 +88,16 @@ export function PronunciationExerciseCard({
         {/* The three-step loop the method is built on. */}
         <div className="relative mt-4 grid gap-2.5 sm:grid-cols-[1fr_auto_1fr_auto_1fr] sm:items-center">
           <StepButton
-            label="Listen"
-            hint="0.85× speed"
+            label={t.pronunciation.listen}
+            hint={t.pronunciation.listenHint}
             icon={<Volume2 className="size-4" />}
             onClick={() => speak(drill.target, { accent, rate: 0.85 })}
             disabled={speaking}
           />
           <StepArrow />
           <StepButton
-            label={recognition.listening ? "Stop" : "Repeat"}
-            hint={recognition.listening ? "Recording…" : "Say it out loud"}
+            label={recognition.listening ? t.pronunciation.stop : t.pronunciation.repeat}
+            hint={recognition.listening ? t.pronunciation.recordingHint : t.pronunciation.repeatHint}
             icon={recognition.listening ? <Square className="size-4 fill-current" /> : <Mic className="size-4" />}
             onClick={record}
             disabled={!recognition.supported || recognition.failed}
@@ -103,8 +106,8 @@ export function PronunciationExerciseCard({
           />
           <StepArrow />
           <StepButton
-            label="Compare"
-            hint="Normal speed"
+            label={t.pronunciation.compare}
+            hint={t.pronunciation.compareHint}
             icon={<Volume2 className="size-4" />}
             onClick={() => speak(drill.target, { accent, rate: 1 })}
             disabled={speaking}
@@ -134,44 +137,44 @@ export function PronunciationExerciseCard({
           <div className="min-w-0 flex-1">
             <p className="font-semibold">
               {attempt.score >= 75
-                ? "Clear — a listener would have no trouble."
+                ? t.pronunciation.clear
                 : attempt.score >= 50
-                  ? "Understandable. Tighten the highlighted sounds."
-                  : "Hard to catch. Slow down and exaggerate the target sound."}
+                  ? t.pronunciation.understandable
+                  : t.pronunciation.hardToCatch}
             </p>
             {attempt.heard ? (
               <p className="mt-1 text-sm text-muted">
-                We heard <span className="italic">“{attempt.heard}”</span>
+                {t.pronunciation.heardYou} <span className="italic ltr">“{attempt.heard}”</span>
               </p>
             ) : null}
-            <Button variant="ghost" size="sm" className="mt-1.5 -ml-2" onClick={() => setAttempt(null)}>
+            <Button variant="ghost" size="sm" className="mt-1.5 -ms-2" onClick={() => setAttempt(null)}>
               <RotateCcw className="size-4" />
-              Try again
+              {t.common.tryAgain}
             </Button>
           </div>
         </div>
       ) : (
         <div className="rounded-2xl border border-border bg-surface-2/50 p-4">
           <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">
-            How close were you?
+            {t.pronunciation.howClose}
           </p>
           <p className="mt-1 text-sm text-muted">
             {recognition.failed
-              ? "The microphone isn't available, so rate your own attempt — it still counts."
+              ? t.pronunciation.selfRateMic
               : recognition.supported
-                ? "Prefer not to use the microphone? Judge your own attempt instead."
-                : "Speech recognition isn't supported here, so rate your own attempt."}
+                ? t.pronunciation.selfRateChoice
+                : t.pronunciation.selfRateUnsupported}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Button size="sm" variant="outline" onClick={() => selfRate(40)}>
-              Not close
+              {t.pronunciation.notClose}
             </Button>
             <Button size="sm" variant="outline" onClick={() => selfRate(70)}>
-              Getting there
+              {t.pronunciation.gettingThere}
             </Button>
             <Button size="sm" variant="success" onClick={() => selfRate(95)}>
               <Check className="size-4" />
-              Clear
+              {t.pronunciation.veryClear}
             </Button>
           </div>
         </div>
@@ -180,7 +183,7 @@ export function PronunciationExerciseCard({
       {drill.minimalPairs.length ? (
         <div>
           <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">
-            Where it changes the meaning
+            {t.pronunciation.minimalPairs}
           </p>
           <ul className="mt-2 space-y-2">
             {drill.minimalPairs.map((pair) => (
@@ -200,7 +203,7 @@ export function PronunciationExerciseCard({
                 >
                   {pair.b}
                 </button>
-                <span className="text-muted">— {pair.note}</span>
+                <En className="text-muted">— {pair.note}</En>
               </li>
             ))}
           </ul>
@@ -208,7 +211,8 @@ export function PronunciationExerciseCard({
       ) : null}
 
       <p className="rounded-xl border border-purple/25 bg-brand-soft/35 p-4 text-sm">
-        <strong className="font-medium text-on-brand">Tip:</strong> {drill.tip}
+        <strong className="font-medium text-on-brand">{t.pronunciation.tip}:</strong>{" "}
+        <En>{drill.tip}</En>
       </p>
     </div>
   );
@@ -261,7 +265,7 @@ function StepButton({
       disabled={disabled}
       title={title}
       className={cn(
-        "press flex min-h-14 w-full items-center gap-3 rounded-xl border px-3.5 py-2.5 text-left transition-all duration-250",
+        "press flex min-h-14 w-full items-center gap-3 rounded-xl border px-3.5 py-2.5 text-start transition-all duration-250",
         "hover:-translate-y-0.5 disabled:opacity-50 disabled:hover:translate-y-0",
         tone === "danger"
           ? "border-danger/50 bg-danger-soft"

@@ -14,12 +14,14 @@ import {
   Zap,
 } from "lucide-react";
 import { useAppState } from "@/components/app-state-provider";
+import { useDays, useI18n, useInsightText, useT } from "@/i18n/provider";
+import { En } from "@/components/ui/en";
 import { AnimatedNumber } from "@/components/visual/animated-number";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ProgressBar, RingProgress } from "@/components/ui/progress";
-import { CHALLENGE_META } from "@/lib/learning/levels";
+
 import { cn, formatMinutes } from "@/lib/utils";
 import type {
   DailySession,
@@ -41,12 +43,18 @@ import { PhraseCard, VocabChoiceCard } from "./vocab-card";
 
 /** Payload shapes produced by the planner, narrowed on the client. */
 type Payload =
-  | { type: "vocab-choice"; word: VocabularyWord; options: string[] }
+  | { type: "vocab-choice"; word: VocabularyWord; options: VocabOption[] }
   | { type: "listening"; exercise: ListeningExercise; speed: number }
   | { type: "phrase-context"; phrase: RealEnglishPhrase }
   | { type: "grammar-point"; point: GrammarPoint }
   | { type: "speaking"; scenario: SpeakingExercise }
   | { type: "pronunciation"; drill: PronunciationExercise };
+
+export interface VocabOption {
+  id: string;
+  definition: string;
+  darija: string;
+}
 
 interface Step {
   block: SessionBlock;
@@ -57,6 +65,7 @@ interface Step {
 
 export function SessionRunner({ session }: { session: DailySession }) {
   const { refresh } = useAppState();
+  const { t } = useI18n();
   const steps = useMemo<Step[]>(
     () =>
       session.blocks.flatMap((block) =>
@@ -119,13 +128,13 @@ export function SessionRunner({ session }: { session: DailySession }) {
       });
       const data = (await response.json()) as SessionSummary & { error?: string };
       if (!response.ok) {
-        setError(data.error ?? "Could not save this session.");
+        setError(data.error ?? t.session.saveError);
         return;
       }
       setSummary(data);
       await refresh();
     } catch {
-      setError("Network error — your session wasn't saved. Try again.");
+      setError(t.common.networkError);
     } finally {
       setSaving(false);
     }
@@ -144,14 +153,14 @@ export function SessionRunner({ session }: { session: DailySession }) {
         <div className="flex items-center justify-between gap-3">
           <span className="flex items-baseline gap-2.5">
             <span className="text-[11px] font-semibold tracking-[0.14em] text-on-brand uppercase">
-              {step.block.title}
+              {t.content.blocks[step.block.kind].title}
             </span>
             <span className="text-sm font-medium text-muted tabular-nums">
               {step.indexInBlock + 1} / {step.blockSize}
             </span>
           </span>
           <span className="text-xs text-dim tabular-nums">
-            {index + 1} of {steps.length}
+            {index + 1} {t.common.of} {steps.length}
           </span>
         </div>
         <ProgressBar className="mt-2.5" value={progress} size="sm" />
@@ -180,11 +189,11 @@ export function SessionRunner({ session }: { session: DailySession }) {
           style={{ background: "radial-gradient(circle, rgba(124,58,237,0.22), rgba(124,58,237,0) 70%)" }}
         />
         <div className="mb-4 flex flex-wrap items-center gap-2">
-          <Badge tone="brand">{step.block.title}</Badge>
-          <Badge tone="neutral">{formatMinutes(step.block.minutes)}</Badge>
-          {step.block.kind === "challenge" ? <Badge tone="accent">Above your level</Badge> : null}
+          <Badge tone="brand">{t.content.blocks[step.block.kind].title}</Badge>
+          <Badge tone="neutral">{formatMinutes(step.block.minutes, t)}</Badge>
+          {step.block.kind === "challenge" ? <Badge tone="accent">{t.session.aboveLevel}</Badge> : null}
         </div>
-        <p className="mb-5 text-sm text-muted">{step.block.description}</p>
+        <p className="mb-5 text-sm text-muted">{t.content.blocks[step.block.kind].description}</p>
 
         {payload.type === "vocab-choice" ? (
           <VocabChoiceCard
@@ -240,10 +249,10 @@ export function SessionRunner({ session }: { session: DailySession }) {
       <div className="sticky bottom-20 z-20 flex items-center justify-between gap-3 rounded-2xl border border-border-strong bg-surface/95 p-3 shadow-[var(--shadow-lg)] backdrop-blur-xl lg:static lg:border-0 lg:bg-transparent lg:p-0 lg:backdrop-blur-none">
         <p className="hidden text-sm text-muted sm:block">
           {informational
-            ? "Read it, say it out loud once, then continue."
+            ? t.session.readIt
             : answered
-              ? "Recorded. Keep going."
-              : "Answer to continue."}
+              ? t.session.recorded
+              : t.session.answerToContinue}
         </p>
         <Button
           size="lg"
@@ -252,8 +261,8 @@ export function SessionRunner({ session }: { session: DailySession }) {
           disabled={!informational && !answered}
           className="w-full sm:w-auto"
         >
-          {index === steps.length - 1 ? "Finish session" : "Next"}
-          <ChevronRight className="size-4" />
+          {index === steps.length - 1 ? t.session.finishSession : t.common.next}
+          <ChevronRight className="size-4 rtl:rotate-180" />
         </Button>
       </div>
     </div>
@@ -261,18 +270,31 @@ export function SessionRunner({ session }: { session: DailySession }) {
 }
 
 function GrammarPointCard({ point }: { point: GrammarPoint }) {
+  const t = useT();
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-semibold">{point.title}</h3>
-      <p className="text-muted">{point.explanation}</p>
+      <En as="h3" className="text-lg font-semibold">
+        {point.title}
+      </En>
+      <En as="p" className="text-muted">
+        {point.explanation}
+      </En>
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="rounded-xl border border-success/30 bg-success-soft/60 p-4 text-sm">
-          <p className="text-[11px] font-semibold tracking-[0.09em] text-on-success uppercase">Natural</p>
-          <p className="mt-1.5">{point.natural}</p>
+          <p className="text-[11px] font-semibold tracking-[0.09em] text-on-success uppercase">
+            {t.exercise.grammarNatural}
+          </p>
+          <En as="p" className="mt-1.5">
+            {point.natural}
+          </En>
         </div>
         <div className="rounded-xl border border-danger/30 bg-danger-soft/50 p-4 text-sm">
-          <p className="text-[11px] font-semibold tracking-[0.09em] text-on-danger uppercase">Avoid</p>
-          <p className="mt-1.5">{point.avoid}</p>
+          <p className="text-[11px] font-semibold tracking-[0.09em] text-on-danger uppercase">
+            {t.exercise.grammarAvoid}
+          </p>
+          <En as="p" className="mt-1.5">
+            {point.avoid}
+          </En>
         </div>
       </div>
     </div>
@@ -280,6 +302,10 @@ function GrammarPointCard({ point }: { point: GrammarPoint }) {
 }
 
 export function SessionSummaryView({ summary }: { summary: SessionSummary }) {
+  const t = useT();
+  const days = useDays();
+  const insightText = useInsightText();
+
   return (
     <div className="animate-in-up space-y-5">
       <Card elevated glow className="relative overflow-hidden text-center">
@@ -299,11 +325,11 @@ export function SessionSummaryView({ summary }: { summary: SessionSummary }) {
             className="text-3xl font-semibold"
             format={(n) => `${n}%`}
           />
-          <span className="text-[11px] tracking-wide text-dim">session score</span>
+          <span className="text-[11px] tracking-wide text-dim">{t.session.sessionScore}</span>
         </RingProgress>
-        <h1 className="mt-4 text-2xl font-semibold">Session complete</h1>
+        <h1 className="mt-4 text-2xl font-semibold">{t.session.complete}</h1>
         <p className="mt-1 text-muted">
-          {formatMinutes(summary.minutes)} of practice · {summary.streak} day streak
+          {formatMinutes(summary.minutes, t)} {t.session.ofPractice} · {days(summary.streak)}
         </p>
         <div className="mt-5 flex flex-wrap justify-center gap-2">
           <Badge tone="accent">
@@ -312,7 +338,7 @@ export function SessionSummaryView({ summary }: { summary: SessionSummary }) {
           </Badge>
           <Badge tone="accent">
             <Flame className="size-3.5 animate-flame" />
-            {summary.streak} days
+            {days(summary.streak)}
           </Badge>
           <Badge tone={summary.challengeChanged === "up" ? "success" : summary.challengeChanged === "down" ? "warning" : "neutral"}>
             {summary.challengeChanged === "up" ? (
@@ -322,7 +348,7 @@ export function SessionSummaryView({ summary }: { summary: SessionSummary }) {
             ) : (
               <Sparkles className="size-3.5" />
             )}
-            Level {summary.challengeLevel} — {CHALLENGE_META[summary.challengeLevel].label}
+            {t.dashboard.level} {summary.challengeLevel} — {t.content.challenge[summary.challengeLevel].label}
           </Badge>
         </div>
       </Card>
@@ -331,7 +357,7 @@ export function SessionSummaryView({ summary }: { summary: SessionSummary }) {
         <Card className="border-success/40 bg-success-soft/50">
           <p className="flex items-center gap-2 font-medium text-on-success">
             <Trophy className="size-5" />
-            Your level moved up. That took sustained work, not one good session.
+            {t.session.levelUp}
           </p>
         </Card>
       ) : null}
@@ -340,34 +366,36 @@ export function SessionSummaryView({ summary }: { summary: SessionSummary }) {
         <Card>
           <h2 className="flex items-center gap-2 font-semibold">
             <Check className="size-4 text-on-success" />
-            What improved
+            {t.session.whatImproved}
           </h2>
           <ul className="mt-3 space-y-2 text-sm text-muted">
-            {summary.improved.map((item) => (
-              <li key={item}>{item}</li>
+            {summary.improved.map((item, index) => (
+              <li key={`${item.id}-${index}`}>{insightText(item)}</li>
             ))}
           </ul>
         </Card>
         <Card>
-          <h2 className="font-semibold">What to work on</h2>
+          <h2 className="font-semibold">{t.session.whatToWork}</h2>
           <ul className="mt-3 space-y-2 text-sm text-muted">
             {summary.struggled.length ? (
-              summary.struggled.map((item) => <li key={item}>{item}</li>)
+              summary.struggled.map((item, index) => (
+                <li key={`${item.id}-${index}`}>{insightText(item)}</li>
+              ))
             ) : (
-              <li>Nothing stood out as weak today — the difficulty will rise to find your edge.</li>
+              <li>{t.session.nothingWeak}</li>
             )}
           </ul>
         </Card>
       </div>
 
       <Card className="bg-brand-soft/40">
-        <h2 className="font-semibold">Tomorrow</h2>
-        <p className="mt-2 text-sm">{summary.tomorrow}</p>
+        <h2 className="font-semibold">{t.session.tomorrow}</h2>
+        <p className="mt-2 text-sm">{insightText(summary.tomorrow)}</p>
       </Card>
 
       {summary.unlockedAchievements.length ? (
         <Card>
-          <h2 className="font-semibold">Unlocked</h2>
+          <h2 className="font-semibold">{t.session.unlocked}</h2>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             {summary.unlockedAchievements.map((achievement) => (
               <div
@@ -376,8 +404,12 @@ export function SessionSummaryView({ summary }: { summary: SessionSummary }) {
               >
                 <span className="text-2xl">{achievement.icon}</span>
                 <span>
-                  <span className="block font-medium">{achievement.title}</span>
-                  <span className="block text-sm text-muted">{achievement.description}</span>
+                  <span className="block font-medium">
+                    {(t.achievements as Record<string, { title: string; description: string } | undefined>)[achievement.id]?.title ?? achievement.title}
+                  </span>
+                  <span className="block text-sm text-muted">
+                    {(t.achievements as Record<string, { title: string; description: string } | undefined>)[achievement.id]?.description ?? achievement.description}
+                  </span>
                 </span>
               </div>
             ))}
@@ -388,13 +420,13 @@ export function SessionSummaryView({ summary }: { summary: SessionSummary }) {
       <div className="flex flex-wrap gap-3">
         <Link href="/dashboard" className="inline-flex">
           <Button size="lg">
-            Back to dashboard
-            <ArrowRight className="size-4" />
+            {t.session.backToDashboard}
+            <ArrowRight className="size-4 rtl:rotate-180" />
           </Button>
         </Link>
         <Link href="/review" className="inline-flex">
           <Button size="lg" variant="outline">
-            Review my mistakes
+            {t.session.reviewMistakes}
           </Button>
         </Link>
       </div>

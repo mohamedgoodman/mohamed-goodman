@@ -11,6 +11,8 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/field";
 import { OptionCard } from "@/components/ui/option-card";
 import { GOAL_LIST } from "@/content/goals";
+import { useI18n } from "@/i18n/provider";
+import { LOCALES, LOCALE_META } from "@/i18n/config";
 import { IMMERSION_LIST } from "@/content/immersion";
 import { LEVEL_META } from "@/lib/learning/levels";
 import { DAILY_MINUTES, LEVELS } from "@/types";
@@ -18,6 +20,7 @@ import type { DailyMinutes, DestinationId, LearningGoalId, LevelId } from "@/typ
 
 export function SettingsView() {
   const { state, refresh } = useAppState();
+  const { t, fmt, locale, setLocale } = useI18n();
   const router = useRouter();
   const [saving, setSaving] = useState<string | null>(null);
   const [saved, setSaved] = useState<string | null>(null);
@@ -47,53 +50,85 @@ export function SettingsView() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-semibold sm:text-3xl">Settings</h1>
-        <p className="mt-2 text-muted">
-          Change your plan whenever your life changes. Your progress and review queue stay intact.
-        </p>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{t.settings.title}</h1>
+        <p className="mt-2 text-muted">{t.settings.subtitle}</p>
       </div>
 
       <Card>
-        <CardHeader title="Account" subtitle={state.user.email} />
+        <CardHeader title={t.settings.account} subtitle={state.user.email} />
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <p className="font-medium">{state.user.name}</p>
             <p className="text-sm text-muted">
-              Member since {new Date(state.user.createdAt).toLocaleDateString()}
+              {fmt(t.settings.memberSince, {
+                date: new Date(state.user.createdAt).toLocaleDateString(
+                  locale === "ar" ? "ar-MA" : "en-GB",
+                ),
+              })}
             </p>
           </div>
           <Button variant="outline" onClick={signOut}>
             <LogOut className="size-4" />
-            Sign out
+            {t.nav.signOut}
           </Button>
         </div>
       </Card>
 
       <Card>
+        <CardHeader title={t.settings.language} subtitle={t.settings.languageHint} />
+        <div className="flex flex-wrap gap-2">
+          {LOCALES.map((code) => (
+            <Button
+              key={code}
+              variant={locale === code ? "primary" : "outline"}
+              onClick={() => setLocale(code)}
+            >
+              <span className="text-base">{LOCALE_META[code].flag}</span>
+              {LOCALE_META[code].nativeLabel}
+            </Button>
+          ))}
+        </div>
+      </Card>
+
+      <Card>
         <CardHeader
-          title="Your goal"
-          subtitle="Changes what your daily sessions are built from."
-          action={saved === "goal" ? <Badge tone="success"><Check className="size-3.5" />Saved</Badge> : null}
+          title={t.settings.goal}
+          subtitle={t.settings.goalHint}
+          action={
+            saved === "goal" ? (
+              <Badge tone="success">
+                <Check className="size-3.5" />
+                {t.common.saved}
+              </Badge>
+            ) : null
+          }
         />
         <div className="grid gap-3 sm:grid-cols-2">
           {GOAL_LIST.map((goal) => (
             <OptionCard
               key={goal.id}
               selected={state.profile.goal === goal.id}
-              title={goal.label}
-              description={goal.blurb}
+              title={t.content.goals[goal.id].label}
+              description={t.content.goals[goal.id].blurb}
               onClick={() => save({ goal: goal.id as LearningGoalId }, "goal")}
             />
           ))}
         </div>
-        {saving === "goal" ? <p className="mt-3 text-sm text-muted">Saving…</p> : null}
+        {saving === "goal" ? <p className="mt-3 text-sm text-muted">{t.common.loading}</p> : null}
       </Card>
 
       <Card>
         <CardHeader
-          title="Daily time"
-          subtitle="Your session length scales to this."
-          action={saved === "time" ? <Badge tone="success"><Check className="size-3.5" />Saved</Badge> : null}
+          title={t.settings.dailyTime}
+          subtitle={t.settings.dailyTimeHint}
+          action={
+            saved === "time" ? (
+              <Badge tone="success">
+                <Check className="size-3.5" />
+                {t.common.saved}
+              </Badge>
+            ) : null
+          }
         />
         <div className="flex flex-wrap gap-2">
           {DAILY_MINUTES.map((minutes) => (
@@ -102,7 +137,7 @@ export function SettingsView() {
               variant={state.profile.dailyMinutes === minutes ? "primary" : "outline"}
               onClick={() => save({ dailyMinutes: minutes as DailyMinutes }, "time")}
             >
-              {minutes === 60 ? "60+ min" : `${minutes} min`}
+              {minutes === 60 ? `60+ ${t.common.minutes}` : `${minutes} ${t.common.minutes}`}
             </Button>
           ))}
         </div>
@@ -110,9 +145,16 @@ export function SettingsView() {
 
       <Card>
         <CardHeader
-          title="Level"
-          subtitle="The app adapts this automatically — override it only if it feels wrong."
-          action={saved === "level" ? <Badge tone="success"><Check className="size-3.5" />Saved</Badge> : null}
+          title={t.settings.level}
+          subtitle={t.settings.levelHint}
+          action={
+            saved === "level" ? (
+              <Badge tone="success">
+                <Check className="size-3.5" />
+                {t.common.saved}
+              </Badge>
+            ) : null
+          }
         />
         <div className="flex flex-wrap gap-2">
           {LEVELS.map((level) => (
@@ -121,7 +163,7 @@ export function SettingsView() {
               variant={state.profile.level === level ? "primary" : "outline"}
               onClick={() => save({ level: level as LevelId }, "level")}
             >
-              {LEVEL_META[level].label}
+              {t.content.levels[level].label}
             </Button>
           ))}
         </div>
@@ -129,9 +171,16 @@ export function SettingsView() {
 
       <Card>
         <CardHeader
-          title="Immersion destination"
-          subtitle="Sets the accent and cultural context used across the app."
-          action={saved === "destination" ? <Badge tone="success"><Check className="size-3.5" />Saved</Badge> : null}
+          title={t.settings.destination}
+          subtitle={t.settings.destinationHint}
+          action={
+            saved === "destination" ? (
+              <Badge tone="success">
+                <Check className="size-3.5" />
+                {t.common.saved}
+              </Badge>
+            ) : null
+          }
         />
         <div className="flex flex-wrap gap-2">
           {IMMERSION_LIST.map((pack) => (
@@ -145,14 +194,14 @@ export function SettingsView() {
                 )
               }
             >
-              {pack.flag} {pack.country}
+              {pack.flag} {t.content.destinations[pack.id]}
             </Button>
           ))}
         </div>
       </Card>
 
       <Card>
-        <CardHeader title="Appearance" subtitle="Light, dark, or follow your system." />
+        <CardHeader title={t.settings.appearance} subtitle={t.settings.appearanceHint} />
         <ThemeToggle />
       </Card>
 
@@ -167,6 +216,7 @@ export function SettingsView() {
  * never reaches the browser.
  */
 function CoachPanel() {
+  const { t } = useI18n();
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState<string | null>(null);
   const [live, setLive] = useState<boolean | null>(null);
@@ -186,7 +236,7 @@ function CoachPanel() {
       setAnswer(data.answer ?? data.error ?? "No answer.");
       setLive(data.live ?? false);
     } catch {
-      setAnswer("Network error — please try again.");
+      setAnswer(t.common.networkError);
     } finally {
       setLoading(false);
     }
@@ -195,11 +245,13 @@ function CoachPanel() {
   return (
     <Card>
       <CardHeader
-        title="Ask your coach"
-        subtitle="Grammar or usage question? Ask in plain language."
+        title={t.settings.coach}
+        subtitle={t.settings.coachHint}
         action={
           live === null ? null : (
-            <Badge tone={live ? "success" : "neutral"}>{live ? "AI provider" : "Offline engine"}</Badge>
+            <Badge tone={live ? "success" : "neutral"}>
+              {live ? t.settings.aiProvider : t.settings.offlineEngine}
+            </Badge>
           )
         }
       />
@@ -207,12 +259,12 @@ function CoachPanel() {
         <Input
           value={question}
           onChange={(event) => setQuestion(event.target.value)}
-          placeholder="e.g. When do I use 'for' instead of 'since'?"
-          aria-label="Your question"
+          placeholder={t.settings.coachPlaceholder}
+          aria-label={t.settings.coach}
         />
         <Button type="submit" loading={loading}>
           <Send className="size-4" />
-          Ask
+          {t.settings.ask}
         </Button>
       </form>
       {answer ? (
