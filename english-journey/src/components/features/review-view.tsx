@@ -11,18 +11,12 @@ import { AnimatedNumber } from "@/components/visual/animated-number";
 import { TabBar } from "@/components/ui/tabs";
 import { GRAMMAR_BY_ID, LISTENING_BY_ID, PRONUNCIATION_BY_ID, VOCABULARY_BY_ID } from "@/content";
 import { useSpeech } from "@/lib/speech";
+import { EmptyStateIllustration } from "@/components/visual/illustrations";
+import { useI18n, useT } from "@/i18n/provider";
 import { cn } from "@/lib/utils";
 import type { ReviewItem, ReviewItemKind, VocabularyProgress } from "@/types";
 
 type Tab = "due" | "forgot" | "learning" | "mastered" | ReviewItemKind;
-
-const KIND_LABEL: Record<ReviewItemKind, string> = {
-  vocabulary: "Vocabulary",
-  pronunciation: "Pronunciation",
-  grammar: "Grammar",
-  listening: "Listening",
-  expression: "Expressions",
-};
 
 /**
  * The Review Centre. Every item here came from a mistake the learner actually
@@ -36,6 +30,7 @@ export interface ReviewData {
 
 export function ReviewView({ initialData }: { initialData: ReviewData }) {
   const { refresh } = useAppState();
+  const { t, fmt } = useI18n();
   const [data, setData] = useState(initialData);
   const [tab, setTab] = useState<Tab>("due");
   const [session, setSession] = useState<ReviewItem[] | null>(null);
@@ -75,17 +70,14 @@ export function ReviewView({ initialData }: { initialData: ReviewData }) {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-semibold sm:text-3xl">Review centre</h1>
-        <p className="mt-2 max-w-2xl text-muted">
-          Everything you got wrong, organised and scheduled. Sessions are generated from your own
-          mistakes — the ones you repeat come back fastest.
-        </p>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{t.review.title}</h1>
+        <p className="mt-2 max-w-2xl text-muted">{t.review.subtitle}</p>
       </div>
 
       <Card elevated glow className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">
-            Due right now
+            {t.review.dueNow}
           </p>
           <p className="mt-1 text-3xl font-semibold">
             <AnimatedNumber value={due.length} />
@@ -93,7 +85,7 @@ export function ReviewView({ initialData }: { initialData: ReviewData }) {
         </div>
         <Button size="lg" disabled={due.length === 0} onClick={() => setSession(due.slice(0, 12))}>
           <RotateCcw className="size-4" />
-          {due.length ? `Review ${Math.min(due.length, 12)} items` : "Nothing due"}
+          {due.length ? fmt(t.review.reviewItems, { count: Math.min(due.length, 12) }) : t.review.nothingDue}
         </Button>
       </Card>
 
@@ -101,10 +93,10 @@ export function ReviewView({ initialData }: { initialData: ReviewData }) {
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {(
           [
-            ["vocabulary", "Words to review", forgot.length + countKind(open, "vocabulary")],
-            ["pronunciation", "Pronunciation", countKind(open, "pronunciation")],
-            ["listening", "Listening", countKind(open, "listening")],
-            ["grammar", "Grammar", countKind(open, "grammar")],
+            ["vocabulary", t.review.wordsToReview, forgot.length + countKind(open, "vocabulary")],
+            ["pronunciation", t.review.kinds.pronunciation, countKind(open, "pronunciation")],
+            ["listening", t.review.kinds.listening, countKind(open, "listening")],
+            ["grammar", t.review.kinds.grammar, countKind(open, "grammar")],
           ] as [ReviewItemKind, string, number][]
         )
           .sort((a, b) => b[2] - a[2])
@@ -113,7 +105,7 @@ export function ReviewView({ initialData }: { initialData: ReviewData }) {
               key={kind}
               onClick={() => setTab(kind === "vocabulary" ? "forgot" : kind)}
               className={cn(
-                "card lift p-4 text-left",
+                "card lift p-4 text-start",
                 count > 0 && "border-purple/30",
               )}
             >
@@ -140,13 +132,13 @@ export function ReviewView({ initialData }: { initialData: ReviewData }) {
 
       <TabBar
         tabs={[
-          { id: "due" as Tab, label: "Due now", count: due.length },
-          { id: "forgot" as Tab, label: "Words I forgot", count: forgot.length },
-          { id: "learning" as Tab, label: "Words I'm learning", count: learning.length },
-          { id: "mastered" as Tab, label: "Words I mastered", count: mastered.length },
-          { id: "pronunciation" as Tab, label: "Pronunciation", count: countKind(open, "pronunciation") },
-          { id: "grammar" as Tab, label: "Grammar", count: countKind(open, "grammar") },
-          { id: "listening" as Tab, label: "Listening", count: countKind(open, "listening") },
+          { id: "due" as Tab, label: t.review.tabs.due, count: due.length },
+          { id: "forgot" as Tab, label: t.review.tabs.forgot, count: forgot.length },
+          { id: "learning" as Tab, label: t.review.tabs.learning, count: learning.length },
+          { id: "mastered" as Tab, label: t.review.tabs.mastered, count: mastered.length },
+          { id: "pronunciation" as Tab, label: t.review.kinds.pronunciation, count: countKind(open, "pronunciation") },
+          { id: "grammar" as Tab, label: t.review.kinds.grammar, count: countKind(open, "grammar") },
+          { id: "listening" as Tab, label: t.review.kinds.listening, count: countKind(open, "listening") },
         ]}
         value={tab}
         onChange={setTab}
@@ -157,10 +149,10 @@ export function ReviewView({ initialData }: { initialData: ReviewData }) {
           progress={tab === "forgot" ? forgot : tab === "learning" ? learning : mastered}
           emptyMessage={
             tab === "mastered"
-              ? "No mastered words yet. A word is mastered after five correct reviews spread over three weeks."
+              ? t.review.emptyMastered
               : tab === "forgot"
-                ? "Nothing forgotten — that's the goal."
-                : "No words in progress yet. Complete a session to start the queue."
+                ? t.review.emptyForgot
+                : t.review.emptyLearning
           }
         />
       ) : (
@@ -168,8 +160,8 @@ export function ReviewView({ initialData }: { initialData: ReviewData }) {
           items={tab === "due" ? due : open.filter((i) => i.kind === tab)}
           emptyMessage={
             tab === "due"
-              ? "Nothing due right now. Come back after your next session."
-              : `No ${KIND_LABEL[tab as ReviewItemKind].toLowerCase()} mistakes recorded. `
+              ? t.review.emptyDue
+              : fmt(t.review.emptyKind, { kind: t.review.kinds[tab as ReviewItemKind] })
           }
         />
       )}
@@ -183,10 +175,12 @@ function countKind(items: ReviewItem[], kind: ReviewItemKind): number {
 
 function ItemList({ items, emptyMessage }: { items: ReviewItem[]; emptyMessage: string }) {
   const { speak } = useSpeech();
+  const { t, fmt } = useI18n();
   if (!items.length) {
     return (
-      <Card>
-        <p className="text-muted">{emptyMessage}</p>
+      <Card className="flex flex-col items-center gap-4 py-10 text-center">
+        <EmptyStateIllustration className="w-40" />
+        <p className="max-w-sm text-muted">{emptyMessage}</p>
       </Card>
     );
   }
@@ -203,8 +197,10 @@ function ItemList({ items, emptyMessage }: { items: ReviewItem[]; emptyMessage: 
                 <Volume2 className="size-3.5" />
                 {item.label}
               </button>
-              <Badge tone="neutral">{KIND_LABEL[item.kind]}</Badge>
-              {item.misses >= 3 ? <Badge tone="danger">Missed {item.misses}×</Badge> : null}
+              <Badge tone="neutral">{t.review.kinds[item.kind]}</Badge>
+              {item.misses >= 3 ? (
+                <Badge tone="danger">{fmt(t.review.missedTimes, { count: item.misses })}</Badge>
+              ) : null}
             </div>
             <p className="mt-1.5 text-sm text-muted">{item.detail}</p>
           </div>
@@ -223,10 +219,12 @@ function WordList({
   emptyMessage: string;
 }) {
   const { speak } = useSpeech();
+  const { t, fmt, locale } = useI18n();
   if (!progress.length) {
     return (
-      <Card>
-        <p className="text-muted">{emptyMessage}</p>
+      <Card className="flex flex-col items-center gap-4 py-10 text-center">
+        <EmptyStateIllustration className="w-40" />
+        <p className="max-w-sm text-muted">{emptyMessage}</p>
       </Card>
     );
   }
@@ -241,7 +239,7 @@ function WordList({
         return (
           <Card key={entry.wordId} interactive tilt>
             <div className="flex items-start justify-between gap-3">
-              <button onClick={() => speak(word.term)} className="text-left font-medium hover:text-on-brand">
+              <button onClick={() => speak(word.term)} className="text-start font-medium hover:text-on-brand">
                 {word.term}
               </button>
               <Badge
@@ -250,9 +248,10 @@ function WordList({
                 {accuracy}%
               </Badge>
             </div>
-            <p className="mt-1 text-sm text-muted">{word.definition}</p>
+            <p className="mt-1 text-sm text-muted">{locale === "ar" ? word.darija : word.definition}</p>
             <p className="mt-2 text-xs text-muted">
-              Next review {entry.dueAt} · {entry.correct} right / {entry.incorrect} wrong
+              {fmt(t.review.nextReview, { date: entry.dueAt })} ·{" "}
+              {fmt(t.review.rightWrong, { right: entry.correct, wrong: entry.incorrect })}
             </p>
           </Card>
         );
@@ -264,6 +263,7 @@ function WordList({
 /** Flash-card style pass over the due queue. */
 function ReviewSession({ items, onDone }: { items: ReviewItem[]; onDone: () => void }) {
   const { speak } = useSpeech();
+  const { t, fmt } = useI18n();
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -292,9 +292,9 @@ function ReviewSession({ items, onDone }: { items: ReviewItem[]; onDone: () => v
   if (!item) {
     return (
       <Card>
-        <p>Queue finished.</p>
+        <p>{t.review.queueFinished}</p>
         <Button className="mt-4" onClick={onDone}>
-          Back to review centre
+          {t.review.backToReview}
         </Button>
       </Card>
     );
@@ -303,28 +303,31 @@ function ReviewSession({ items, onDone }: { items: ReviewItem[]; onDone: () => v
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Review session</h1>
+        <h1 className="text-xl font-semibold">{t.review.reviewSession}</h1>
         <span className="text-sm text-muted tabular-nums">
           {index + 1} / {items.length}
         </span>
       </div>
 
       <Card>
-        <CardHeader title={KIND_LABEL[item.kind]} subtitle={`Missed ${item.misses}× so far`} />
+        <CardHeader
+          title={t.review.kinds[item.kind]}
+          subtitle={fmt(t.review.missedSoFar, { count: item.misses })}
+        />
         <div className="py-6 text-center">
           <p className="text-2xl font-semibold">{item.label}</p>
           <Button variant="ghost" size="sm" className="mt-2" onClick={() => speak(item.label)}>
             <Volume2 className="size-4" />
-            Listen
+            {t.common.listen}
           </Button>
           {revealed ? (
-            <div className="animate-in-up mt-6 space-y-3 text-left">
+            <div className="animate-in-up mt-6 space-y-3 text-start">
               <p className="rounded-xl bg-surface-2/60 p-4 text-sm">{item.detail}</p>
               <Context refId={item.refId} kind={item.kind} />
             </div>
           ) : (
             <div className="mt-6">
-              <Button onClick={() => setRevealed(true)}>Reveal</Button>
+              <Button onClick={() => setRevealed(true)}>{t.vocabulary.reveal}</Button>
             </div>
           )}
         </div>
@@ -334,17 +337,17 @@ function ReviewSession({ items, onDone }: { items: ReviewItem[]; onDone: () => v
         <div className="grid grid-cols-2 gap-2">
           <Button variant="danger" onClick={() => answer(false)} loading={saving}>
             <RotateCcw className="size-4" />
-            Still hard
+            {t.review.stillHard}
           </Button>
           <Button variant="success" onClick={() => answer(true)} loading={saving}>
             <CheckCircle2 className="size-4" />
-            Got it
+            {t.review.gotIt}
           </Button>
         </div>
       ) : null}
 
       <Button variant="ghost" onClick={onDone}>
-        End session
+        {t.vocabulary.endSession}
       </Button>
     </div>
   );
@@ -352,16 +355,17 @@ function ReviewSession({ items, onDone }: { items: ReviewItem[]; onDone: () => v
 
 /** Extra context for the card, pulled from the content library. */
 function Context({ refId, kind }: { refId: string; kind: ReviewItemKind }) {
+  const t = useT();
   const word = VOCABULARY_BY_ID.get(refId);
   if (word) {
     return (
       <div className={cn("rounded-xl border border-border p-4 text-sm")}>
         <p>
-          <span className="font-medium">Example: </span>
+          <span className="font-medium">{t.common.example}: </span>
           <span className="text-muted">{word.example}</span>
         </p>
         <p className="mt-1.5">
-          <span className="font-medium">In real life: </span>
+          <span className="font-medium">{t.common.realLife}: </span>
           <span className="text-muted">{word.realLifeExample}</span>
         </p>
       </div>
@@ -374,7 +378,7 @@ function Context({ refId, kind }: { refId: string; kind: ReviewItemKind }) {
         <div className="rounded-xl border border-border p-4 text-sm">
           <p className="text-muted">{point.explanation}</p>
           <p className="mt-2">
-            <span className="font-medium text-on-success">Natural: </span>
+            <span className="font-medium text-on-success">{t.exercise.grammarNatural}: </span>
             {point.natural}
           </p>
         </div>

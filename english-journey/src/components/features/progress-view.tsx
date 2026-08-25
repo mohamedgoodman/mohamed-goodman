@@ -9,14 +9,17 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { ProgressBar } from "@/components/ui/progress";
 import { TabBar } from "@/components/ui/tabs";
 import { formatDayLabel, lastNDays } from "@/lib/learning/dates";
-import { CHALLENGE_META, LEVEL_META, xpLevel } from "@/lib/learning/levels";
+import { LEVEL_META, xpLevel } from "@/lib/learning/levels";
 import { formatMinutes } from "@/lib/utils";
+import { useDays, useI18n } from "@/i18n/provider";
 import type { DailyStat, Streak, UserProgress } from "@/types";
 
 type Range = 7 | 30 | 90;
 
 export function ProgressView() {
   const { state } = useAppState();
+  const { t, fmt, locale } = useI18n();
+  const dayCount = useDays();
   const [range, setRange] = useState<Range>(30);
   const [data, setData] = useState<{ progress: UserProgress; streak: Streak } | null>(null);
 
@@ -38,7 +41,7 @@ export function ProgressView() {
   );
   const series = (pick: (stat: DailyStat | undefined) => number): Point[] =>
     days.map((date) => ({
-      label: range === 7 ? formatDayLabel(date) : date.slice(5),
+      label: range === 7 ? formatDayLabel(date, locale) : date.slice(5),
       value: pick(byDate.get(date)),
     }));
 
@@ -48,55 +51,53 @@ export function ProgressView() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-semibold sm:text-3xl">Progress</h1>
-        <p className="mt-2 max-w-2xl text-muted">
-          Real numbers from your own sessions. Progress in English is measured in weeks and months —
-          this page is built to show that scale, not a single good day.
-        </p>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{t.progress.title}</h1>
+        <p className="mt-2 max-w-2xl text-muted">{t.progress.subtitle}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Stat icon={<Clock className="size-4 text-on-brand" />} label="Total practice" value={formatMinutes(progress.totalMinutes)} />
-        <Stat icon={<Flame className="size-4 text-on-accent" />} label="Current streak" value={`${streak.current} days`} hint={`Longest ${streak.longest}`} />
-        <Stat icon={<Target className="size-4 text-on-success" />} label="Days practised" value={`${progress.daysPracticed}`} />
-        <Stat icon={<Zap className="size-4 text-on-accent" />} label="Total XP" value={`${progress.xpTotal}`} hint={`XP level ${xp.level}`} />
-        <Stat icon={<Headphones className="size-4 text-on-cyan" />} label="Listening" value={formatMinutes(progress.listeningMinutes)} />
-        <Stat icon={<Mic className="size-4 text-on-cyan" />} label="Speaking answers" value={`${progress.speakingSessions}`} />
-        <Stat icon={<TrendingUp className="size-4 text-on-success" />} label="Words mastered" value={`${progress.wordsMastered}`} hint={`${progress.wordsLearning} in progress`} />
-        <Stat icon={<Award className="size-4 text-on-accent" />} label="Pronunciation" value={progress.pronunciationScore ? `${progress.pronunciationScore}%` : "—"} />
+        <Stat icon={<Clock className="size-4 text-on-brand" />} label={t.progress.totalPractice} value={formatMinutes(progress.totalMinutes, t)} />
+        <Stat icon={<Flame className="size-4 text-on-accent" />} label={t.progress.currentStreak} value={dayCount(streak.current)} hint={`${t.dashboard.longest} ${streak.longest}`} />
+        <Stat icon={<Target className="size-4 text-on-success" />} label={t.progress.daysPractised} value={`${progress.daysPracticed}`} />
+        <Stat icon={<Zap className="size-4 text-on-accent" />} label={t.progress.totalXp} value={`${progress.xpTotal}`} hint={fmt(t.progress.xpLevel, { level: xp.level })} />
+        <Stat icon={<Headphones className="size-4 text-on-cyan" />} label={t.progress.listening} value={formatMinutes(progress.listeningMinutes, t)} />
+        <Stat icon={<Mic className="size-4 text-on-cyan" />} label={t.progress.speakingAnswers} value={`${progress.speakingSessions}`} />
+        <Stat icon={<TrendingUp className="size-4 text-on-success" />} label={t.progress.wordsMastered} value={`${progress.wordsMastered}`} hint={`${progress.wordsLearning} ${t.progress.inProgress}`} />
+        <Stat icon={<Award className="size-4 text-on-accent" />} label={t.progress.pronunciation} value={progress.pronunciationScore ? `${progress.pronunciationScore}%` : "—"} />
       </div>
 
       <Card>
         <CardHeader
-          title="Level progression"
-          subtitle={`${LEVEL_META[progress.level].label} (${LEVEL_META[progress.level].cefr}) — ${LEVEL_META[progress.level].blurb}`}
+          title={t.progress.levelProgression}
+          subtitle={`${t.content.levels[progress.level].label} (${LEVEL_META[progress.level].cefr}) — ${t.content.levels[progress.level].blurb}`}
         />
         <ProgressBar
           value={progress.levelProgress}
           showValue
-          label={`Towards ${LEVEL_META[nextLevelLabel(progress)].label}`}
+          label={fmt(t.progress.towards, { level: t.content.levels[nextLevelLabel(progress)].label })}
           tone="success"
         />
         <div className="mt-4 rounded-xl bg-surface-2/60 p-4 text-sm">
           <p className="font-medium">
-            Challenge level {progress.challengeLevel} — {CHALLENGE_META[progress.challengeLevel].label}
+            {t.dashboard.challengeLevel} {progress.challengeLevel} —{" "}
+            {t.content.challenge[progress.challengeLevel].label}
           </p>
-          <p className="mt-1 text-muted">{CHALLENGE_META[progress.challengeLevel].blurb}</p>
+          <p className="mt-1 text-muted">{t.content.challenge[progress.challengeLevel].blurb}</p>
         </div>
         <div className="mt-4">
-          <p className="text-sm font-medium">XP level {xp.level}</p>
+          <p className="text-sm font-medium">{fmt(t.progress.xpLevel, { level: xp.level })}</p>
           <ProgressBar className="mt-1.5" value={(xp.into / xp.needed) * 100} />
           <p className="mt-1 text-xs text-muted">
-            {xp.into} / {xp.needed} XP to level {xp.level + 1}
+            {fmt(t.progress.xpToNext, { into: xp.into, needed: xp.needed, next: xp.level + 1 })}
           </p>
         </div>
       </Card>
 
       <TabBar
         tabs={[
-          { id: 7 as Range, label: "7 days" },
-          { id: 30 as Range, label: "30 days" },
-          { id: 90 as Range, label: "90 days" },
+          { id: 7 as Range, label: t.progress.ranges[7] },
+          { id: 30 as Range, label: t.progress.ranges[30] },
+          { id: 90 as Range, label: t.progress.ranges[90] },
         ]}
         value={range}
         onChange={setRange}
@@ -104,27 +105,27 @@ export function ProgressView() {
 
       <div className="grid min-w-0 gap-4 lg:grid-cols-2">
         <Card className="min-w-0">
-          <CardHeader title="Accuracy" subtitle="Average session score per day." />
-          <LineChart data={series((s) => s?.accuracy ?? 0)} suffix="%" emptyMessage="Complete a session to start the chart." />
+          <CardHeader title={t.progress.accuracy} subtitle={t.progress.accuracyHint} />
+          <LineChart data={series((s) => s?.accuracy ?? 0)} suffix="%" emptyMessage={t.progress.emptyChart} />
         </Card>
         <Card className="min-w-0">
-          <CardHeader title="Practice minutes" subtitle="How much you actually trained." />
-          <BarChart data={series((s) => s?.minutes ?? 0)} suffix=" min" emptyMessage="No practice logged in this range." />
+          <CardHeader title={t.progress.practiceMinutes} subtitle={t.progress.practiceMinutesHint} />
+          <BarChart data={series((s) => s?.minutes ?? 0)} suffix=" min" emptyMessage={t.progress.noPractice} />
         </Card>
         <Card className="min-w-0">
-          <CardHeader title="XP earned" subtitle="Effort, weighted by difficulty." />
-          <LineChart data={series((s) => s?.xp ?? 0)} emptyMessage="No XP in this range yet." />
+          <CardHeader title={t.progress.xpEarned} subtitle={t.progress.xpEarnedHint} />
+          <LineChart data={series((s) => s?.xp ?? 0)} emptyMessage={t.progress.noXp} />
         </Card>
         <Card className="min-w-0">
-          <CardHeader title="Listening minutes" subtitle="Ear time is what moves comprehension." />
-          <BarChart data={series((s) => s?.listeningMinutes ?? 0)} suffix=" min" emptyMessage="No listening logged in this range." />
+          <CardHeader title={t.progress.listeningMinutes} subtitle={t.progress.listeningMinutesHint} />
+          <BarChart data={series((s) => s?.listeningMinutes ?? 0)} suffix=" min" emptyMessage={t.progress.noListening} />
         </Card>
       </div>
 
       <Card>
         <CardHeader
-          title="Learning calendar"
-          subtitle={`${practisedInRange} of the last ${range} days practised.`}
+          title={t.progress.calendar}
+          subtitle={fmt(t.progress.calendarHint, { done: practisedInRange, total: range })}
         />
         <div className="flex flex-wrap gap-1.5">
           {days.map((date) => {
@@ -133,7 +134,7 @@ export function ProgressView() {
             return (
               <span
                 key={date}
-                title={`${date}${stat ? ` · ${stat.minutes} min · ${stat.accuracy}%` : " · no practice"}`}
+                title={`${date}${stat ? ` · ${stat.minutes} ${t.common.minutes} · ${stat.accuracy}%` : ` · ${t.progress.noPractiseDay}`}`}
                 className={[
                   "size-4 rounded-[5px] transition-all duration-300",
                   practised
@@ -150,8 +151,11 @@ export function ProgressView() {
 
       <Card>
         <CardHeader
-          title="Achievements"
-          subtitle={`${unlocked.length} of ${state.achievements.length} unlocked.`}
+          title={t.progress.achievements}
+          subtitle={fmt(t.progress.achievementsHint, {
+            done: unlocked.length,
+            total: state.achievements.length,
+          })}
         />
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {state.achievements.map(({ achievement, unlockedAt }) => (
@@ -166,11 +170,15 @@ export function ProgressView() {
             >
               <span className="text-2xl">{achievement.icon}</span>
               <span className="min-w-0">
-                <span className="block font-medium">{achievement.title}</span>
-                <span className="block text-sm text-muted">{achievement.description}</span>
+                <span className="block font-medium">
+                  {(t.achievements as Record<string, { title: string; description: string } | undefined>)[achievement.id]?.title ?? achievement.title}
+                </span>
+                <span className="block text-sm text-muted">
+                  {(t.achievements as Record<string, { title: string; description: string } | undefined>)[achievement.id]?.description ?? achievement.description}
+                </span>
                 {unlockedAt ? (
                   <Badge tone="success" className="mt-1.5">
-                    {new Date(unlockedAt).toLocaleDateString()}
+                    {new Date(unlockedAt).toLocaleDateString(locale === "ar" ? "ar-MA" : "en-GB")}
                   </Badge>
                 ) : null}
               </span>

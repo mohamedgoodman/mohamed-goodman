@@ -6,9 +6,11 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/field";
+import { useT } from "@/i18n/provider";
 
 export function AuthForm({ mode }: { mode: "login" | "register" }) {
   const router = useRouter();
+  const t = useT();
   const isRegister = mode === "register";
   const [values, setValues] = useState({ name: "", email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
@@ -31,13 +33,13 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
       });
       const data = (await response.json()) as { error?: string };
       if (!response.ok) {
-        setError(data.error ?? "Something went wrong.");
+        setError(data.error ?? t.common.networkError);
         return;
       }
       router.push(isRegister ? "/onboarding" : "/dashboard");
       router.refresh();
     } catch {
-      setError("Network error — please try again.");
+      setError(t.common.networkError);
     } finally {
       setLoading(false);
     }
@@ -49,36 +51,34 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
         <span className="grid size-9 place-items-center rounded-xl text-white shadow-[0_4px_16px_rgba(124,58,237,0.45),inset_0_1px_0_rgba(255,255,255,0.25)] [background:var(--grad-brand)]">
           EJ
         </span>
-        English Journey
+        {t.common.appName}
       </Link>
 
       <div className="card card-elevated glow-purple animate-in-up p-6 sm:p-8">
         <h1 className="text-2xl font-semibold">
-          {isRegister ? "Create your account" : "Welcome back"}
+          {isRegister ? t.auth.registerTitle : t.auth.signInTitle}
         </h1>
         <p className="mt-2 text-sm text-muted">
-          {isRegister
-            ? "Two minutes of setup, then your first session is ready."
-            : "Pick up where you left off — your streak is waiting."}
+          {isRegister ? t.auth.registerSubtitle : t.auth.signInSubtitle}
         </p>
 
         <form onSubmit={onSubmit} className="mt-6 space-y-4" noValidate>
           {isRegister ? (
-            <Field label="Your name">
+            <Field label={t.auth.name}>
               {({ id }) => (
                 <Input
                   id={id}
                   value={values.name}
                   onChange={set("name")}
                   autoComplete="name"
-                  placeholder="Amina"
+                  placeholder={t.auth.namePlaceholder}
                   required
                 />
               )}
             </Field>
           ) : null}
 
-          <Field label="Email">
+          <Field label={t.auth.email}>
             {({ id }) => (
               <Input
                 id={id}
@@ -92,10 +92,7 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
             )}
           </Field>
 
-          <Field
-            label="Password"
-            hint={isRegister ? "At least 8 characters." : undefined}
-          >
+          <Field label={t.auth.password} hint={isRegister ? t.auth.passwordHint : undefined}>
             {({ id }) => (
               <Input
                 id={id}
@@ -116,25 +113,24 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           ) : null}
 
           <Button type="submit" size="lg" loading={loading} className="w-full">
-            {isRegister ? "Create account" : "Sign in"}
-            <ArrowRight className="size-4" />
+            {isRegister ? t.auth.createAccount : t.auth.signIn}
+            <ArrowRight className="size-4 rtl:rotate-180" />
           </Button>
         </form>
 
         <p className="mt-6 text-center text-sm text-muted">
-          {isRegister ? "Already have an account? " : "New here? "}
+          {isRegister ? `${t.auth.haveAccount} ` : `${t.auth.noAccount} `}
           <Link
             href={isRegister ? "/login" : "/register"}
             className="font-medium text-on-brand hover:underline"
           >
-            {isRegister ? "Sign in" : "Create one"}
+            {isRegister ? t.auth.signIn : t.auth.createOne}
           </Link>
         </p>
       </div>
 
       <p className="mt-6 text-center text-xs text-dim">
-        Email and password today. The auth layer is provider-shaped, so OAuth can be added without
-        touching the rest of the app.
+        {t.auth.authNote}
       </p>
     </div>
   );

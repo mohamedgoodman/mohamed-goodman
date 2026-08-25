@@ -8,6 +8,8 @@ import { Textarea } from "@/components/ui/field";
 import { ProgressBar, RingProgress } from "@/components/ui/progress";
 import { useSpeech, useSpeechRecognition } from "@/lib/speech";
 import { cn } from "@/lib/utils";
+import { useI18n, useT } from "@/i18n/provider";
+import { En } from "@/components/ui/en";
 import type { SpeakingExercise as Scenario } from "@/types";
 
 export interface SpeakingFeedbackShape {
@@ -34,6 +36,7 @@ export function SpeakingExerciseCard({
   onComplete?: (result: { score: number; correct: boolean; answer: string; feedback: string }) => void;
 }) {
   const { speak } = useSpeech();
+  const { t, fmt } = useI18n();
   const recognition = useSpeechRecognition();
   const [answer, setAnswer] = useState("");
   const [feedback, setFeedback] = useState<SpeakingFeedbackShape | null>(null);
@@ -79,7 +82,7 @@ export function SpeakingExerciseCard({
       });
       const data = (await response.json()) as { feedback?: SpeakingFeedbackShape; error?: string };
       if (!response.ok || !data.feedback) {
-        setError(data.error ?? "Could not evaluate that answer.");
+        setError(data.error ?? t.speaking.sayFirst);
         return;
       }
       setFeedback(data.feedback);
@@ -90,7 +93,7 @@ export function SpeakingExerciseCard({
         feedback: data.feedback.summary,
       });
     } catch {
-      setError("Network error — please try again.");
+      setError(t.common.networkError);
     } finally {
       setLoading(false);
     }
@@ -100,27 +103,33 @@ export function SpeakingExerciseCard({
     <div className="space-y-5">
       <div>
         <div className="flex flex-wrap items-center gap-2">
-          <h3 className="text-lg font-semibold">{scenario.situation}</h3>
+          <En as="h3" className="text-lg font-semibold">
+            {scenario.situation}
+          </En>
           <Badge tone="brand">{scenario.level.replace("-", " ")}</Badge>
         </div>
-        <p className="mt-2 text-sm text-muted">{scenario.context}</p>
+        <En as="p" className="mt-2 text-sm text-muted">
+          {scenario.context}
+        </En>
       </div>
 
       <div className="rounded-2xl border border-purple/25 bg-brand-soft/40 p-4 backdrop-blur">
         <p className="flex items-start gap-2.5 font-medium">
           <Lightbulb className="mt-0.5 size-4 shrink-0 text-on-brand" />
-          {scenario.prompt}
+          <En>{scenario.prompt}</En>
         </p>
-        <p className="mt-2 text-sm text-muted">Grammar in focus: {scenario.focus}</p>
+        <p className="mt-2 text-sm text-muted">
+          {t.speaking.grammarFocus}: <En>{scenario.focus}</En>
+        </p>
         <Button
           variant="ghost"
           size="sm"
-          className="mt-2 -ml-2"
+          className="mt-2 -ms-2"
           onClick={() => speak(scenario.prompt)}
-          aria-label="Hear the task"
+          aria-label={t.speaking.hearTask}
         >
           <Volume2 className="size-4" />
-          Hear the task
+          {t.speaking.hearTask}
         </Button>
       </div>
 
@@ -132,7 +141,7 @@ export function SpeakingExerciseCard({
             type="button"
             onClick={toggleMic}
             disabled={!recognition.supported || recognition.failed}
-            aria-label={recognition.listening ? "Stop recording" : "Answer out loud"}
+            aria-label={recognition.listening ? t.speaking.stopRecording : t.speaking.answerOutLoud}
             title={recognition.supported ? undefined : "Speech recognition isn't available in this browser"}
             className={cn(
               "press relative grid size-16 shrink-0 place-items-center rounded-full text-white transition-transform duration-250",
@@ -166,26 +175,26 @@ export function SpeakingExerciseCard({
               <>
                 <p className="flex items-center justify-center gap-2 font-semibold sm:justify-start">
                   <span className="size-2 animate-pulse rounded-full bg-danger" aria-hidden />
-                  Recording
+                  {t.speaking.recording}
                   <span className="font-mono text-sm text-muted tabular-nums">
                     {formatClock(seconds)}
                   </span>
                 </p>
                 <p className="mt-1 text-sm text-muted">
-                  Speak naturally — press stop when you&apos;ve finished your answer.
+                  {t.speaking.speakNaturally}
                 </p>
               </>
             ) : (
               <>
                 <p className="font-semibold">
-                  {recognition.supported ? "Answer out loud" : "Say it out loud, then type it"}
+                  {recognition.supported ? t.speaking.answerOutLoud : t.speaking.sayThenType}
                 </p>
                 <p className="mt-1 text-sm text-muted">
                   {recognition.failed
-                    ? "The microphone isn't available — type your answer below and you'll still get full feedback."
+                    ? t.speaking.micUnavailable
                     : recognition.supported
-                      ? "Tap the microphone, or type your answer below. Either way, say it aloud."
-                      : "Speech recognition isn't supported in this browser — typing still gets you full feedback."}
+                      ? t.speaking.tapMic
+                      : t.speaking.noRecognition}
                 </p>
               </>
             )}
@@ -196,18 +205,19 @@ export function SpeakingExerciseCard({
           rows={4}
           value={text}
           onChange={(event) => setAnswer(event.target.value)}
-          placeholder="Type what you said…"
-          aria-label="Your answer"
+          dir="ltr"
+          placeholder={t.speaking.typePlaceholder}
+          aria-label={t.speaking.yourAnswer}
           disabled={recognition.listening}
         />
 
         <div className="flex flex-wrap gap-2">
           <Button onClick={submit} loading={loading} disabled={!text.trim()}>
             <Send className="size-4" />
-            Get feedback
+            {t.speaking.getFeedback}
           </Button>
           <Button variant="ghost" onClick={() => setShowModel((v) => !v)}>
-            {showModel ? "Hide model answer" : "Show a model answer"}
+            {showModel ? t.speaking.hideModel : t.speaking.showModel}
           </Button>
         </div>
 
@@ -215,8 +225,10 @@ export function SpeakingExerciseCard({
 
         {showModel ? (
           <div className="animate-in-up rounded-xl border border-border bg-surface-2/60 p-4 text-sm">
-            <p className="font-medium">One natural way to answer</p>
-            <p className="mt-1.5 text-muted">{scenario.modelAnswer}</p>
+            <p className="font-medium">{t.speaking.modelAnswer}</p>
+            <En as="p" className="mt-1.5 text-muted">
+              {scenario.modelAnswer}
+            </En>
             <Button
               variant="ghost"
               size="sm"
@@ -224,7 +236,7 @@ export function SpeakingExerciseCard({
               onClick={() => speak(scenario.modelAnswer)}
             >
               <Volume2 className="size-4" />
-              Listen
+              {t.common.listen}
             </Button>
           </div>
         ) : null}
@@ -242,6 +254,7 @@ function formatClock(totalSeconds: number): string {
 }
 
 export function SpeakingFeedbackPanel({ feedback }: { feedback: SpeakingFeedbackShape }) {
+  const t = useT();
   return (
     <div className="animate-in-up card card-elevated space-y-5 p-5">
       <div className="flex flex-wrap items-center gap-4">
@@ -254,17 +267,19 @@ export function SpeakingFeedbackPanel({ feedback }: { feedback: SpeakingFeedback
           <span className="text-base font-semibold tabular-nums">{feedback.score}%</span>
         </RingProgress>
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">Overall</p>
+          <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">
+            {t.speaking.overall}
+          </p>
           <p className="mt-1 text-sm text-muted">{feedback.summary}</p>
         </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
         {[
-          ["Vocabulary", feedback.vocabulary],
-          ["Grammar", feedback.grammar],
-          ["Naturalness", feedback.naturalness],
-          ["Communication", feedback.communication],
+          [t.speaking.vocabulary, feedback.vocabulary],
+          [t.speaking.grammar, feedback.grammar],
+          [t.speaking.naturalness, feedback.naturalness],
+          [t.speaking.communication, feedback.communication],
         ].map(([label, value]) => (
           <ProgressBar
             key={label as string}
@@ -279,21 +294,25 @@ export function SpeakingFeedbackPanel({ feedback }: { feedback: SpeakingFeedback
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="rounded-xl border border-success/30 bg-success-soft/50 p-4">
           <p className="text-[11px] font-semibold tracking-[0.09em] text-on-success uppercase">
-            What worked
+            {t.speaking.whatWorked}
           </p>
           <ul className="mt-2 space-y-1.5 text-sm">
             {feedback.strengths.map((item) => (
-              <li key={item}>{item}</li>
+              <En as="li" key={item}>
+                {item}
+              </En>
             ))}
           </ul>
         </div>
         <div className="rounded-xl border border-accent/30 bg-accent-soft/40 p-4">
           <p className="text-[11px] font-semibold tracking-[0.09em] text-on-accent uppercase">
-            What to change next time
+            {t.speaking.whatToChange}
           </p>
           <ul className="mt-2 space-y-1.5 text-sm">
             {feedback.improvements.map((item) => (
-              <li key={item}>{item}</li>
+              <En as="li" key={item}>
+                {item}
+              </En>
             ))}
           </ul>
         </div>
@@ -302,12 +321,12 @@ export function SpeakingFeedbackPanel({ feedback }: { feedback: SpeakingFeedback
       {feedback.suggestedPhrases.length ? (
         <div>
           <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">
-            Try folding these in
+            {t.speaking.tryPhrases}
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
             {feedback.suggestedPhrases.map((phrase) => (
               <Badge key={phrase} tone="brand">
-                {phrase}
+                <En>{phrase}</En>
               </Badge>
             ))}
           </div>

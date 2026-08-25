@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import { Gauge, Pause, Play, RotateCcw, ScrollText } from "lucide-react";
 import { useSpeech } from "@/lib/speech";
+import { useT } from "@/i18n/provider";
 import { cn } from "@/lib/utils";
 import type { ListeningLine } from "@/types";
 
@@ -39,6 +40,7 @@ export function AudioPlayer({
   onLineChange?: (index: number | null) => void;
 }) {
   const { supported, speaking, speakSequence, cancel } = useSpeech();
+  const t = useT();
   const [speedIndex, setSpeedIndex] = useState(1);
   const [line, setLine] = useState<number | null>(null);
   const [plays, setPlays] = useState(0);
@@ -91,7 +93,7 @@ export function AudioPlayer({
         <button
           type="button"
           onClick={toggle}
-          aria-label={speaking ? "Pause audio" : "Play audio"}
+          aria-label={speaking ? t.immersion.stop : t.immersion.play}
           className={cn(
             "press relative grid size-14 shrink-0 place-items-center rounded-full text-white sm:size-16",
             "[background:var(--grad-brand)] shadow-[0_8px_26px_rgba(124,58,237,0.45),inset_0_1px_0_rgba(255,255,255,0.3)]",
@@ -137,14 +139,14 @@ export function AudioPlayer({
             <span className="tabular-nums">
               {line === null
                 ? finished
-                  ? "Finished"
+                  ? t.exercise.finished
                   : plays === 0
-                    ? "Not played yet"
-                    : "Ready"
-                : `Line ${line + 1} of ${lines.length}`}
+                    ? t.exercise.notPlayed
+                    : t.exercise.ready
+                : `${t.exercise.line} ${line + 1} ${t.common.of} ${lines.length}`}
             </span>
             <span className="tabular-nums">
-              {plays > 0 ? `${plays} play${plays === 1 ? "" : "s"}` : ""}
+              {plays > 0 ? `${plays} ${plays === 1 ? t.exercise.play : t.exercise.plays}` : ""}
             </span>
           </div>
         </div>
@@ -159,13 +161,13 @@ export function AudioPlayer({
           className="press inline-flex h-9 items-center gap-1.5 rounded-xl border border-border-strong bg-surface/70 px-3 text-xs font-medium text-muted transition-colors hover:text-text disabled:opacity-50"
         >
           <RotateCcw className="size-3.5" />
-          Replay
+          {t.common.replay}
         </button>
 
         <button
           type="button"
           onClick={() => setSpeedIndex((i) => (i + 1) % SPEEDS.length)}
-          aria-label={`Playback speed ${speed}×`}
+          aria-label={`${t.exercise.speed} ${speed}×`}
           className="press inline-flex h-9 items-center gap-1.5 rounded-xl border border-border-strong bg-surface/70 px-3 text-xs font-medium text-muted transition-colors hover:text-text"
         >
           <Gauge className="size-3.5" />
@@ -177,21 +179,21 @@ export function AudioPlayer({
             type="button"
             onClick={onToggleTranscript}
             className={cn(
-              "press ml-auto inline-flex h-9 items-center gap-1.5 rounded-xl border px-3 text-xs font-medium transition-colors",
+              "press ms-auto inline-flex h-9 items-center gap-1.5 rounded-xl border px-3 text-xs font-medium transition-colors",
               transcriptOpen
                 ? "border-cyan/40 bg-cyan-soft text-on-cyan"
                 : "border-border-strong bg-surface/70 text-muted hover:text-text",
             )}
           >
             <ScrollText className="size-3.5" />
-            {transcriptOpen ? "Hide transcript" : "Transcript"}
+            {transcriptOpen ? `${t.common.hide} ${t.exercise.transcript}` : t.exercise.transcript}
           </button>
         ) : null}
       </div>
 
       {!supported ? (
         <p className="relative mt-3 text-xs text-dim">
-          This browser can&apos;t synthesise speech — the transcript is available instead.
+          {t.exercise.noSpeech}
         </p>
       ) : null}
     </div>

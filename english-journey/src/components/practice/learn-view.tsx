@@ -6,8 +6,8 @@ import { useAppState } from "@/components/app-state-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { GOALS } from "@/content/goals";
-import { CHALLENGE_META } from "@/lib/learning/levels";
+import { useI18n } from "@/i18n/provider";
+
 import { formatMinutes } from "@/lib/utils";
 import type { DailySession } from "@/types";
 import { SessionRunner } from "./session-runner";
@@ -16,8 +16,9 @@ import { SessionRunner } from "./session-runner";
  *  of the next 20 minutes before committing to them. */
 export function LearnView({ session }: { session: DailySession }) {
   const { state } = useAppState();
+  const { t, fmt } = useI18n();
   const [started, setStarted] = useState(false);
-  const goal = GOALS[session.goal];
+  const goal = t.content.goals[session.goal];
   const alreadyDone = session.status === "completed";
 
   if (started) return <SessionRunner session={session} />;
@@ -25,11 +26,15 @@ export function LearnView({ session }: { session: DailySession }) {
   return (
     <div className="space-y-5">
       <div>
-        <p className="text-sm font-medium text-on-brand">Today&apos;s plan</p>
-        <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">{session.mission}</h1>
+        <p className="text-sm font-medium text-on-brand">{t.learn.todayPlan}</p>
+        <h1 className="mt-1 text-2xl font-semibold sm:text-3xl">
+          {t.content.missions[session.goal][session.missionIndex] ?? session.mission}
+        </h1>
         <p className="mt-2 text-muted">
-          Built from your goal ({goal.label.toLowerCase()}), your level and the {formatMinutes(state.profile.dailyMinutes)} you
-          said you have.
+          {fmt(t.learn.builtFrom, {
+            goal: goal.label,
+            minutes: formatMinutes(state.profile.dailyMinutes, t),
+          })}
         </p>
       </div>
 
@@ -40,12 +45,13 @@ export function LearnView({ session }: { session: DailySession }) {
         </Badge>
         <Badge tone="neutral">
           <Clock className="size-3.5" />
-          {formatMinutes(session.totalMinutes)}
+          {formatMinutes(session.totalMinutes, t)}
         </Badge>
         <Badge tone="accent">
-          Challenge {session.challengeLevel} — {CHALLENGE_META[session.challengeLevel].label}
+          {t.dashboard.challengeLevel} {session.challengeLevel} —{" "}
+          {t.content.challenge[session.challengeLevel].label}
         </Badge>
-        {alreadyDone ? <Badge tone="success">Completed today</Badge> : null}
+        {alreadyDone ? <Badge tone="success">{t.learn.completedToday}</Badge> : null}
       </div>
 
       <Card>
@@ -57,10 +63,10 @@ export function LearnView({ session }: { session: DailySession }) {
               </span>
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
-                  <p className="font-medium">{block.title}</p>
-                  <p className="text-sm text-muted">{formatMinutes(block.minutes)}</p>
+                  <p className="font-medium">{t.content.blocks[block.kind].title}</p>
+                  <p className="text-sm text-muted">{formatMinutes(block.minutes, t)}</p>
                 </div>
-                <p className="mt-0.5 text-sm text-muted">{block.description}</p>
+                <p className="mt-0.5 text-sm text-muted">{t.content.blocks[block.kind].description}</p>
               </div>
             </li>
           ))}
@@ -70,12 +76,10 @@ export function LearnView({ session }: { session: DailySession }) {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <Button size="xl" onClick={() => setStarted(true)}>
           <Play className="size-5" />
-          {alreadyDone ? "Run the session again" : "Start today's practice"}
+          {alreadyDone ? t.learn.runAgain : t.learn.startPractice}
         </Button>
         <p className="text-sm text-muted">
-          {alreadyDone
-            ? "You already completed today — a second run still counts towards XP and review."
-            : "You can stop at any block; only completed answers are scored."}
+          {alreadyDone ? t.learn.alreadyDone : t.learn.stopAnytime}
         </p>
       </div>
     </div>

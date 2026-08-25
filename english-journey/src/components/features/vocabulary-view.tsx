@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { Search, Sparkles } from "lucide-react";
 import { VocabDetail } from "@/components/practice/vocab-card";
+import { EmptyStateIllustration } from "@/components/visual/illustrations";
 import { Badge } from "@/components/ui/badge";
 import { AnimatedNumber } from "@/components/visual/animated-number";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { Card, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/field";
 import { TabBar } from "@/components/ui/tabs";
 import { todayISO } from "@/lib/learning/dates";
+import { useI18n, useT } from "@/i18n/provider";
 import { cn } from "@/lib/utils";
 import type { MasteryStage, VocabularyProgress, VocabularyWord } from "@/types";
 
@@ -29,6 +31,7 @@ export interface VocabularyData {
 }
 
 export function VocabularyView({ initialData }: { initialData: VocabularyData }) {
+  const { t, fmt, locale } = useI18n();
   const [data, setData] = useState(initialData);
   const [tab, setTab] = useState<Tab>("due");
   const [query, setQuery] = useState("");
@@ -95,17 +98,14 @@ export function VocabularyView({ initialData }: { initialData: VocabularyData })
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-2xl font-semibold sm:text-3xl">Vocabulary</h1>
-        <p className="mt-2 max-w-2xl text-muted">
-          Words in context, with collocations, similar and opposite terms, and a real-life example.
-          Spaced repetition decides what comes back and when — what you keep missing returns soonest.
-        </p>
+        <h1 className="text-2xl font-semibold sm:text-3xl">{t.vocabulary.title}</h1>
+        <p className="mt-2 max-w-2xl text-muted">{t.vocabulary.subtitle}</p>
       </div>
 
       <Card elevated glow className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">
-            Due for review today
+            {t.vocabulary.dueToday}
           </p>
           <p className="mt-1 text-3xl font-semibold">
             <AnimatedNumber value={due.length} />
@@ -113,44 +113,45 @@ export function VocabularyView({ initialData }: { initialData: VocabularyData })
         </div>
         <Button size="lg" onClick={() => setStudying(true)} disabled={due.length === 0}>
           <Sparkles className="size-4" />
-          {due.length ? `Study ${Math.min(due.length, 10)} words` : "Nothing due"}
+          {due.length ? fmt(t.vocabulary.studyWords, { count: Math.min(due.length, 10) }) : t.vocabulary.nothingDue}
         </Button>
       </Card>
 
       <div className="space-y-3">
         <TabBar
           tabs={[
-            { id: "due" as Tab, label: "Due", count: due.length },
+            { id: "due" as Tab, label: t.vocabulary.tabs.due, count: due.length },
             {
               id: "learning" as Tab,
-              label: "Learning",
+              label: t.vocabulary.tabs.learning,
               count: progress.filter((p) => p.stage !== "mastered" && p.stage !== "new").length,
             },
             {
               id: "mastered" as Tab,
-              label: "Mastered",
+              label: t.vocabulary.tabs.mastered,
               count: progress.filter((p) => p.stage === "mastered").length,
             },
-            { id: "all" as Tab, label: "All", count: words.length },
+            { id: "all" as Tab, label: t.vocabulary.tabs.all, count: words.length },
           ]}
           value={tab}
           onChange={setTab}
         />
         <div className="relative">
-          <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted" />
+          <Search className="pointer-events-none absolute top-1/2 start-3.5 size-4 -translate-y-1/2 text-muted" />
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search words, meanings, topics…"
-            className="pl-10"
-            aria-label="Search vocabulary"
+            placeholder={t.vocabulary.searchPlaceholder}
+            className="ps-10"
+            aria-label={t.common.search}
           />
         </div>
       </div>
 
       {filtered.length === 0 ? (
-        <Card>
-          <p className="text-muted">Nothing here yet. Complete a session and words will start collecting.</p>
+        <Card className="flex flex-col items-center gap-4 py-10 text-center">
+          <EmptyStateIllustration className="w-44" />
+          <p className="max-w-sm text-muted">{t.vocabulary.empty}</p>
         </Card>
       ) : (
         <div className="grid gap-3">
@@ -165,7 +166,7 @@ export function VocabularyView({ initialData }: { initialData: VocabularyData })
                 className={cn("min-w-0", open && "card-elevated ring-1 ring-purple/30")}
               >
                 <button
-                  className="flex w-full items-start justify-between gap-3 text-left"
+                  className="flex w-full items-start justify-between gap-3 text-start"
                   onClick={() => setOpenId(open ? null : word.id)}
                   aria-expanded={open}
                 >
@@ -177,19 +178,25 @@ export function VocabularyView({ initialData }: { initialData: VocabularyData })
                         p?.stage === "mastered" && "text-on-success",
                       )}
                     >
-                      {word.term}
+                      <span className="ltr inline-block">{word.term}</span>
                     </span>
-                    <span className="mt-0.5 block truncate text-sm text-muted">{word.definition}</span>
+                    <span className="mt-0.5 block truncate text-sm text-muted">
+                      {locale === "ar" ? word.darija : word.definition}
+                    </span>
                   </span>
-                  <Badge tone={STAGE_TONE[p?.stage ?? "new"]}>{p?.stage ?? "new"}</Badge>
+                  <Badge tone={STAGE_TONE[p?.stage ?? "new"]}>
+                    {t.vocabulary.stages[p?.stage ?? "new"]}
+                  </Badge>
                 </button>
                 {open ? (
                   <div className="mt-4 border-t border-border pt-4">
                     <VocabDetail word={word} />
                     {p ? (
                       <p className="mt-3 text-xs text-muted">
-                        Seen {p.correct + p.incorrect} times · next review {p.dueAt} · ease{" "}
-                        {p.ease.toFixed(2)}
+                        {fmt(t.vocabulary.seenTimes, {
+                          count: p.correct + p.incorrect,
+                          date: p.dueAt,
+                        })}
                       </p>
                     ) : null}
                   </div>
@@ -205,6 +212,7 @@ export function VocabularyView({ initialData }: { initialData: VocabularyData })
 
 /** A quick spaced-repetition drill over the due queue. */
 function StudySession({ words, onDone }: { words: VocabularyWord[]; onDone: () => void }) {
+  const t = useT();
   const [index, setIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -233,9 +241,9 @@ function StudySession({ words, onDone }: { words: VocabularyWord[]; onDone: () =
   if (!word) {
     return (
       <Card>
-        <p>Nothing left to study right now.</p>
+        <p>{t.vocabulary.nothingLeft}</p>
         <Button className="mt-4" onClick={onDone}>
-          Back to vocabulary
+          {t.vocabulary.backToVocabulary}
         </Button>
       </Card>
     );
@@ -244,7 +252,7 @@ function StudySession({ words, onDone }: { words: VocabularyWord[]; onDone: () =
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold">Study session</h1>
+        <h1 className="text-xl font-semibold">{t.vocabulary.studySession}</h1>
         <span className="text-sm text-muted tabular-nums">
           {index + 1} / {words.length}
         </span>
@@ -262,9 +270,9 @@ function StudySession({ words, onDone }: { words: VocabularyWord[]; onDone: () =
           <div className="relative py-12 text-center">
             <p className="text-3xl font-semibold tracking-tight">{word.term}</p>
             <p className="mt-2 font-mono text-sm text-muted">{word.phonetic}</p>
-            <p className="mt-7 text-sm text-dim">Say the meaning out loud, then reveal.</p>
+            <p className="mt-7 text-sm text-dim">{t.vocabulary.sayThenReveal}</p>
             <Button size="lg" className="mt-4" onClick={() => setRevealed(true)}>
-              Reveal
+              {t.vocabulary.reveal}
             </Button>
           </div>
         )}
@@ -273,22 +281,22 @@ function StudySession({ words, onDone }: { words: VocabularyWord[]; onDone: () =
       {revealed ? (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           <Button variant="danger" onClick={() => answer(0)} loading={saving}>
-            Forgot
+            {t.vocabulary.forgot}
           </Button>
           <Button variant="outline" onClick={() => answer(1)} loading={saving}>
-            Hard
+            {t.vocabulary.hard}
           </Button>
           <Button variant="secondary" onClick={() => answer(2)} loading={saving}>
-            Good
+            {t.vocabulary.good}
           </Button>
           <Button variant="success" onClick={() => answer(3)} loading={saving}>
-            Easy
+            {t.vocabulary.easy}
           </Button>
         </div>
       ) : null}
 
       <Button variant="ghost" onClick={onDone}>
-        End session
+        {t.vocabulary.endSession}
       </Button>
     </div>
   );

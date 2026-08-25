@@ -28,7 +28,7 @@ export function OptionCard({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        "group press relative flex w-full items-start gap-3 rounded-2xl border p-4 text-left",
+        "group press relative flex w-full items-start gap-3 rounded-2xl border p-4 text-start",
         "transition-[transform,box-shadow,border-color,background] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)]",
         "hover:-translate-y-0.5 hover:border-purple/45",
         selected

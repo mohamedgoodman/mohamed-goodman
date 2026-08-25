@@ -1,74 +1,67 @@
-import type { DailyStat, SkillId, SkillScores, Streak, UserProgress } from "@/types";
+import type { DailyStat, Insight, SkillId, SkillScores, Streak, UserProgress } from "@/types";
 import { lastNDays, todayISO } from "./dates";
-
-const SKILL_LABEL: Record<SkillId, string> = {
-  listening: "listening",
-  vocabulary: "vocabulary",
-  speaking: "speaking",
-  pronunciation: "pronunciation",
-  grammar: "grammar",
-};
 
 /**
  * Meaningful feedback instead of motivational wallpaper.
  *
  * Every line here is derived from the user's own numbers; if there is no
- * evidence for a statement, the statement isn't shown.
+ * evidence for a statement, the statement isn't produced. Lines are returned
+ * as ids plus parameters so the interface can render them in Darija or
+ * English without the engine knowing which.
  */
-export function buildInsights(progress: UserProgress, streak: Streak): string[] {
-  const out: string[] = [];
+export function buildInsights(progress: UserProgress, streak: Streak): Insight[] {
+  const out: Insight[] = [];
   const week = lastNDays(7);
   const practisedThisWeek = week.filter((day) => streak.history.includes(day)).length;
 
   if (progress.sessionsCompleted === 0) {
-    return [
-      "Nothing measured yet. Your first session sets the baseline everything else is compared against.",
-      "Ten minutes today is worth more than an hour next Sunday.",
-    ];
+    return [{ id: "firstSession" }, { id: "firstSessionHint" }];
   }
 
   if (practisedThisWeek > 0) {
     out.push(
-      `You practised ${practisedThisWeek} day${practisedThisWeek === 1 ? "" : "s"} this week` +
-        (practisedThisWeek >= progress.weeklyGoalDays
-          ? ` — that's your weekly goal met.`
-          : ` — ${progress.weeklyGoalDays - practisedThisWeek} more to hit your weekly goal.`),
+      practisedThisWeek >= progress.weeklyGoalDays
+        ? { id: "weekDaysMet", params: { days: practisedThisWeek } }
+        : {
+            id: "weekDaysLeft",
+            params: {
+              days: practisedThisWeek,
+              left: progress.weeklyGoalDays - practisedThisWeek,
+            },
+          },
     );
   }
 
   const accuracyDelta = compareAccuracy(progress.daily);
   if (accuracyDelta !== null) {
-    const direction = accuracyDelta >= 0 ? "improved" : "dropped";
-    out.push(
-      `Your accuracy ${direction} by ${Math.abs(accuracyDelta)}% compared with the previous week.`,
-    );
+    out.push({
+      id: accuracyDelta >= 0 ? "accuracyUp" : "accuracyDown",
+      params: { percent: Math.abs(accuracyDelta) },
+    });
   }
 
   if (progress.wordsMastered > 0) {
-    out.push(`You've mastered ${progress.wordsMastered} expression${progress.wordsMastered === 1 ? "" : "s"} so far.`);
+    out.push({ id: "wordsMastered", params: { count: progress.wordsMastered } });
   }
 
   const weakest = weakestSkill(progress.skills);
   if (weakest) {
-    out.push(
-      `${capitalise(SKILL_LABEL[weakest.skill])} is your weakest area right now (${weakest.score}%). Tomorrow's session will spend more time there.`,
-    );
+    out.push({ id: "weakestSkill", params: { skill: weakest.skill, score: weakest.score } });
   }
 
   const strongest = strongestSkill(progress.skills);
   if (strongest && strongest.score >= 75) {
-    out.push(`${capitalise(SKILL_LABEL[strongest.skill])} is holding at ${strongest.score}% — that's a genuine strength now.`);
+    out.push({ id: "strongestSkill", params: { skill: strongest.skill, score: strongest.score } });
   }
 
   if (streak.current >= 3) {
-    out.push(`${streak.current} days in a row. Consistency at this length is what actually moves your level.`);
+    out.push({ id: "streakRunning", params: { days: streak.current } });
   } else if (streak.current === 0 && streak.longest >= 3) {
-    out.push(`Your longest streak was ${streak.longest} days. One session today restarts the clock.`);
+    out.push({ id: "streakRestart", params: { days: streak.longest } });
   }
 
   if (progress.totalMinutes >= 60) {
-    const hours = Math.floor(progress.totalMinutes / 60);
-    out.push(`${hours} hour${hours === 1 ? "" : "s"} of deliberate practice logged.`);
+    out.push({ id: "hoursLogged", params: { hours: Math.floor(progress.totalMinutes / 60) } });
   }
 
   return out.slice(0, 5);
@@ -103,30 +96,27 @@ export function strongestSkill(skills: SkillScores): { skill: SkillId; score: nu
   return { skill, score };
 }
 
-/** One concrete sentence about what tomorrow will target. */
-export function tomorrowFocus(sessionSkills: Partial<SkillScores>, fallback: SkillScores): string {
-  const entries = Object.entries(sessionSkills).filter(([, v]) => typeof v === "number") as [SkillId, number][];
+/**
+ * What tomorrow will target. The wording escalates with how weak the session
+ * actually was — a 96% session is never described as a struggle.
+ */
+export function tomorrowFocus(
+  sessionSkills: Partial<SkillScores>,
+  fallback: SkillScores,
+): Insight {
+  const entries = Object.entries(sessionSkills).filter(([, v]) => typeof v === "number") as [
+    SkillId,
+    number,
+  ][];
   const source = entries.length
     ? entries
     : (Object.entries(fallback).filter(([, v]) => v > 0) as [SkillId, number][]);
-  if (!source.length) return "Tomorrow: a balanced session across all five skills.";
+  if (!source.length) return { id: "tomorrowSteady" };
+
   const [skill, score] = source.reduce((min, cur) => (cur[1] < min[1] ? cur : min));
-  const advice: Record<SkillId, string> = {
-    listening: "more listening at your current speed, with replay on the hard lines",
-    vocabulary: "vocabulary in context, weighted towards the words you missed",
-    speaking: "a longer speaking scenario with feedback on naturalness",
-    pronunciation: "targeted pronunciation drills on the sounds that cost you clarity",
-    grammar: "grammar in use — the patterns you actually needed today",
-  };
-  // Only call it a struggle when it actually was one — overstating a 96%
-  // session is exactly the kind of fake feedback this app avoids.
-  if (score >= 85) {
-    return `Everything held up today. ${capitalise(SKILL_LABEL[skill])} was your lowest at ${score}%, so tomorrow steps the difficulty up rather than repeating this.`;
-  }
-  if (score >= 65) {
-    return `${capitalise(SKILL_LABEL[skill])} was your weakest area today (${score}%). Tomorrow's session leans into ${advice[skill]}.`;
-  }
-  return `You struggled with ${SKILL_LABEL[skill]} today (${score}%). Tomorrow's session will start with ${advice[skill]}.`;
+  if (score >= 85) return { id: "tomorrowSteady", params: { skill, score } };
+  if (score >= 65) return { id: "tomorrowWeakest", params: { skill, score } };
+  return { id: "tomorrowStruggled", params: { skill, score } };
 }
 
 export function capitalise(value: string): string {

@@ -77,7 +77,8 @@ export function planDailySession(input: PlanInput): DailySession {
   ];
 
   const totalMinutes = blocks.reduce((sum, b) => sum + b.minutes, 0);
-  const mission = goal.missions[Math.floor(rng() * goal.missions.length)] ?? goal.missions[0]!;
+  const missionIndex = Math.floor(rng() * goal.missions.length);
+  const mission = goal.missions[missionIndex] ?? goal.missions[0]!;
 
   return {
     id: randomUUID(),
@@ -87,6 +88,7 @@ export function planDailySession(input: PlanInput): DailySession {
     level: input.level,
     challengeLevel: input.challengeLevel,
     mission,
+    missionIndex,
     totalMinutes,
     blocks,
     status: "planned",
@@ -138,8 +140,14 @@ function warmupBlock(
       payload: {
         type: "vocab-choice",
         word,
+        // Each option carries its own id, so correctness never depends on
+        // comparing translated strings.
         options: shuffle(
-          [word.definition, ...pickDistractors(word.id, 3, rng).map((w) => w.definition)],
+          [word, ...pickDistractors(word.id, 3, rng)].map((w) => ({
+            id: w.id,
+            definition: w.definition,
+            darija: w.darija,
+          })),
           rng,
         ),
       },

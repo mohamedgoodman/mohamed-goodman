@@ -6,15 +6,17 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RingProgress } from "@/components/ui/progress";
 import { useSpeech } from "@/lib/speech";
+import { useI18n } from "@/i18n/provider";
+import { En } from "@/components/ui/en";
 import { AudioPlayer } from "./audio-player";
 import { cn } from "@/lib/utils";
 import type { ListeningExercise as Exercise } from "@/types";
 
-const TIER_LABEL: Record<Exercise["tier"], { label: string; tone: "success" | "brand" | "accent" | "danger" }> = {
-  easy: { label: "Easy", tone: "success" },
-  normal: { label: "Normal", tone: "brand" },
-  challenging: { label: "Challenging", tone: "accent" },
-  native: { label: "Native speed", tone: "danger" },
+const TIER_TONE: Record<Exercise["tier"], "success" | "brand" | "accent" | "danger"> = {
+  easy: "success",
+  normal: "brand",
+  challenging: "accent",
+  native: "danger",
 };
 
 /**
@@ -34,6 +36,7 @@ export function ListeningExerciseCard({
   showTierBadge?: boolean;
 }) {
   const { speak } = useSpeech();
+  const { t, fmt } = useI18n();
   const [playingIndex, setPlayingIndex] = useState<number | null>(null);
   const [plays, setPlays] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(exercise.questions.map(() => null));
@@ -60,13 +63,16 @@ export function ListeningExerciseCard({
     <div className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="text-lg font-semibold">{exercise.title}</h3>
+          <En as="h3" className="text-lg font-semibold">
+            {exercise.title}
+          </En>
           <p className="mt-0.5 text-sm text-muted">
-            ~{exercise.seconds}s · {exercise.lines.length} lines · {accentLabel(exercise.accent)} accent
+            ~{exercise.seconds}s · {exercise.lines.length} {t.exercise.line} ·{" "}
+            {t.content.destinations[exercise.accent]}
           </p>
         </div>
         {showTierBadge ? (
-          <Badge tone={TIER_LABEL[exercise.tier].tone}>{TIER_LABEL[exercise.tier].label}</Badge>
+          <Badge tone={TIER_TONE[exercise.tier]}>{t.listening.tiers[exercise.tier]}</Badge>
         ) : null}
       </div>
 
@@ -81,8 +87,7 @@ export function ListeningExerciseCard({
       />
       {plays > 0 && !submitted ? (
         <p className="text-xs text-dim">
-          Played {plays} time{plays === 1 ? "" : "s"}. Replaying isn&apos;t cheating — replaying
-          instead of thinking is.
+          {fmt(t.exercise.playedTimes, { count: plays })}
         </p>
       ) : null}
 
@@ -100,7 +105,7 @@ export function ListeningExerciseCard({
                 <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-md bg-surface-3 text-[11px] font-semibold text-dim">
                   {qIndex + 1}
                 </span>
-                {question.prompt}
+                <En>{question.prompt}</En>
               </p>
               <div className="mt-3 grid gap-2">
                 {question.options.map((option, oIndex) => {
@@ -116,7 +121,7 @@ export function ListeningExerciseCard({
                         setAnswers((prev) => prev.map((a, i) => (i === qIndex ? oIndex : a)))
                       }
                       className={cn(
-                        "flex items-center justify-between gap-3 rounded-xl border px-3.5 py-3 text-left text-sm",
+                        "flex items-center justify-between gap-3 rounded-xl border px-3.5 py-3 text-start text-sm",
                         "transition-[transform,box-shadow,border-color,background] duration-250",
                         "disabled:cursor-default",
                         revealCorrect
@@ -128,7 +133,7 @@ export function ListeningExerciseCard({
                               : "border-border-strong bg-surface-2/60 hover:-translate-y-0.5 hover:border-purple/40 hover:bg-surface-3/70",
                       )}
                     >
-                      <span>{option}</span>
+                      <En>{option}</En>
                       {revealCorrect ? <Check className="size-4 shrink-0 text-on-success" /> : null}
                       {revealWrong ? <X className="size-4 shrink-0 text-on-danger" /> : null}
                     </button>
@@ -137,8 +142,10 @@ export function ListeningExerciseCard({
               </div>
               {submitted ? (
                 <div className="mt-3 rounded-xl border border-border bg-surface-3/50 px-3.5 py-2.5">
-                  <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">Why</p>
-                  <p className="mt-1 text-sm text-muted">{question.explanation}</p>
+                  <p className="text-[11px] font-semibold tracking-[0.09em] text-dim uppercase">{t.common.why}</p>
+                  <En as="p" className="mt-1 text-sm text-muted">
+                    {question.explanation}
+                  </En>
                 </div>
               ) : null}
             </div>
@@ -149,7 +156,7 @@ export function ListeningExerciseCard({
       {!submitted ? (
         <Button size="lg" onClick={submit} disabled={!allAnswered} className="w-full sm:w-auto">
           <Check className="size-4" />
-          Check my answers
+          {t.exercise.checkAnswers}
         </Button>
       ) : (
         <div className="space-y-4">
@@ -172,13 +179,13 @@ export function ListeningExerciseCard({
               <span className="text-sm font-semibold tabular-nums">{score}%</span>
             </RingProgress>
             <div className="min-w-0">
-              <p className="font-semibold">Listening score</p>
+              <p className="font-semibold">{t.exercise.listeningScore}</p>
               <p className="mt-0.5 text-sm text-muted">
                 {score >= 80
-                  ? "You're ready for a faster tier."
+                  ? t.exercise.scoreHigh
                   : score >= 50
-                    ? "Solid. Replay the lines you missed."
-                    : "This one was hard. That's information, not failure."}
+                    ? t.exercise.scoreMid
+                    : t.exercise.scoreLow}
               </p>
             </div>
           </div>
@@ -188,10 +195,10 @@ export function ListeningExerciseCard({
             <div className="mb-3 flex items-center justify-between gap-3">
               <h4 className="flex items-center gap-2 font-semibold">
                 <Headphones className="size-4 text-on-cyan" />
-                Transcript
+                {t.exercise.transcript}
               </h4>
               <Button variant="ghost" size="sm" onClick={() => setShowTranscript((v) => !v)}>
-                {showTranscript ? "Hide" : "Show"}
+                {showTranscript ? t.common.hide : t.common.show}
               </Button>
             </div>
             {showTranscript ? (
@@ -208,7 +215,7 @@ export function ListeningExerciseCard({
                   >
                     <button
                       type="button"
-                      aria-label={`Replay line ${index + 1}`}
+                      aria-label={`${t.common.replay} ${index + 1}`}
                       onClick={() =>
                         speak(line.text, { accent: exercise.accent, rate: (line.rate ?? 1) * speed })
                       }
@@ -216,10 +223,10 @@ export function ListeningExerciseCard({
                     >
                       <RotateCcw className="size-3.5" />
                     </button>
-                    <span className="min-w-0 text-sm">
+                    <En className="min-w-0 text-sm">
                       <span className="font-medium">{line.speaker}: </span>
                       <span className="text-muted">{line.text}</span>
-                    </span>
+                    </En>
                   </li>
                 ))}
               </ul>
@@ -229,23 +236,23 @@ export function ListeningExerciseCard({
           {exercise.hardExpressions.length ? (
             <div className="rounded-2xl border border-purple/25 bg-brand-soft/30 p-4 backdrop-blur sm:p-5">
               <h4 className="text-[11px] font-semibold tracking-[0.09em] text-on-brand uppercase">
-                Real English worth keeping
+                {t.exercise.keepExpressions}
               </h4>
               <ul className="mt-3 space-y-2.5">
                 {exercise.hardExpressions.map((item) => (
                   <li key={item.phrase} className="flex items-start gap-2.5 text-sm">
                     <button
                       type="button"
-                      aria-label={`Hear ${item.phrase}`}
+                      aria-label={fmt(t.exercise.hearWord, { word: item.phrase })}
                       onClick={() => speak(item.phrase, { accent: exercise.accent })}
                       className="press mt-0.5 grid size-6 shrink-0 place-items-center rounded-md bg-surface-2 text-dim transition-colors hover:text-on-brand"
                     >
                       <Volume2 className="size-3" />
                     </button>
-                    <span>
+                    <En>
                       <span className="font-medium">{item.phrase}</span>
                       <span className="text-muted"> — {item.meaning}</span>
-                    </span>
+                    </En>
                   </li>
                 ))}
               </ul>
@@ -257,13 +264,4 @@ export function ListeningExerciseCard({
   );
 }
 
-function accentLabel(accent: string): string {
-  const map: Record<string, string> = {
-    usa: "American",
-    uk: "British",
-    canada: "Canadian",
-    australia: "Australian",
-    ireland: "Irish",
-  };
-  return map[accent] ?? accent;
-}
+

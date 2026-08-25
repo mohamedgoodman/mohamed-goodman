@@ -37,7 +37,9 @@ export function lastNDays(count: number, end: string = todayISO()): string[] {
   return Array.from({ length: count }, (_, i) => addDays(end, i - count + 1));
 }
 
-export function formatDayLabel(date: string): string {
+export function formatDayLabel(date: string, locale?: string): string {
   const dt = new Date(`${date}T00:00:00`);
-  return dt.toLocaleDateString(undefined, { weekday: "short" });
+  return dt.toLocaleDateString(locale === "ar" ? "ar-MA" : locale || undefined, {
+    weekday: "short",
+  });
 }

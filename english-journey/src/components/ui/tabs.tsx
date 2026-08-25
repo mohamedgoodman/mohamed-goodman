@@ -43,7 +43,7 @@ export function TabBar<T extends string | number>({
             {typeof tab.count === "number" ? (
               <span
                 className={cn(
-                  "ml-1.5 text-xs tabular-nums",
+                  "ms-1.5 text-xs tabular-nums",
                   active ? "text-on-brand" : "text-dim",
                 )}
               >

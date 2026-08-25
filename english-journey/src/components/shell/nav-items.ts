@@ -12,24 +12,27 @@ import {
   Volume2,
 } from "lucide-react";
 
+import type { Dictionary } from "@/i18n/dictionaries/en";
+
 export interface NavItem {
   href: string;
-  label: string;
+  /** Key into the nav section of the dictionary — resolved at render time. */
+  labelKey: keyof Dictionary["nav"];
   icon: typeof LayoutDashboard;
   /** Shown in the compact mobile bar. */
   primary?: boolean;
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, primary: true },
-  { href: "/learn", label: "Learn", icon: GraduationCap, primary: true },
-  { href: "/real-english", label: "Real English", icon: Speech },
-  { href: "/immersion", label: "Immersion", icon: Globe2 },
-  { href: "/listening", label: "Listening", icon: Ear, primary: true },
-  { href: "/speaking", label: "Speaking", icon: Mic },
-  { href: "/pronunciation", label: "Pronunciation", icon: Volume2 },
-  { href: "/vocabulary", label: "Vocabulary", icon: BookOpen, primary: true },
-  { href: "/review", label: "Review", icon: Repeat2, primary: true },
-  { href: "/progress", label: "Progress", icon: BarChart3 },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard, primary: true },
+  { href: "/learn", labelKey: "learn", icon: GraduationCap, primary: true },
+  { href: "/real-english", labelKey: "realEnglish", icon: Speech },
+  { href: "/immersion", labelKey: "immersion", icon: Globe2 },
+  { href: "/listening", labelKey: "listening", icon: Ear, primary: true },
+  { href: "/speaking", labelKey: "speaking", icon: Mic },
+  { href: "/pronunciation", labelKey: "pronunciation", icon: Volume2 },
+  { href: "/vocabulary", labelKey: "vocabulary", icon: BookOpen, primary: true },
+  { href: "/review", labelKey: "review", icon: Repeat2, primary: true },
+  { href: "/progress", labelKey: "progress", icon: BarChart3 },
+  { href: "/settings", labelKey: "settings", icon: Settings },
 ];

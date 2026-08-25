@@ -5,8 +5,11 @@ import { Check, Volume2, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useSpeech } from "@/lib/speech";
+import { useI18n, useT } from "@/i18n/provider";
+import { En } from "@/components/ui/en";
 import { cn } from "@/lib/utils";
 import type { RealEnglishPhrase, VocabularyWord } from "@/types";
+import type { VocabOption } from "./session-runner";
 
 const REGISTER_TONE = {
   formal: "brand",
@@ -16,15 +19,10 @@ const REGISTER_TONE = {
 } as const;
 
 export function RegisterBadge({ register }: { register: VocabularyWord["register"] }) {
-  const help: Record<VocabularyWord["register"], string> = {
-    formal: "Formal — email, official settings, people you don't know",
-    neutral: "Neutral — safe almost anywhere",
-    casual: "Casual — friends, relaxed colleagues",
-    slang: "Slang — only where you're sure of the relationship",
-  };
+  const t = useT();
   return (
-    <Badge tone={REGISTER_TONE[register]} className="capitalize" >
-      <span title={help[register]}>{register}</span>
+    <Badge tone={REGISTER_TONE[register]}>
+      <span title={t.content.registerHelp[register]}>{t.content.registers[register]}</span>
     </Badge>
   );
 }
@@ -36,25 +34,26 @@ export function VocabChoiceCard({
   onAnswer,
 }: {
   word: VocabularyWord;
-  options: string[];
+  options: VocabOption[];
   onAnswer?: (correct: boolean) => void;
 }) {
   const { speak, speaking } = useSpeech();
+  const { t, fmt, locale } = useI18n();
   const [chosen, setChosen] = useState<string | null>(null);
   const answered = chosen !== null;
-  const correct = chosen === word.definition;
+  const correct = chosen === word.id;
 
-  function choose(option: string) {
+  function choose(optionId: string) {
     if (answered) return;
-    setChosen(option);
-    onAnswer?.(option === word.definition);
+    setChosen(optionId);
+    onAnswer?.(optionId === word.id);
   }
 
   return (
     <div className="space-y-5">
       {/* The word is the hero of this screen. */}
       <div className="flex flex-col items-center gap-3 text-center">
-        <h3 className="text-3xl leading-tight font-semibold tracking-tight sm:text-4xl">
+        <h3 className="ltr text-3xl leading-tight font-semibold tracking-tight sm:text-4xl">
           {word.term}
         </h3>
         <div className="flex flex-wrap items-center justify-center gap-2">
@@ -62,23 +61,23 @@ export function VocabChoiceCard({
           <RegisterBadge register={word.register} />
         </div>
         <AudioButton
-          label={`Hear ${word.term}`}
+          label={fmt(t.exercise.hearWord, { word: word.term })}
           active={speaking}
           onClick={() => speak(word.term)}
         />
       </div>
 
-      <p className="text-center text-sm text-muted">What does it mean?</p>
+      <p className="text-center text-sm text-muted">{t.exercise.whatDoesItMean}</p>
 
       <div className="grid gap-2.5">
         {options.map((option, index) => {
-          const isAnswer = option === word.definition;
-          const selected = chosen === option;
+          const isAnswer = option.id === word.id;
+          const selected = chosen === option.id;
           return (
             <OptionButton
-              key={option}
+              key={option.id}
               index={index}
-              label={option}
+              label={locale === "ar" ? option.darija : option.definition}
               state={
                 !answered
                   ? "idle"
@@ -88,7 +87,7 @@ export function VocabChoiceCard({
                       ? "wrong"
                       : "dimmed"
               }
-              onClick={() => choose(option)}
+              onClick={() => choose(option.id)}
             />
           );
         })}
@@ -156,7 +155,7 @@ function OptionButton({
       disabled={state !== "idle"}
       onClick={onClick}
       className={cn(
-        "group relative flex items-center gap-3 rounded-2xl border px-4 py-3.5 text-left text-sm",
+        "group relative flex items-center gap-3 rounded-2xl border px-4 py-3.5 text-start text-sm",
         "transition-[transform,box-shadow,border-color,background] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)]",
         "disabled:cursor-default",
         state === "idle" &&
@@ -196,6 +195,7 @@ function OptionButton({
  */
 function AnswerFeedback({ correct, word }: { correct: boolean; word: VocabularyWord }) {
   const { speak } = useSpeech();
+  const { t, locale } = useI18n();
   return (
     <div
       className={cn(
@@ -218,37 +218,50 @@ function AnswerFeedback({ correct, word }: { correct: boolean; word: VocabularyW
           {correct ? <Check className="size-4" strokeWidth={3} /> : <X className="size-4" strokeWidth={3} />}
         </span>
         <span className={cn("font-semibold", correct ? "text-on-success" : "text-on-danger")}>
-          {correct ? "Correct" : "Not quite"}
+          {correct ? t.common.correct : t.common.notQuite}
         </span>
-        <span className="ml-auto font-mono text-xs text-dim">{word.phonetic}</span>
+        <span className="ms-auto font-mono text-xs text-dim">{word.phonetic}</span>
       </div>
 
       <div className="space-y-3.5 p-4">
-        <FeedbackRow label="Why">
-          <p className="text-[15px] text-text">{word.definition}</p>
+        <FeedbackRow label={t.common.why}>
+          <En as="p" className="text-[15px] text-text">
+            {word.definition}
+          </En>
         </FeedbackRow>
 
-        <FeedbackRow label="Example">
+        {locale === "ar" ? (
+          <FeedbackRow label={t.common.meaning}>
+            <p className="rounded-lg border border-cyan/25 bg-cyan-soft/50 px-3 py-2 text-[15px]">
+              {word.darija}
+            </p>
+          </FeedbackRow>
+        ) : null}
+
+        <FeedbackRow label={t.common.example}>
           <button
             onClick={() => speak(word.example)}
-            className="-mx-2 rounded-lg px-2 py-1 text-left text-[15px] text-muted transition-colors hover:bg-surface-2/60 hover:text-on-brand"
+            dir="ltr"
+            className="ltr -mx-2 rounded-lg px-2 py-1 text-start text-[15px] text-muted transition-colors hover:bg-surface-2/60 hover:text-on-brand"
           >
             “{word.example}”
           </button>
         </FeedbackRow>
 
-        <FeedbackRow label="Real life">
-          <p className="text-sm text-muted">{word.realLifeExample}</p>
+        <FeedbackRow label={t.common.realLife}>
+          <En as="p" className="text-sm text-muted">
+            {word.realLifeExample}
+          </En>
         </FeedbackRow>
 
         <div className="flex flex-wrap gap-1.5 pt-0.5">
           {word.collocations.map((collocation) => (
-            <span
+            <En
               key={collocation}
               className="rounded-lg bg-surface-2/80 px-2 py-1 text-xs text-dim ring-1 ring-inset ring-border"
             >
               {collocation}
-            </span>
+            </En>
           ))}
         </div>
       </div>
@@ -270,38 +283,52 @@ function FeedbackRow({ label, children }: { label: string; children: React.React
 /** Full detail view of a vocabulary word. */
 export function VocabDetail({ word }: { word: VocabularyWord }) {
   const { speak } = useSpeech();
+  const { t, fmt, locale } = useI18n();
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2.5">
-        <AudioButton label={`Hear ${word.term}`} size="sm" onClick={() => speak(word.term)} />
-        <h3 className="text-lg font-semibold">{word.term}</h3>
+        <AudioButton
+          label={fmt(t.exercise.hearWord, { word: word.term })}
+          size="sm"
+          onClick={() => speak(word.term)}
+        />
+        <h3 className="ltr text-lg font-semibold">{word.term}</h3>
         <span className="font-mono text-sm text-dim">{word.phonetic}</span>
         <RegisterBadge register={word.register} />
         <Badge tone="neutral">{word.partOfSpeech}</Badge>
       </div>
 
-      <p>{word.definition}</p>
+      <En as="p">{word.definition}</En>
+
+      {locale === "ar" ? (
+        <p className="rounded-xl border border-cyan/25 bg-cyan-soft/40 px-3.5 py-2.5">
+          <span className="text-[11px] font-semibold tracking-[0.09em] text-on-cyan uppercase">
+            {t.common.meaning}
+          </span>
+          <span className="mt-1 block">{word.darija}</span>
+        </p>
+      ) : null}
 
       <div className="space-y-2 rounded-xl border border-border bg-surface-2/60 p-4 text-sm">
         <p>
-          <span className="font-medium">Example: </span>
+          <span className="font-medium">{t.common.example}: </span>
           <button
-            className="-mx-2 rounded-lg px-2 py-1 text-left text-muted transition-colors hover:bg-surface-2/60 hover:text-on-brand"
+            className="-mx-2 rounded-lg px-2 py-1 text-start text-muted transition-colors hover:bg-surface-2/60 hover:text-on-brand"
             onClick={() => speak(word.example)}
           >
             {word.example}
           </button>
         </p>
         <p>
-          <span className="font-medium">In real life: </span>
-          <span className="text-muted">{word.realLifeExample}</span>
+          <span className="font-medium">{t.common.realLife}: </span>
+          <En className="text-muted">{word.realLifeExample}</En>
         </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <ListBlock title="Collocations" items={word.collocations} />
-        <ListBlock title="Similar" items={word.similar} />
-        <ListBlock title="Opposites" items={word.opposites} />
+        <ListBlock title={t.vocabulary.collocations} items={word.collocations} />
+        <ListBlock title={t.vocabulary.similar} items={word.similar} />
+        <ListBlock title={t.vocabulary.opposites} items={word.opposites} />
       </div>
     </div>
   );
@@ -314,7 +341,9 @@ function ListBlock({ title, items }: { title: string; items: string[] }) {
       <p className="text-sm font-medium">{title}</p>
       <ul className="mt-1.5 space-y-1 text-sm text-muted">
         {items.map((item) => (
-          <li key={item}>{item}</li>
+          <En as="li" key={item}>
+            {item}
+          </En>
         ))}
       </ul>
     </div>
@@ -324,24 +353,39 @@ function ListBlock({ title, items }: { title: string; items: string[] }) {
 /** Real-English phrase card: meaning, usage, register alternatives. */
 export function PhraseCard({ phrase }: { phrase: RealEnglishPhrase }) {
   const { speak } = useSpeech();
+  const { t, locale } = useI18n();
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center gap-2.5">
         <AudioButton
-          label="Hear the phrase"
+          label={t.common.listen}
           size="sm"
           onClick={() => speak(phrase.phrase, { accent: phrase.regions[0] ?? "usa" })}
         />
-        <h3 className="text-lg font-semibold">“{phrase.phrase}”</h3>
+        <h3 className="ltr text-lg font-semibold">“{phrase.phrase}”</h3>
         <RegisterBadge register={phrase.register} />
       </div>
 
-      <p className="text-muted">{phrase.meaning}</p>
+      <En as="p" className="text-muted">
+        {phrase.meaning}
+      </En>
+
+      {locale === "ar" ? (
+        <p className="rounded-xl border border-cyan/25 bg-cyan-soft/40 px-3.5 py-2.5">
+          <span className="text-[11px] font-semibold tracking-[0.09em] text-on-cyan uppercase">
+            {t.common.meaning}
+          </span>
+          <span className="mt-1 block">{phrase.darija}</span>
+        </p>
+      ) : null}
 
       <div className="rounded-xl border border-purple/25 bg-brand-soft/40 p-4 text-sm">
-        <p className="text-[11px] font-medium tracking-[0.09em] text-dim uppercase">Natural example</p>
+        <p className="text-[11px] font-medium tracking-[0.09em] text-dim uppercase">
+          {t.realEnglish.naturalExample}
+        </p>
         <button
-          className="-mx-2 mt-0.5 rounded-lg px-2 py-1.5 text-left text-[15px] transition-colors hover:bg-surface-2/60 hover:text-on-brand"
+          dir="ltr"
+          className="ltr -mx-2 mt-0.5 rounded-lg px-2 py-1.5 text-start text-[15px] transition-colors hover:bg-surface-2/60 hover:text-on-brand"
           onClick={() => speak(phrase.naturalExample, { accent: phrase.regions[0] ?? "usa" })}
         >
           “{phrase.naturalExample}”
@@ -350,17 +394,19 @@ export function PhraseCard({ phrase }: { phrase: RealEnglishPhrase }) {
 
       <div className="grid gap-3 text-sm sm:grid-cols-2">
         {[
-          ["When to use it", phrase.whenToUse],
-          ["Why it sounds native", phrase.note],
-          ["More formal", `“${phrase.formalAlternative}”`],
-          ["More informal", `“${phrase.informalAlternative}”`],
+          [t.realEnglish.whenToUse, phrase.whenToUse],
+          [t.realEnglish.whyNative, phrase.note],
+          [t.realEnglish.moreFormal, `“${phrase.formalAlternative}”`],
+          [t.realEnglish.moreInformal, `“${phrase.informalAlternative}”`],
         ].map(([label, body]) => (
           <div
             key={label}
             className="rounded-xl border border-border bg-surface-2/50 p-3.5 transition-colors hover:border-border-strong"
           >
             <p className="text-[11px] font-medium tracking-[0.09em] text-dim uppercase">{label}</p>
-            <p className="mt-1.5 text-muted">{body}</p>
+            <En as="p" className="mt-1.5 text-muted">
+              {body}
+            </En>
           </div>
         ))}
       </div>

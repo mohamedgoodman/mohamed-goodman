@@ -118,6 +118,8 @@ export interface VocabularyWord {
   phonetic: string;
   partOfSpeech: string;
   definition: string;
+  /** The meaning as a Moroccan would explain it to a friend. */
+  darija: string;
   example: string;
   realLifeExample: string;
   collocations: string[];
@@ -133,6 +135,8 @@ export interface RealEnglishPhrase {
   category: RealEnglishCategoryId;
   phrase: string;
   meaning: string;
+  /** The meaning in Darija — the whole point of the app for this audience. */
+  darija: string;
   naturalExample: string;
   whenToUse: string;
   formalAlternative: string;
@@ -272,7 +276,10 @@ export interface DailySession {
   goal: LearningGoalId;
   level: LevelId;
   challengeLevel: ChallengeLevel;
+  /** English fallback text, kept so old sessions still render. */
   mission: string;
+  /** Index into the goal's mission list — lets the UI translate it. */
+  missionIndex: number;
   totalMinutes: number;
   blocks: SessionBlock[];
   status: "planned" | "in-progress" | "completed";
@@ -305,9 +312,9 @@ export interface SessionSummary {
   xpEarned: number;
   streak: number;
   minutes: number;
-  improved: string[];
-  struggled: string[];
-  tomorrow: string;
+  improved: Insight[];
+  struggled: Insight[];
+  tomorrow: Insight;
   challengeLevel: ChallengeLevel;
   challengeChanged: "up" | "down" | "same";
   levelledUp: boolean;
@@ -430,6 +437,36 @@ export interface UnlockedAchievement {
 /* Aggregate the client works with                                             */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Generated coaching lines are returned as ids plus parameters, never as
+ * finished English sentences — the server stays locale-agnostic and the client
+ * renders them in the learner's language.
+ */
+export type InsightId =
+  | "firstSession"
+  | "firstSessionHint"
+  | "weekDaysMet"
+  | "weekDaysLeft"
+  | "accuracyUp"
+  | "accuracyDown"
+  | "wordsMastered"
+  | "weakestSkill"
+  | "strongestSkill"
+  | "streakRunning"
+  | "streakRestart"
+  | "hoursLogged"
+  | "skillThisSession"
+  | "skillImproved"
+  | "finishedWholeSession"
+  | "tomorrowSteady"
+  | "tomorrowWeakest"
+  | "tomorrowStruggled";
+
+export interface Insight {
+  id: InsightId;
+  params?: Record<string, string | number>;
+}
+
 export interface AppState {
   user: PublicUser;
   profile: UserProfile;
@@ -438,5 +475,5 @@ export interface AppState {
   today: DailySession | null;
   achievements: { achievement: Achievement; unlockedAt: string | null }[];
   reviewCounts: Record<ReviewItemKind | "dueNow", number>;
-  insights: string[];
+  insights: Insight[];
 }
