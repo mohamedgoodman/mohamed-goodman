@@ -1,0 +1,10 @@
+# Built place files — generated from source by Rojo, never committed.
+*.rbxl
+*.rbxlx
+*.rbxl.lock
+*.rbxlx.lock
+*.rbxm
+*.rbxmx
+
+# Rokit / Aftman tool installs
+.rokit/
